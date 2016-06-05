@@ -1,0 +1,28 @@
+[
+  {"file":"","title":""},
+  {
+    "file":"sample_data/01_population_analysis.csv",
+    "title":"[01]住民基本台帳人口・世帯数及び人口動態",
+    "file_description":"2005年1月1日現在、2010年1月1日現在、2015年1月1日現在のデータ、各市町村の面積を統合したもの。人口の増減比率において、都市部から郊外へ人口が移るドーナツ化現象が顕著に現れている。",
+    "column_description":"",
+    "right_holder":"北海道庁",
+    "cc":true,
+    "url":"http://www.pref.hokkaido.lg.jp/ss/scs/gyousei/shityousondata.htm"
+  },
+  {
+    "file":"sample_data/02_livestock.csv",
+    "title":"[02]市区町村別飼養頭数・飼養施設数(2015年11月)",
+    "file_description":"市区町村別の飼養頭数・飼養施設数(2015年11月)のスプレッドシートをCSVデータに変換したもの。牛の数が人の人口よりも多い市町村は51存在する。1施設あたりの飼育数が多いほど、工業化が進んでいるといえる。",
+    "column_description":"",
+    "right_holder":"独立行政法人家畜改良センター",
+    "url":"https://www.id.nlbc.go.jp/data/toukei.html"
+  },
+  {
+    "file":"sample_data/03_cultivated_acreage.csv",
+    "title":"[03]市町村別耕地面積(平成23年)",
+    "file_description":"市町村別耕地面積(平成23年)のPDFに記載の数値をCSVに転記したもの。市町村単位では別海町が最も規模が大きい。一方、振興局単位で見る(耕地率で近似)と十勝地方や空知地方が根室地方よりも大きな規模で展開していることがわかる。空知地方は稲作が中心である。",
+    "column_description":"",
+    "right_holder":"北海道農政事務所統計部",
+    "url":"http://www.maff.go.jp/hokkaido/press/toukei/kikaku/pdf/h23kouti_sichoson.pdf"
+  }
+]

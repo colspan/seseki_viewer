@@ -1,0 +1,39 @@
+{
+  "name": "seseki_viewer",
+  "version": "0.1.0",
+  "description": "A Statistics Viewer for generating geometry heatmaps and rankings.",
+  "main": "main.js",
+  "scripts": {
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/colspan/seseki_viewer.git"
+  },
+  "author": "Kunihiko Miyoshi @colspan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/colspan/seseki_viewer/issues"
+  },
+  "homepage": "https://github.com/colspan/seseki_viewer#readme",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "css-loader": "^0.23.1",
+    "d3": "^3.5.17",
+    "d3-svg-legend": "^1.10.0",
+    "encoding-japanese": "^1.0.24",
+    "file-loader": "^0.8.5",
+    "moment": "^2.13.0",
+    "pikaday": "^1.4.0",
+    "zeroclipboard": "^2.2.0",
+    "handsontable": "^0.25.0",
+    "jquery": "^2.2.4",
+    "materialize-css": "^0.97.6",
+    "style-loader": "^0.13.1",
+    "topojson": "^1.6.26",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.1"
+  }
+}
