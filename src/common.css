@@ -60,22 +60,8 @@ Index
   width: 100%;
 }
 
-
-/*
- Heatmap
-*/
 select.browser-default{
   font-size:16pt;
-}
-table#table_ranking td, table#table_commune_data td{
-  padding:3px 5px;
-}
-table#table_ranking tr:hover{
-  color:#9e9d24;
-}
-div#table_ranking_container{
-  height:500px;
-  overflow: auto;
 }
 .card{
   padding:0px;
@@ -85,14 +71,24 @@ div#table_ranking_container{
   top:-4px;
 }
 
-/*
- CSV Viewer
-*/
+#main_view{
+  display:table;
+  width: 100%;
+}
+#map_container, #ranking_view{
+  display:table-cell;
+  position:relative;
+}
+
+table#ranking_table tr:hover{
+  color:#9e9d24;
+}
+
 table td{
   padding:3px 5px;
 }
 div#ranking_container{
-  height:500px;
+  max-height:70vh;
   overflow: auto;
 }
 .modal.bottom-sheet {

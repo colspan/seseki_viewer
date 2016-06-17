@@ -11,16 +11,17 @@ require('./common');
 require('./heatmap');
 require('./common.css');
 
-$(document).ready(function(){
+var seseki_main = function(gis_def){
   var initialized = false;
   var map_elem = $('<div>');
   var new_id = 'map';
   var tip_elem = $('<div>');
   var modal_table_elem = $('<table>');
-  var data = {};
-  var data_array;
+  var data = {}; // 自治体コードがキーの辞書
+  var data_multi_ids = {}; // 政令指定都市向け辞書
+  var data_array; // d3.csvで読み込んだCSVデータ
   var csv_keys = [];
-  var communes;
+  var communes = gis_def.communes;
 
   var ua = navigator.userAgent; // ユーザーエージェントを代入
   var isIE = false;
@@ -29,10 +30,7 @@ $(document).ready(function(){
   }
 
   // 起動
-  d3.json('params/communes.json', function(d){
-    communes = d;
-    csv_viewer([]);
-  })
+  csv_viewer([]);
 
   function clear_data(){
     data = {};
@@ -66,11 +64,21 @@ $(document).ready(function(){
       .html(function(d){return d});
 
       // 北海道地図描画
-      $('#'+new_id).hokkaidoHeatmap({title:'',subtitle:'',subsubtitle:'',max_width:800},function(){init_sample();}); // TODO 一時的な対応
+      var options = {
+        title:'',
+        subtitle:'',
+        subsubtitle:'',
+        geodata_file:gis_def.geodata_file,
+        geodata_fieldname:gis_def.geodata_fieldname, // topojsonのフィールド名
+        ref_size:gis_def.ref_size,
+        exceptions:gis_def.exceptions,
+        max_width:800
+      };
+      $('#'+new_id).hokkaidoHeatmap(options, function(){init_sample();});
 
       // tip作成
       tip_elem.attr('class', 'card-panel')
-      .css('width', '180px')
+      .css('width', '250px')
       .css('height', '48px')
       .css('padding', '10px')
       .css('position', 'absolute')
@@ -103,7 +111,12 @@ $(document).ready(function(){
       d.forEach(function(x){
         var commune_name = x[csv_keys[0]]; // 1列目は自治体名(制約)
         if(commune_name.length<2) return; // 文字列が短過ぎたらスキップ
-        data[commune_name] = x;
+        var commune_ids = gis_def.id_map[commune_name]; // 自治体IDを取得
+        if(!commune_ids) return; // 対応するIDが見つからない場合はスキップ
+        commune_ids.forEach(function(i){ // データ辞書に代入
+          data[i] = x;
+        });
+        if(commune_ids.length>1) data_multi_ids[commune_name] = x; // 政令指定都市データを代入
       });
       // タイトル更新
       $('#report_title').text(csv_keys[0]);
@@ -194,7 +207,7 @@ $(document).ready(function(){
         if(last_touched) d3.select(last_touched.elem).attr('fill', '#ffff00');
         $("#modal_commune_name").html('<a href="tourism_stat_commune.html#'+d.name+'" target="_new">'+d.name+'</a>');
         // データ取得
-        var row = data[d.name];
+        var row = (data_multi_ids[d.name] ? data_multi_ids[d.name] : data[d.commune_id]);
         var items = [];
         var i = 0;
         for(var c in row){
@@ -221,7 +234,8 @@ $(document).ready(function(){
       // touch & over時の動作
       var mouseover = function(x){
         var pos;
-        var commune = x.name;
+        var commune_name;
+        var commune_id = x.commune_id;
         // 座標取得
         if(d3.event.targetTouches){// touch
           d3.event.preventDefault();
@@ -243,7 +257,17 @@ $(document).ready(function(){
         tip_elem.css('top' , pos.y+'px');
         tip_elem.css('left', pos.x+'px');
         tip_elem.css('visibility', 'visible');
-        tip_elem.html('<span>' + commune + ' <span class="badge">' + format(get_value(data[commune])) + '</span>'  );
+        var target_value;
+        if(!data[commune_id] && x.properties.N03_003 && data_multi_ids[x.properties.N03_003]){// 区データがなく、市データが有る場合
+          commune_name = x.properties.N03_003;
+          target_value = format(get_value(data_multi_ids[x.properties.N03_003]));
+        }
+        else if(data[commune_id]){
+          commune_name = x.name;
+          target_value = format(get_value(data[commune_id]));
+        }
+        else target_value = "-";
+        tip_elem.html('<span>' + commune_name + ' <span class="badge">' + target_value + '</span>'  );
       }
       var options = {
         title : titles[0],
@@ -254,15 +278,9 @@ $(document).ready(function(){
         color_scale : color_scale,
         save_filename : titles.join('-'),
         map_filler:function(x){
-          if(!data[x.name]) return "#888";
-          return color_scale(get_value(data[x.name]));
-        },
-        on_mouseover : function(d){
-          d3.select(this).attr('fill', '#dddd00');
-          tip_elem.css('top' , $(window).scrollTop() + d3.event.y+'px');
-          tip_elem.css('left', $(window).scrollLeft() + d3.event.x+'px');
-          tip_elem.css('visibility', 'visible');
-          tip_elem.html('<span>' + d.name + ' <span class="badge">' + format(get_value(data[d.name])) + '</span>'  );
+          var value = data[x.commune_id];
+          if(value==null) return "#888";
+          return color_scale(get_value(value));
         },
         on_mouseover : mouseover,
         on_mouseout  : function(x){
@@ -278,9 +296,10 @@ $(document).ready(function(){
       var items = [];
       data_array.forEach(function(x){
         var commune_name = x[csv_keys[0]]; // 1列目は自治体名(制約)
+        var commune_ids = gis_def.id_map[commune_name]; // 自治体IDを取得
         var value = isNaN(+x[key]) ? x[key] : +x[key];
         if(commune_name.length<2) return; // 文字列が短過ぎたらスキップ
-        items.push({key:commune_name, value:value});
+        if(commune_ids) items.push({key:commune_name, value:value, commune_ids:commune_ids});
       });
       //// ソート
       items.sort(function(a,b){
@@ -302,13 +321,13 @@ $(document).ready(function(){
         return html;
       });
       ranking_table_rows.on('mouseover', function(x){
-        $('#map').hokkaidoHeatmap('update_partial', function(y){return y.name==x.key}, function(x){return '#dddd00'});
+        $('#map').hokkaidoHeatmap('update_partial', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;}, function(x){return '#dddd00'});
       })
       .on('mouseout', function(x){
-        $('#map').hokkaidoHeatmap('update_partial', function(y){return y.name==x.key}, function(){return options.color_scale(x.value)});
+        $('#map').hokkaidoHeatmap('update_partial', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;}, function(y){return options.color_scale(get_value(data[y.commune_id]))});
       })
       .on('click', function(x){
-        click({name:x.key});
+        click({name:x.key, commune_id:gis_def.id_map[x.key][0]});
       });
     }
   }
@@ -332,7 +351,7 @@ $(document).ready(function(){
 
   function init_sample(){
     // サンプルデータ一覧更新
-    d3.json('params/sample_data.json',function(d){
+    d3.json(gis_def.sample_data, function(d){
       function get_by_filename(k){var i;for(i=0;i<d.length;i++){if(d[i].file==k) return d[i];}return null;}
       function load_sample(filename){
         // サンプルファイルの説明を表示
@@ -473,4 +492,10 @@ $(document).ready(function(){
     }
   );
 
-});
+};
+
+module.exports = function(gis_def){
+  $(document).ready(function(){
+    seseki_main(gis_def);
+  });
+}
