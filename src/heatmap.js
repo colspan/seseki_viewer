@@ -11,12 +11,8 @@ var topojson = require('topojson');
     isEdge = true;
   }
   var captions = ['title', 'subtitle', 'subsubtitle'];
-  var ref_size = {
-    width :  420,
-    height:  330,
-    scale : 3200
-  };
   function get_size(opt){
+    var ref_size = opt.ref_size;
     if(!opt) return ref_size;
     if(!opt.width && !opt.height) return ref_size;
     var new_size = {};
@@ -52,6 +48,13 @@ var topojson = require('topojson');
       var _this = this;
       var defaults = {
         geodata_file : 'data/00_hokkaido_topo.json',
+        geodata_fieldname : 'hokkaido', // topojsonのフィールド名
+        ref_size : {
+          width :  420,
+          height:  330,
+          scale : 3200
+        },
+        exceptions:["色丹郡色丹村","国後郡泊村","国後郡留夜別村","択捉郡留別村","紗那郡紗那村","蘂取郡蘂取村"],
         title : 'title',
         subtitle : 'subtitle',
         subsubtitle : 'subsubtitle',
@@ -89,20 +92,21 @@ var topojson = require('topojson');
       function load_finished(error, loaded){
         geodata_topo[options.geodata_file] = loaded;
         // TopoJSONデータ展開
-        geodata = topojson.feature(geodata_topo[options.geodata_file], geodata_topo[options.geodata_file].objects.hokkaido);
-        var exception_communes = ["色丹郡色丹村","国後郡泊村","国後郡留夜別村","択捉郡留別村","紗那郡紗那村","蘂取郡蘂取村"]; // 対象外の市町村
+        geodata = topojson.feature(geodata_topo[options.geodata_file], geodata_topo[options.geodata_file].objects[options.geodata_fieldname]);
+        var exception_communes = options.exceptions; // 対象外の市町村
         var remove_list = [];
         geodata.features.forEach(function(d,i){
-          var commune;
-          if(d.properties.N03_003 == '札幌市') d.name = d.properties.N03_003;
-          else d.name = d.properties.N03_004;
-          if(exception_communes.indexOf(d.properties.N03_003 + d.properties.N03_004) != -1){
-            remove_list.push(i);
+          d.commune_id = +d.properties.N03_007; // IDを代入
+          d.name = '';
+          if(d.properties.N03_003) d.name += d.properties.N03_003;
+          if(d.properties.N03_004) d.name += d.properties.N03_004;
+          if(exception_communes.indexOf(d.name) != -1){
+            remove_list.unshift(i);
           }
         });
         // 対象外の市町村を削除
         remove_list.forEach(function(d){
-          geodata.features.splice(d,d);
+          geodata.features.splice(d,1);
         });
         geodata_store[options.geodata_file] = geodata;
         display();
@@ -117,6 +121,7 @@ var topojson = require('topojson');
         if( !options.width && !options.height ){
           // 条件無指定の時は現在の枠の横幅に合わせる
           size = get_size({
+            ref_size: options.ref_size,
             width: _this[0].offsetWidth,
             height: _this[0].offsetWidth
           });
@@ -252,6 +257,7 @@ var topojson = require('topojson');
       if(!opt){
         //  条件無指定の時は横幅に合わせて表示
         opt = {
+          ref_size:this[0].hokkaidoHeatmap.ref_size,
           width: this[0].offsetWidth,
           height: this[0].offsetWidth
         };
