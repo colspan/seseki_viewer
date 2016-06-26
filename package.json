@@ -4,7 +4,7 @@
   "description": "A Statistics Viewer for generating geometry heatmaps and rankings.",
   "main": "main.js",
   "scripts": {
-    "build": "webpack",
+    "build": "node_modules/webpack/bin/webpack.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
