@@ -1,6 +1,6 @@
 
 module.exports = {
-  geodata_file : 'data/00_hokkaido_topo.json',
+  geodata_file : 'data/01_hokkaido_topo.json',
   geodata_fieldname : 'hokkaido', // topojsonのフィールド名
   ref_size : {
     width :  420,
@@ -389,5 +389,5 @@ module.exports = {
     "色丹村" : [1695]
   },
   exceptions : ["色丹郡色丹村","国後郡泊村","国後郡留夜別村","択捉郡留別村","紗那郡紗那村","蘂取郡蘂取村"],
-  sample_data : 'params/sample_data_00_hokkaido.json'
+  sample_data : 'params/sample_data_01_hokkaido.json'
 };
