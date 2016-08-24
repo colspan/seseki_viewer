@@ -1,0 +1,124 @@
+[
+  {"file":"","title":""},
+  {
+    "file":"sample_data/01_01_population_analysis.csv",
+    "title":"[01]住民基本台帳人口・世帯数及び人口動態",
+    "file_description":"2005年1月1日現在、2010年1月1日現在、2015年1月1日現在のデータ、各市町村の面積を統合したもの。人口の増減比率において、都市部から郊外へ人口が移るドーナツ化現象が顕著に現れている。",
+    "column_description":"",
+    "right_holder":"北海道庁",
+    "cc":true,
+    "url":"http://www.pref.hokkaido.lg.jp/ss/scs/gyousei/shityousondata.htm"
+  },
+  {
+    "file":"sample_data/01_02_livestock.csv",
+    "title":"[02]市区町村別飼養頭数・飼養施設数(2015年11月)",
+    "file_description":"市区町村別の飼養頭数・飼養施設数(2015年11月)のスプレッドシートをCSVデータに変換したもの。牛の数が人の人口よりも多い市町村は51存在する。1施設あたりの飼育数が多いほど、工業化が進んでいるといえる。",
+    "column_description":"",
+    "right_holder":"独立行政法人家畜改良センター",
+    "url":"https://www.id.nlbc.go.jp/data/toukei.html"
+  },
+  {
+    "file":"sample_data/01_03_cultivated_acreage.csv",
+    "title":"[03]市町村別耕地面積(平成23年)",
+    "file_description":"市町村別耕地面積(平成23年)のPDFに記載の数値をCSVに転記したもの。市町村単位では別海町が最も規模が大きい。一方、振興局単位で見る(耕地率で近似)と十勝地方や空知地方が根室地方よりも大きな規模で展開していることがわかる。空知地方は稲作が中心である。",
+    "column_description":"",
+    "right_holder":"北海道農政事務所統計部",
+    "url":"http://www.maff.go.jp/hokkaido/press/toukei/kikaku/pdf/h23kouti_sichoson.pdf"
+  },
+  {
+    "file":"sample_data/01_04_population_of_each_commune_agg_by_duration_matanity_delivery.csv",
+    "title":"[04]分娩取り扱い産婦人科病院までの時間距離",
+    "file_description":"道内医療機関の名簿(北海道保健福祉部地域医療推進局医務薬務課 http://www.pref.hokkaido.lg.jp/hf/iyk/iry/iryoukikanmeibo.htm CC BY 2.1 JP)に記載の分娩取り扱い病院までの自動車による移動時間を、Open Street Mapの道路データベースを用いて総当りで算出した結果を市町村単位で集計したデータ。",
+    "column_description":"",
+    "right_holder":"三好邦彦",
+    "url":"https://github.com/colspan/opendata-analysis"
+  },
+  {
+    "file":"sample_data/01_05_population_of_each_commune_agg_by_duration_brain.csv",
+    "title":"[05]脳疾患取り扱い病院までの時間距離",
+    "file_description":"道内医療機関の名簿(北海道保健福祉部地域医療推進局医務薬務課 http://www.pref.hokkaido.lg.jp/hf/iyk/iry/iryoukikanmeibo.htm CC BY 2.1 JP)に記載の脳疾患取り扱い病院までの自動車による移動時間を、Open Street Mapの道路データベースを用いて総当りで算出した結果を市町村単位で集計したデータ。",
+    "column_description":"",
+    "right_holder":"三好邦彦",
+    "url":"https://github.com/colspan/opendata-analysis"
+  },
+  {
+    "file":"sample_data/01_06_population_histgram_of_each_commune_agg_by_duration_matanity_delivery.csv",
+    "title":"[06]分娩取り扱い産婦人科病院の自動車による移動時間別人口カバー状況",
+    "file_description":"道内医療機関の名簿(北海道保健福祉部地域医療推進局医務薬務課 http://www.pref.hokkaido.lg.jp/hf/iyk/iry/iryoukikanmeibo.htm CC BY 2.1 JP)に記載の分娩取り扱い産婦人科病院までの自動車による移動時間を、Open Street Mapの道路データベースを用いて総当りで算出した結果と、「総務省 平成２２年国勢調査（国勢調査－世界測地系500mメッシュ）男女別人口総数及び世帯総数のデータを用いて人口カバー状況を算出したデータ。",
+    "column_description":"",
+    "right_holder":"三好邦彦",
+    "url":"https://github.com/colspan/opendata-analysis"
+  },
+  {
+    "file":"sample_data/01_07_population_histgram_of_each_commune_agg_by_duration_brain.csv",
+    "title":"[07]脳疾患病院の自動車による移動時間別人口カバー状況",
+    "file_description":"道内医療機関の名簿(北海道保健福祉部地域医療推進局医務薬務課 http://www.pref.hokkaido.lg.jp/hf/iyk/iry/iryoukikanmeibo.htm CC BY 2.1 JP)に記載の脳疾患取り扱い病院までの自動車による移動時間を、Open Street Mapの道路データベースを用いて総当りで算出した結果と、「総務省 平成２２年国勢調査（国勢調査－世界測地系500mメッシュ）男女別人口総数及び世帯総数のデータを用いて人口カバー状況を算出したデータ。",
+    "column_description":"",
+    "right_holder":"三好邦彦",
+    "url":"https://github.com/colspan/opendata-analysis"
+  },
+  {
+    "file":"sample_data/01_08_health_stat_report_2013_39.csv",
+    "title":"[08] 北海道保健統計年報 2013年版 第39表 死亡数，選択死因分類・保健所・市町村別",
+    "file_description":"北海道保健統計年報 2013年版 第39表 死亡数，選択死因分類・保健所・市町村別を整形したデータ。",
+    "column_description":"",
+    "right_holder":"CC BY 2.1 JP 北海道",
+    "url":"http://www.pref.hokkaido.lg.jp/hf/sum/hoso/hotou/hotou01/nenpou.htm"
+  },
+  {
+    "file":"sample_data/01_09_health_stat_report_2013_40.csv",
+    "title":"[09] 北海道保健統計年報 2013年版 第40表 死亡率（人口10万対），選択死因分類・保健所・市町村別",
+    "file_description":"北海道保健統計年報 2013年版 第40表 死亡率（人口10万対），選択死因分類・保健所・市町村別を整形したデータ。",
+    "column_description":"",
+    "right_holder":"CC BY 2.1 JP 北海道",
+    "url":"http://www.pref.hokkaido.lg.jp/hf/sum/hoso/hotou/hotou01/nenpou.htm"
+  },
+  {
+    "file":"sample_data/01_10_health_stat_report_2014_64.csv",
+    "title":"[10] 北海道保健統計年報 2014年版 第64表 医師・歯科医師・薬剤師数および率（人口10万対），従業地による保健所・市町村別",
+    "file_description":"北海道保健統計年報 2014年版 第64表 医師・歯科医師・薬剤師数および率（人口10万対），従業地による保健所・市町村別を整形したデータ。",
+    "column_description":"",
+    "right_holder":"CC BY 2.1 JP 北海道",
+    "url":"http://www.pref.hokkaido.lg.jp/hf/sum/hoso/hotou/hotou01/nenpou.htm"
+  },
+  {
+    "file":"sample_data/01_11_health_stat_report_2014_81.csv",
+    "title":"[11] 北海道保健統計年報 2014年版 第81表 医療施設数および率（人口10万対），施設の種類・保健所・市町村別",
+    "file_description":"北海道保健統計年報 2014年版 第81表 医療施設数および率（人口10万対），施設の種類・保健所・市町村別を整形したデータ。",
+    "column_description":"",
+    "right_holder":"CC BY 2.1 JP 北海道",
+    "url":"http://www.pref.hokkaido.lg.jp/hf/sum/hoso/hotou/hotou01/nenpou.htm"
+  },
+  {
+    "file":"sample_data/01_12_health_stat_report_2014_84.csv",
+    "title":"[12] 北海道保健統計年報 2014年版 第84表 医療施設の病床数，施設の種類・保健所・市町村別",
+    "file_description":"北海道保健統計年報 2014年版 第84表 医療施設の病床数，施設の種類・保健所・市町村別を整形したデータ。",
+    "column_description":"",
+    "right_holder":"CC BY 2.1 JP 北海道",
+    "url":"http://www.pref.hokkaido.lg.jp/hf/sum/hoso/hotou/hotou01/nenpou.htm"
+  },
+  {
+    "file":"sample_data/01_13_health_stat_report_2014_85.csv",
+    "title":"[13] 北海道保健統計年報 2014年版 第85表 医療施設の病床率（人口10万対），施設の種類・保健所・市町村別",
+    "file_description":"北海道保健統計年報 2014年版 第85表 医療施設の病床率（人口10万対），施設の種類・保健所・市町村別を整形したデータ。",
+    "column_description":"",
+    "right_holder":"CC BY 2.1 JP 北海道",
+    "url":"http://www.pref.hokkaido.lg.jp/hf/sum/hoso/hotou/hotou01/nenpou.htm"
+  },
+  {
+    "file":"sample_data/01_14_population_classification_by_age_group_2015.csv",
+    "title":"[14] 人口統計 年齢５歳階級別人口",
+    "file_description":"人口統計 年齢５歳階級別人口を整形したデータ。",
+    "column_description":"",
+    "right_holder":"CC BY 2.1 JP 北海道",
+    "url":"http://www.pref.hokkaido.lg.jp/ss/scs/gyousei/shityousondata.htm"
+  },
+  {
+    "file":"sample_data/01_15_population_ratio_classification_by_age_group_2015.csv",
+    "title":"[15] 人口統計 年齢５歳階級別人口率",
+    "file_description":"人口統計 年齢５歳階級別人口を整形した上、各項目の市町村内の比率を求めたデータ。",
+    "column_description":"",
+    "right_holder":"CC BY 2.1 JP 北海道, 三好邦彦",
+    "url":"http://www.pref.hokkaido.lg.jp/ss/scs/gyousei/shityousondata.htm"
+  }
+]
