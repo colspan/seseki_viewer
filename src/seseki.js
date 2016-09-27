@@ -205,7 +205,7 @@ var seseki_main = function(gis_def){
       var last_touched = null;
       var click = function(d){
         if(last_touched) d3.select(last_touched.elem).attr('fill', '#ffff00');
-        $("#modal_commune_name").html('<a href="tourism_stat_commune.html#'+d.name+'" target="_new">'+d.name+'</a>');
+        $("#modal_commune_name").html(d.name);
         // データ取得
         var row = (data_multi_ids[d.name] ? data_multi_ids[d.name] : data[d.commune_id]);
         var items = [];
