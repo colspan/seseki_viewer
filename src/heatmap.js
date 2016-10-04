@@ -117,21 +117,11 @@ var topojson = require('topojson');
         options.geodata = geodata;
 
         // svg要素を作成し、データの受け皿となるg要素を追加
-        var size;
-        if( !options.width && !options.height ){
-          // 条件無指定の時は現在の枠の横幅に合わせる
-          size = get_size({
-            ref_size: options.ref_size,
-            width: _this[0].offsetWidth,
-            height: _this[0].offsetWidth
-          });
-        }
-        else {
-          size = get_size(options);
-        }
         var map_container = d3.select(selector).append('svg')
-        .attr('width', size.width)
-        .attr('height', size.height);
+        .attr('width', "100%")
+        //.attr('height', options.ref_size.height)
+        .attr("preserveAspectRatio", "xMinYMax meet")
+        .attr("viewBox", "0 0 "+options.ref_size.width+" "+options.ref_size.height);
         var map = map_container.append('g');
 
         // Caption
@@ -147,9 +137,9 @@ var topojson = require('topojson');
 
         // 投影を処理する関数を用意した上でデータからSVGのPATHに変換
         projection = d3.geo.mercator()
-        .scale(size.scale)
+        .scale(options.ref_size.scale)
         .center(d3.geo.centroid(geodata))  // データから中心点を計算
-        .translate([size.width / 2, size.height / 2]);
+        .translate([options.ref_size.width / 2, options.ref_size.height / 2]);
 
         // pathジェネレータ関数
         path = d3.geo.path().projection(projection);
@@ -178,24 +168,18 @@ var topojson = require('topojson');
         if(options.show_legend && options.color_scale){
           update_legend(legendView, options);
         }
-        // 自動で大きさ変更
-        if(options.auto_resize){
-          $(window).on('load resize', function(){$(_this.selector).hokkaidoHeatmap('resize');});
-        }
 
         // 保存ボタンを作成
         if(!isEdge && !isIE && options.save_button){
           $('<button>').text('画像として保存')
             .on('click',　function (){
-              var width = map_container[0][0].offsetWidth;
-              var height = map_container[0][0].offsetHeight;
+              var width = options.ref_size.width * 2;
+              var height = options.ref_size.height * 2;
               var proxy_canvas = $("<canvas>");
-              console.log(map_container);
               proxy_canvas.attr('style','display:hidden;')
                 .attr('width', width)
                 .attr('height', height);
               var ctx = proxy_canvas[0].getContext('2d');
-              //map_container.attr('viewBox', '0 0 '+size.width+' '+size.height);
               var svg_data = new XMLSerializer().serializeToString(map_container[0][0]);
               var img = "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(svg_data)));
               var image = new Image();
@@ -252,28 +236,6 @@ var topojson = require('topojson');
       d3.select(this.selector).selectAll('path')
       .filter(filter)
       .attr('fill', filler);
-    },
-    resize : function( opt ){
-      if(!opt){
-        //  条件無指定の時は横幅に合わせて表示
-        opt = {
-          ref_size:this[0].hokkaidoHeatmap.ref_size,
-          width: this[0].offsetWidth,
-          height: this[0].offsetWidth
-        };
-      }
-      var size = get_size(opt);
-      var map = d3.select(this.selector).select('svg')
-      .attr('width', size.width)
-      .attr('height', size.height);
-      // 投影を処理する関数を用意した上でデータからSVGのPATHに変換
-      projection = d3.geo.mercator()
-      .scale(size.scale)
-      .center(d3.geo.centroid(this[0].hokkaidoHeatmap.geodata))  // データから中心点を計算
-      .translate([size.width / 2, size.height / 2]);
-      // pathジェネレータ関数
-      path = d3.geo.path().projection(projection);
-      map.selectAll('path').attr('d', path);
     }
   };
 
@@ -288,38 +250,3 @@ var topojson = require('topojson');
   }
 
 })($);
-
-/*
-var options = {
-  map_filler:function(d){
-    var ratio = parseInt(Math.random()*100,10);
-    return "hsl(220,100%,"+ratio+"%)";
-  },
-  target_year : 2015
-};
-$('#map').hokkaidoHeatmap();
-*/
-/*setTimeout(function delayed(){
-  $('#map').hokkaidoHeatmap('update', options);
-}, 5000);*/
-/*d3.json(
-  'data/stat_2014.json',
-  function(error,d){
-    var options = {
-      map_filler:function(x){
-        try{
-          return color_generator(d.sum[x.name].sum, 13400000);
-        }
-        catch(e){
-          return '#fff';
-        }
-      }
-    };
-    $('#map').hokkaidoHeatmap('update', options);
-  }
-);
-
-setTimeout(function(){$('#map').hokkaidoHeatmap('resize', {width:800});},3000);
-
-
-*/

@@ -3,9 +3,9 @@ module.exports = {
   geodata_file : 'data/01_hokkaido_topo.json',
   geodata_fieldname : 'hokkaido', // topojsonのフィールド名
   ref_size : {
-    width :  420,
-    height:  330,
-    scale : 2500
+    width :  840,
+    height:  660,
+    scale : 5000
   },
   communes : ["七飯町",
   "三笠市",

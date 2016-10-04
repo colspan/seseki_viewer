@@ -3,9 +3,9 @@ module.exports = {
   geodata_file:'data/11-14_around_tokyo.json',
   geodata_fieldname:'kanto', // topojsonのフィールド名
   ref_size : {
-    width :  420,
-    height:  330,
-    scale : 6000
+    width :  840,
+    height:  660,
+    scale : 12000
   },
   communes : [
     "さいたま市",
