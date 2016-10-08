@@ -93,13 +93,18 @@ var topojson = require('topojson');
           if(exception_communes.indexOf(d.name) != -1){
             remove_list.unshift(i);
           }
+          else{
+            if(communes.indexOf(d.name) == -1) communes.push(d.name);
+          }
 
           // CSVの市町村名から白地図のIDに変換するmapを自動生成する
           // 政令指定都市 or 郡
           if(d.properties.N03_003){
+            // 政令指定都市または郡単位でひと塗りとする
             register(d.properties.N03_003, d.commune_id);
-            // 郡の場合
-            register(d.properties.N03_003+d.properties.N03_004, d.commune_id);
+            // 町村・区単位を連結する
+            register(d.name, d.commune_id);
+            // 郡の場合は町村のみにできるようにする
             if(d.properties.N03_003.slice(-1)=="郡"){
               register(d.properties.N03_004, d.commune_id);
             }
@@ -113,6 +118,9 @@ var topojson = require('topojson');
         remove_list.forEach(function(d){
           geodata.features.splice(d,1);
         });
+
+        // 市町村一覧を作成
+        
 
         // 割り切り 同じ市町村名があると区別できない
         _this[0].japaneseMapCommunes = communes;

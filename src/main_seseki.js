@@ -10,7 +10,6 @@ var gis_def = {
     height:  660,
     scale : 16000
   },
-  communes : ["test"],
   exceptions : ["所属未定地"],
   sample_data : 'params/sample_data_11-14_around_tokyo.json'
 };

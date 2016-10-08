@@ -21,7 +21,7 @@ var seseki_main = function(gis_def){
   var data_multi_ids = {}; // 政令指定都市向け辞書
   var data_array; // d3.csvで読み込んだCSVデータ
   var csv_keys = [];
-  var communes = gis_def.communes;
+  var communes;
   var id_map;
 
   var ua = navigator.userAgent; // ユーザーエージェントを代入
@@ -95,7 +95,7 @@ var seseki_main = function(gis_def){
     function init_params(){
       var defs = $('#'+japanesemap_elem_id).japaneseMap('get_commune_def')
       id_map = defs.id_map;
-      //communes = defs.communes;
+      communes = defs.communes;
     }
     function update(d){
       if(!d.length){
