@@ -11,24 +11,6 @@ var topojson = require('topojson');
     isEdge = true;
   }
   var captions = ['title', 'subtitle', 'subsubtitle'];
-  function get_size(opt){
-    var ref_size = opt.ref_size;
-    if(!opt) return ref_size;
-    if(!opt.width && !opt.height) return ref_size;
-    var new_size = {};
-    if(!opt.width || opt.width/opt.height > ref_size.width/ref_size.height){
-      new_size.height = opt.height;
-      new_size.width  = opt.height / ref_size.height * ref_size.width;
-      new_size.scale  = opt.height / ref_size.height * ref_size.scale;
-    }
-    else{
-      //if(opt.max_width) opt.width = opt.width > opt.max_width ? opt.max_width : opt.width;
-      new_size.width  = opt.width;
-      new_size.height = opt.width / ref_size.width * ref_size.height;
-      new_size.scale  = opt.width / ref_size.width * ref_size.scale;
-    }
-    return new_size;
-  }
   function update_legend(legendView, options){
     var domain = options.color_scale.domain();
     var format_str;
@@ -58,7 +40,7 @@ var topojson = require('topojson');
         title : 'title',
         subtitle : 'subtitle',
         subsubtitle : 'subsubtitle',
-        caption_sizes : [24,18,18],
+        caption_sizes : [32,20,20],
         map_filler : function(d){return '#ffffff'},
         stroke_filler: "hsl(80,100%,0%)",
         on_mouseover : null,
@@ -75,9 +57,11 @@ var topojson = require('topojson');
         save_filename : 'heatmap'
       };
       var options = $.extend(defaults,option);
-      this[0].hokkaidoHeatmap = options;
+      this[0].japaneseMapOpts = options;
       var selector = this.selector;
       var geodata;
+      var communes = [];
+      var id_map = {};
 
       if(geodata_topo[options.geodata_file]){
         // 地図データを読み込み済みだったら即表示
@@ -95,19 +79,45 @@ var topojson = require('topojson');
         geodata = topojson.feature(geodata_topo[options.geodata_file], geodata_topo[options.geodata_file].objects[options.geodata_fieldname]);
         var exception_communes = options.exceptions; // 対象外の市町村
         var remove_list = [];
+        function register(k,v){
+          if(!id_map[k]) id_map[k] = [];
+          if(id_map[k].indexOf(v) == -1) id_map[k].push(v);
+        }
         geodata.features.forEach(function(d,i){
+          if(d.properties.N03_007=="") return;
           d.commune_id = +d.properties.N03_007; // IDを代入
+          d.prefecture = d.properties.N03_001;
           d.name = '';
           if(d.properties.N03_003) d.name += d.properties.N03_003;
           if(d.properties.N03_004) d.name += d.properties.N03_004;
           if(exception_communes.indexOf(d.name) != -1){
             remove_list.unshift(i);
           }
+
+          // CSVの市町村名から白地図のIDに変換するmapを自動生成する
+          // 政令指定都市 or 郡
+          if(d.properties.N03_003){
+            register(d.properties.N03_003, d.commune_id);
+            // 郡の場合
+            register(d.properties.N03_003+d.properties.N03_004, d.commune_id);
+            if(d.properties.N03_003.slice(-1)=="郡"){
+              register(d.properties.N03_004, d.commune_id);
+            }
+          }
+          // 市
+          if(d.properties.N03_004){
+              register(d.properties.N03_004, d.commune_id);
+          }
         });
         // 対象外の市町村を削除
         remove_list.forEach(function(d){
           geodata.features.splice(d,1);
         });
+
+        // 割り切り 同じ市町村名があると区別できない
+        _this[0].japaneseMapCommunes = communes;
+        _this[0].japaneseMapIdMap = id_map;
+
         geodata_store[options.geodata_file] = geodata;
         display();
       }
@@ -125,7 +135,7 @@ var topojson = require('topojson');
         var map = map_container.append('g');
 
         // Caption
-        var caption_container = map_container.append('g').attr('class','hokkaidoHeatmap_caption_container');
+        var caption_container = map_container.append('g').attr('class','japanese_map_caption_container');
         caption_container.selectAll('text')
           .data(captions)
           .enter()
@@ -210,7 +220,7 @@ var topojson = require('topojson');
       return(this);
     },
     update : function( input_options ) {
-      var options = $(this.selector)[0].hokkaidoHeatmap;
+      var options = $(this.selector)[0].japaneseMapOpts;
       options = $.extend(options, input_options);
       d3.select(this.selector).selectAll('path')
       .attr('fill', options.map_filler)
@@ -222,7 +232,7 @@ var topojson = require('topojson');
       .on('touchend', options.on_touchend)
       .on('click', options.on_click);
 
-      var caption_elems = d3.select(this.selector).select('.hokkaidoHeatmap_caption_container')
+      var caption_elems = d3.select(this.selector).select('.japanese_map_caption_container')
         .selectAll('text')
         .text(function(d){return options[d]});
 
@@ -236,16 +246,19 @@ var topojson = require('topojson');
       d3.select(this.selector).selectAll('path')
       .filter(filter)
       .attr('fill', filler);
+    },
+    get_commune_def : function(){
+        return {communes:$(this.selector)[0].japaneseMapCommunes, id_map:$(this.selector)[0].japaneseMapIdMap};
     }
   };
 
-  $.fn.hokkaidoHeatmap = function( method ) {
+  $.fn.japaneseMap = function( method ) {
     if ( methods[method] ) {
       return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
     } else if ( typeof method === 'object' || ! method ) {
       return methods.init.apply( this, arguments );
     } else {
-      $.error( 'Method ' +  method + ' does not exist on jQuery.hokkaidoHeatmap' );
+      $.error( 'Method ' +  method + ' does not exist on jQuery.japaneseMap' );
     }
   }
 
