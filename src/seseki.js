@@ -14,7 +14,7 @@ require('./common.css');
 var seseki_main = function(gis_def){
   var initialized = false;
   var map_elem = $('<div>');
-  var new_id = 'map';
+  var japanesemap_elem_id = 'map';
   var tip_elem = $('<div>');
   var modal_table_elem = $('<table>');
   var data = {}; // 自治体コードがキーの辞書
@@ -22,6 +22,7 @@ var seseki_main = function(gis_def){
   var data_array; // d3.csvで読み込んだCSVデータ
   var csv_keys = [];
   var communes = gis_def.communes;
+  var id_map;
 
   var ua = navigator.userAgent; // ユーザーエージェントを代入
   var isIE = false;
@@ -46,7 +47,7 @@ var seseki_main = function(gis_def){
 
     function initialize(d){
       // ヒートマップ描画
-      map_elem.attr('id', new_id);
+      map_elem.attr('id', japanesemap_elem_id);
       $('#map_container').append(map_elem);
 
       // 列選択ボタン作成
@@ -74,7 +75,7 @@ var seseki_main = function(gis_def){
         exceptions:gis_def.exceptions,
         max_width:800
       };
-      $('#'+new_id).hokkaidoHeatmap(options, function(){init_sample();});
+      $('#'+japanesemap_elem_id).japaneseMap(options, function(){init_params();init_sample();});
 
       // tip作成
       tip_elem.attr('class', 'card-panel')
@@ -90,6 +91,11 @@ var seseki_main = function(gis_def){
       modal_table_elem.attr('class','table bordered striped highlight');
       $("#modal_commune_data").append(modal_table_elem);
 
+    }
+    function init_params(){
+      var defs = $('#'+japanesemap_elem_id).japaneseMap('get_commune_def')
+      id_map = defs.id_map;
+      //communes = defs.communes;
     }
     function update(d){
       if(!d.length){
@@ -111,7 +117,7 @@ var seseki_main = function(gis_def){
       d.forEach(function(x){
         var commune_name = x[csv_keys[0]]; // 1列目は自治体名(制約)
         if(commune_name.length<2) return; // 文字列が短過ぎたらスキップ
-        var commune_ids = gis_def.id_map[commune_name]; // 自治体IDを取得
+        var commune_ids = id_map[commune_name]; // 自治体IDを取得
         if(!commune_ids) return; // 対応するIDが見つからない場合はスキップ
         commune_ids.forEach(function(i){ // データ辞書に代入
           data[i] = x;
@@ -266,7 +272,10 @@ var seseki_main = function(gis_def){
           commune_name = x.name;
           target_value = format(get_value(data[commune_id]));
         }
-        else target_value = "-";
+        else{
+          commune_name = x.name;
+          target_value = "-";
+        } 
         tip_elem.html('<span>' + commune_name + ' <span class="badge">' + target_value + '</span>'  );
       }
       var options = {
@@ -290,13 +299,13 @@ var seseki_main = function(gis_def){
         on_mousedown : click,
         on_touchstart : mouseover
       };
-      $('#'+new_id).hokkaidoHeatmap('update', options);
+      $('#'+japanesemap_elem_id).japaneseMap('update', options);
 
       // ランキング表示
       var items = [];
       data_array.forEach(function(x){
         var commune_name = x[csv_keys[0]]; // 1列目は自治体名(制約)
-        var commune_ids = gis_def.id_map[commune_name]; // 自治体IDを取得
+        var commune_ids = id_map[commune_name]; // 自治体IDを取得
         var value = isNaN(+x[key]) ? x[key] : +x[key];
         if(commune_name.length<2) return; // 文字列が短過ぎたらスキップ
         if(commune_ids) items.push({key:commune_name, value:value, commune_ids:commune_ids});
@@ -321,13 +330,13 @@ var seseki_main = function(gis_def){
         return html;
       });
       ranking_table_rows.on('mouseover', function(x){
-        $('#map').hokkaidoHeatmap('update_partial', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;}, function(x){return '#dddd00'});
+        $('#map').japaneseMap('update_partial', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;}, function(x){return '#dddd00'});
       })
       .on('mouseout', function(x){
-        $('#map').hokkaidoHeatmap('update_partial', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;}, function(y){return options.color_scale(get_value(data[y.commune_id]))});
+        $('#map').japaneseMap('update_partial', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;}, function(y){return options.color_scale(get_value(data[y.commune_id]))});
       })
       .on('click', function(x){
-        click({name:x.key, commune_id:gis_def.id_map[x.key][0]});
+        click({name:x.key, commune_id:id_map[x.key][0]});
       });
     }
   }

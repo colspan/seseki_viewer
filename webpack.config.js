@@ -3,7 +3,8 @@ var webpack = require("webpack");
 module.exports = {
   entry: {
     around_tokyo : "./src/main_around_tokyo.js",
-    hokkaido     : "./src/main_hokkaido.js"
+    hokkaido     : "./src/main_hokkaido.js",
+    seseki       : "./src/main_seseki.js"
   },
   output: {
       path: __dirname + "/build",
