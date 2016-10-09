@@ -23,14 +23,11 @@ var topojson = require('topojson');
       .scale(options.color_scale);
     legendView.call(legend);
   }
-  var geodata_topo = {};
-  var geodata_store = {};
   var methods = {
     init : function(option, callback){
       var _this = this;
       var defaults = {
-        geodata_file : 'data/00_hokkaido_topo.json',
-        geodata_fieldname : 'hokkaido', // topojsonのフィールド名
+        geodata_files : [],
         ref_size : {
           width :  420,
           height:  330,
@@ -63,38 +60,47 @@ var topojson = require('topojson');
       var communes = [];
       var id_map = {};
 
-      if(geodata_topo[options.geodata_file]){
-        // 地図データを読み込み済みだったら即表示
-        geodata = geodata_store[options.geodata_file];
-        display();
-      }
-      else{
-        // 地図データを読み込んでいなければ読み込み
-        d3.json(options.geodata_file, load_finished);
-      }
-
-      function load_finished(error, loaded){
-        geodata_topo[options.geodata_file] = loaded;
+      // 複数ファイルを非同期読み込み
+      var promises = [];
+      options.geodata_files.forEach(function(d){
+        var p = new Promise(function(resolve, reject){
+            d3.json(d, function(error, data){
+              load_finished(error, data, resolve, reject);
+            });
+        });
+        promises.push(p);
+      });
+      // 読み込み処理
+      function load_finished(error, loaded, resolve, reject){
+        if(error){
+          reject(error);
+          return;
+        }
         // TopoJSONデータ展開
-        var geodata_fieldname = Object.keys(geodata_topo[options.geodata_file].objects)[0];
-        geodata = topojson.feature(geodata_topo[options.geodata_file], geodata_topo[options.geodata_file].objects[geodata_fieldname]);
+        var geodata_fieldname = Object.keys(loaded.objects)[0];
+        geojson = topojson.feature(loaded, loaded.objects[geodata_fieldname]);
         var exception_communes = options.exceptions; // 対象外の市町村
         var remove_list = [];
         function register(k,v){
           if(!id_map[k]) id_map[k] = [];
           if(id_map[k].indexOf(v) == -1) id_map[k].push(v);
         }
-        geodata.features.forEach(function(d,i){
+        geojson.features.forEach(function(d,i){
           if(d.properties.N03_007=="") return; // 所属未定地等IDがないものは飛ばす
+
+          // 市町村名を整理する
           d.commune_id = +d.properties.N03_007; // IDを代入
           d.prefecture = d.properties.N03_001;
           d.name = '';
           if(d.properties.N03_003) d.name += d.properties.N03_003;
           if(d.properties.N03_004) d.name += d.properties.N03_004;
+
           if(exception_communes.indexOf(d.name) != -1){
+            // 除外リストに存在すれば削除フラグを付与する
             remove_list.unshift(i);
           }
           else{
+            // 除外リストになければ市町村一覧に追加
             if(communes.indexOf(d.name) == -1) communes.push(d.name);
           }
 
@@ -117,19 +123,30 @@ var topojson = require('topojson');
         });
         // 対象外の市町村を削除
         remove_list.forEach(function(d){
-          geodata.features.splice(d,1);
-        });
-
-        // 市町村一覧を作成
-        
+          geojson.features.splice(d,1);
+        });        
 
         // 割り切り 同じ市町村名があると区別できない
+        resolve({geojson:geojson,communes:communes,id_map:id_map});
+      }
+
+      // 処理開始
+      Promise.all(promises).then(ready);
+      function ready(results){
+        results.forEach(function(d){
+          if(!geodata) geodata = d.geojson;
+          else geodata.features = geodata.features.concat(d.geojson.features);
+          communes = communes.concat(d.communes);
+          Object.keys(d.id_map).forEach(function(x){
+            id_map[x] = d.id_map[x];
+          });
+        });
+
         _this[0].japaneseMapCommunes = communes;
         _this[0].japaneseMapIdMap = id_map;
-
-        geodata_store[options.geodata_file] = geodata;
         display();
       }
+
       function display(){
         var projection, path;
 

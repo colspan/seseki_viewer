@@ -69,8 +69,7 @@ var seseki_main = function(gis_def){
         title:'',
         subtitle:'',
         subsubtitle:'',
-        geodata_file:gis_def.geodata_file,
-        geodata_fieldname:gis_def.geodata_fieldname, // topojsonのフィールド名
+        geodata_files:gis_def.geodata_files,
         ref_size:gis_def.ref_size,
         exceptions:gis_def.exceptions,
         max_width:800

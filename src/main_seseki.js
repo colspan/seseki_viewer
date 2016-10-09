@@ -3,7 +3,7 @@ var prefecture_datalist = ["01_hokkaido", "02_aomori", "03_iwate", "04_miyagi", 
 
 var target_prefecture = prefecture_datalist[11];
 var gis_def = {
-  geodata_file:'data/' + target_prefecture + '_topo.json',
+  geodata_files:['data/' + target_prefecture + '_topo.json', 'data/' + prefecture_datalist[12] + '_topo.json'],
   ref_size : {
     width :  840,
     height:  660,

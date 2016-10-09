@@ -1,6 +1,11 @@
 
 var gis_def = {
-  geodata_file:'data/11-14_around_tokyo.json',
+  geodata_files:[
+    "data/11_saitama_topo.json",
+    "data/12_chiba_topo.json",
+    "data/13_tokyo_topo.json",
+    "data/14_kanagawa_topo.json"
+  ],
   ref_size : {
     width :  840,
     height:  660,

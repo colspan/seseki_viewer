@@ -1,6 +1,8 @@
 
 var gis_def = {
-  geodata_file : 'data/01_hokkaido_topo.json',
+  geodata_files :[
+    'data/01_hokkaido_topo.json'
+  ],
   ref_size : {
     width :  840,
     height:  660,
