@@ -4,7 +4,6 @@ var prefecture_datalist = ["01_hokkaido", "02_aomori", "03_iwate", "04_miyagi", 
 var target_prefecture = prefecture_datalist[11];
 var gis_def = {
   geodata_file:'data/' + target_prefecture + '_topo.json',
-  geodata_fieldname: target_prefecture, // topojsonのフィールド名
   ref_size : {
     width :  840,
     height:  660,

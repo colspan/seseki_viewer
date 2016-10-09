@@ -76,7 +76,8 @@ var topojson = require('topojson');
       function load_finished(error, loaded){
         geodata_topo[options.geodata_file] = loaded;
         // TopoJSONデータ展開
-        geodata = topojson.feature(geodata_topo[options.geodata_file], geodata_topo[options.geodata_file].objects[options.geodata_fieldname]);
+        var geodata_fieldname = Object.keys(geodata_topo[options.geodata_file].objects)[0];
+        geodata = topojson.feature(geodata_topo[options.geodata_file], geodata_topo[options.geodata_file].objects[geodata_fieldname]);
         var exception_communes = options.exceptions; // 対象外の市町村
         var remove_list = [];
         function register(k,v){
@@ -84,7 +85,7 @@ var topojson = require('topojson');
           if(id_map[k].indexOf(v) == -1) id_map[k].push(v);
         }
         geodata.features.forEach(function(d,i){
-          if(d.properties.N03_007=="") return;
+          if(d.properties.N03_007=="") return; // 所属未定地等IDがないものは飛ばす
           d.commune_id = +d.properties.N03_007; // IDを代入
           d.prefecture = d.properties.N03_001;
           d.name = '';
