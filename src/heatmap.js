@@ -80,6 +80,7 @@ var topojson = require('topojson');
         geojson = topojson.feature(loaded, loaded.objects[geodata_fieldname]);
         var exception_communes = options.exceptions; // 対象外の市町村
         var remove_list = [];
+        var communes = [];
         function register(k,v){
           if(!id_map[k]) id_map[k] = [];
           if(id_map[k].indexOf(v) == -1) id_map[k].push(v);

@@ -114,7 +114,7 @@ seseki = function(gis_def){
       // データアクセスを容易にするために自治体名でObject作成
       d.forEach(function(x){
         var commune_name = x[csv_keys[0]]; // 1列目は自治体名(制約)
-        if(commune_name.length<2) return; // 文字列が短過ぎたらスキップ
+        if(commune_name == null || commune_name.length<2) return; // 文字列が短過ぎたらスキップ
         var commune_ids = id_map[commune_name]; // 自治体IDを取得
         if(!commune_ids) return; // 対応するIDが見つからない場合はスキップ
         commune_ids.forEach(function(i){ // データ辞書に代入
@@ -143,9 +143,20 @@ seseki = function(gis_def){
         try{
           var value;
           value = x[key];
-          return isNaN(+value) ? value : +value;
+          if(typeof value == "string"){
+            if(value.match(/^([0-9]{1,3},)([0-9]{3},)*[0-9]{3}$/)){
+              // カンマ区切りの数値ならば
+              value = + value.replace(",","");
+            }
+            else if(value && value.match(/^[0-9]+$/)){
+              // 数値ならば
+              value = + value;
+            }
+          }
+          return value;
         }
         catch(e){
+          // データが無いならば
           return null;
         }
       }
@@ -166,7 +177,7 @@ seseki = function(gis_def){
       }
       else if(min < 0 && max >= 0){
         if(get_value(data_array[1])>0&&get_value(data_array[0])/get_value(data_array[1]) > 3.0){
-          // 1位と2位の比率が5倍を超えるとき
+          // 1位と2位の比率が3倍を超えるとき
           domain = [min,0,get_value(data_array[1]),get_value(data_array[0])];
           range = ["#03a9f4", "white", "#ff5722", "#dd2c00"];
         }
@@ -177,7 +188,7 @@ seseki = function(gis_def){
       }
       else { // (min >= 0 && max >= 0)
         if(get_value(data_array[1])>0&&get_value(data_array[0])/get_value(data_array[1]) > 3.0){
-          // 1位と2位の比率が5倍を超えるとき
+          // 1位と2位の比率が3倍を超えるとき
           domain = [0,get_value(data_array[1]),get_value(data_array[0])];
           range = ["white", "#ff5722", "#dd2c00"];
         }
@@ -304,7 +315,7 @@ seseki = function(gis_def){
       data_array.forEach(function(x){
         var commune_name = x[csv_keys[0]]; // 1列目は自治体名(制約)
         var commune_ids = id_map[commune_name]; // 自治体IDを取得
-        var value = isNaN(+x[key]) ? x[key] : +x[key];
+        var value = get_value(x);
         if(commune_name.length<2) return; // 文字列が短過ぎたらスキップ
         if(commune_ids) items.push({key:commune_name, value:value, commune_ids:commune_ids});
       });
@@ -433,7 +444,8 @@ seseki = function(gis_def){
     spreadsheet_obj = new Handsontable(spreadsheet_elem, options);
     //データを代入
     var i;
-    var empty_row_num = communes.length - data_array.length + 1;
+    var empty_row_num;
+    var csv_key_num;
     var input_data = [];
     if(data_array && data_array.length>2){
       // 読み込み済みの場合
@@ -441,20 +453,26 @@ seseki = function(gis_def){
       $.map(data_array, function(d){
         input_data.push($.map(csv_keys,function(x){return d[x]===null?"":d[x]}));
       });
+      cvs_key_num = csv_keys.length;
       empty_row_num = communes.length - data_array.length + 1;
     }
     else{
       // まだ読み込んでいない場合
-      input_data.push(["データの名前","サンプルデータ系列1(説明A)(説明B)","サンプルデータ系列2(説明C)(説明D)","サンプルデータ系列3(説明E)(説明F)"]);
+      var example_keys = ["データの名前","サンプルデータ系列1(説明A)(説明B)","サンプルデータ系列2(説明C)(説明D)","サンプルデータ系列3(説明E)(説明F)"];
+      input_data.push(example_keys);
       $.map(communes,function(d,i){
         var r = [d,i,parseInt(Math.random()*1000,10),Math.random()*10-5];
         input_data.push(r);
       });
+      cvs_key_num = example_keys.length;
       empty_row_num = 10;
     }
     // 件数が市町村数に達していない場合のために余白行を用意する
     for(i=0;i<empty_row_num;i++){
-      input_data.push([]);
+      var tmp_row = [];
+      var j;
+      for(j=0;j<csv_key_num;j++) tmp_row.push("");
+      input_data.push(tmp_row);
     }
 
     spreadsheet_obj.loadData(input_data);
@@ -476,7 +494,7 @@ seseki = function(gis_def){
     spreadsheet_obj.alter('remove_col', data[0].length-min_nullnum, min_nullnum);
     // データを再取得
     data = spreadsheet_obj.getData();
-    var keys = data[0];//.shift();
+    var keys = data[0];
     // NULLの列名があったら足す
     for(var i=0;i<keys.length;i++){
       if(keys[i]===null) keys[i] = i+'系列'
@@ -484,6 +502,7 @@ seseki = function(gis_def){
     var json = [];
     for(var i=1;i<data.length;i++){
       var r = {};
+      if(data[i][0]==null) continue; // 市町村名が入っていない行は飛ばす
       $.map(keys,function(x,j){
         r[x] = data[i][j];
       });
