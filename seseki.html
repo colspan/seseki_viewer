@@ -4,7 +4,7 @@
 <head>
   <title>Seseki Viewer</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <script src="build/main_seseki.bundle.js"></script>
+  <script src="build/seseki.bundle.js"></script>
 </head>
 <body>
   <header>
@@ -99,6 +99,58 @@
       </div>
     </div>
   </footer>
+
+  <script>
+var prefecture_datalist = ["01_hokkaido", "02_aomori", "03_iwate", "04_miyagi", "05_akita", "06_yamagata", "07_fukushima", "08_ibaraki", "09_tochigi", "10_gumma", "11_saitama", "12_chiba", "13_tokyo", "14_kanagawa", "15_niigata", "16_toyama", "17_ishikawa", "18_fukui", "19_tamanashi", "20_nagano", "21_gifu", "22_shizuoka", "23_aichi", "24_mie", "25_shiga", "26_kyoto", "27_osaka", "28_hyogo", "29_nara", "30_wakayama", "31_tottori", "32_shimane", "33_okayama", "34_hiroshima", "35_yamaguchi", "36_tokushima", "37_kagawa", "38_ehime", "39_kochi", "40_fukuoka", "41_saga", "42_nagasaki", "43_kumamoto", "44_oita", "45_miyagawa", "46_kagoshima", "47_okinawa"];
+
+//  sample_data : 'params/sample_data_01_hokkaido.json'
+
+function getUrlVars(){
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++) {
+        hash = hashes[i].split('=');
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
+
+function execute_seseki(){
+  var hash = getUrlVars();
+  var target_prefectures = [];
+  if(hash.targets){
+    hash.targets.split(",").forEach(function(d){
+      var value = +d;
+      if(d>=0 && d<prefecture_datalist.length){
+        target_prefectures.push(value);
+      }
+    });
+  }
+  else{
+    target_prefectures = [0];
+  }
+
+  var geodata_files = [];
+  target_prefectures.forEach(function(d){
+    geodata_files.push('data/' + prefecture_datalist[d] + '_topo.json');
+  });
+
+  var gis_def = {
+    geodata_files:geodata_files,
+    ref_size : {
+      width :  800,
+      height:  700
+    },
+    sample_data : 'params/sample_data_11-14_around_tokyo.json'
+  };
+  seseki(gis_def);
+
+}
+
+
+execute_seseki();
+
+  </script>
 
   <!-- Google Analytics -->
 </body>

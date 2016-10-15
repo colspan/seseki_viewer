@@ -33,7 +33,7 @@ var topojson = require('topojson');
           height:  330,
           scale : 3200
         },
-        exceptions:["色丹郡色丹村","国後郡泊村","国後郡留夜別村","択捉郡留別村","紗那郡紗那村","蘂取郡蘂取村"],
+        exceptions:["色丹郡色丹村","国後郡泊村","国後郡留夜別村","択捉郡留別村","紗那郡紗那村","蘂取郡蘂取村", "所属未定地"],
         title : 'title',
         subtitle : 'subtitle',
         subsubtitle : 'subsubtitle',
@@ -48,13 +48,12 @@ var topojson = require('topojson');
         on_touchend : null,
         on_click : null,
         show_legend : true,
-        auto_resize : true,
         max_width : null,
         save_button : true,
         save_filename : 'heatmap'
       };
       var options = $.extend(defaults,option);
-      this[0].japaneseMapOpts = options;
+      _this[0].japaneseMapOpts = options;
       var selector = this.selector;
       var geodata;
       var communes = [];
@@ -86,6 +85,8 @@ var topojson = require('topojson');
           if(id_map[k].indexOf(v) == -1) id_map[k].push(v);
         }
         geojson.features.forEach(function(d,i){
+          // 国土数値情報　行政区域データ向けのパーサ
+
           if(d.properties.N03_007=="") return; // 所属未定地等IDがないものは飛ばす
 
           // 市町村名を整理する
@@ -171,9 +172,12 @@ var topojson = require('topojson');
           .attr('y',function(d,i){var y=0;for(var j=0;j<=i;j++){y+=options.caption_sizes[j]+5}return y})
           .text(function(d){return options[d]});
 
+        // 表示する際の縮尺を緯度経度の範囲から動的に求める(距離に換算せず角度のまま計算する)
+        var geo_bounds = d3.geo.bounds(geodata);
+        var scale = 22000.0 / d3.max([Math.abs(geo_bounds[0][0]-geo_bounds[1][0]), Math.abs(geo_bounds[0][1]-geo_bounds[1][1])] );
         // 投影を処理する関数を用意した上でデータからSVGのPATHに変換
         projection = d3.geo.mercator()
-        .scale(options.ref_size.scale)
+        .scale(scale)
         .center(d3.geo.centroid(geodata))  // データから中心点を計算
         .translate([options.ref_size.width / 2, options.ref_size.height / 2]);
 

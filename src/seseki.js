@@ -11,7 +11,7 @@ require('./common');
 require('./heatmap');
 require('./common.css');
 
-var seseki_main = function(gis_def){
+seseki = function(gis_def){
   var initialized = false;
   var map_elem = $('<div>');
   var japanesemap_elem_id = 'map';
@@ -64,14 +64,13 @@ var seseki_main = function(gis_def){
       .append('option')
       .html(function(d){return d});
 
-      // 北海道地図描画
+      // 地図描画
       var options = {
         title:'',
         subtitle:'',
         subsubtitle:'',
         geodata_files:gis_def.geodata_files,
         ref_size:gis_def.ref_size,
-        exceptions:gis_def.exceptions,
         max_width:800
       };
       $('#'+japanesemap_elem_id).japaneseMap(options, function(){init_params();init_sample();});
@@ -504,6 +503,6 @@ var seseki_main = function(gis_def){
 
 module.exports = function(gis_def){
   $(document).ready(function(){
-    seseki_main(gis_def);
+    seseki(gis_def);
   });
 }

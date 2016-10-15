@@ -2,13 +2,11 @@ var webpack = require("webpack");
 
 module.exports = {
   entry: {
-    around_tokyo : "./src/main_around_tokyo.js",
-    hokkaido     : "./src/main_hokkaido.js",
-    seseki       : "./src/main_seseki.js"
+    seseki       : "./src/seseki.js"
   },
   output: {
       path: __dirname + "/build",
-      filename: "main_[name].bundle.js"
+      filename: "[name].bundle.js"
   },
   module: {
       loaders: [
