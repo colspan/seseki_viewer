@@ -432,6 +432,8 @@ seseki = function(gis_def){
     };
     spreadsheet_obj = new Handsontable(spreadsheet_elem, options);
     //データを代入
+    var i;
+    var empty_row_num = communes.length - data_array.length + 1;
     var input_data = [];
     if(data_array && data_array.length>2){
       // 読み込み済みの場合
@@ -439,6 +441,7 @@ seseki = function(gis_def){
       $.map(data_array, function(d){
         input_data.push($.map(csv_keys,function(x){return d[x]===null?"":d[x]}));
       });
+      empty_row_num = communes.length - data_array.length + 1;
     }
     else{
       // まだ読み込んでいない場合
@@ -447,7 +450,13 @@ seseki = function(gis_def){
         var r = [d,i,parseInt(Math.random()*1000,10),Math.random()*10-5];
         input_data.push(r);
       });
+      empty_row_num = 10;
     }
+    // 件数が市町村数に達していない場合のために余白行を用意する
+    for(i=0;i<empty_row_num;i++){
+      input_data.push([]);
+    }
+
     spreadsheet_obj.loadData(input_data);
     spreadsheet_obj.alter('insert_col',null,50-input_data[0].length);
   }
