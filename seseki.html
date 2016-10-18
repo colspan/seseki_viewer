@@ -121,32 +121,31 @@ function execute_seseki(){
   if(hash.targets){
     hash.targets.split(",").forEach(function(d){
       var value = +d;
-      if(d>=0 && d<prefecture_datalist.length){
+      if(d>=1 && d<=prefecture_datalist.length){
         target_prefectures.push(value);
       }
     });
+    if(target_prefectures.length==0) target_prefectures = [1];
   }
   else{
-    target_prefectures = [0];
+    target_prefectures = [1];
   }
 
-  var geodata_files = [];
-  target_prefectures.forEach(function(d){
-    geodata_files.push('data/' + prefecture_datalist[d] + '_topo.json');
+  var geodata_files = target_prefectures.map(function(d){
+    return 'data/' + prefecture_datalist[d-1] + '_topo.json';
   });
-
   var gis_def = {
+    target_prefectures:target_prefectures,
     geodata_files:geodata_files,
     ref_size : {
-      width :  800,
-      height:  700
+      width :  750,
+      height:  650
     },
-    sample_data : 'params/sample_data_11-14_around_tokyo.json'
+    sample_data : 'params/sample_data.json'
   };
   seseki(gis_def);
 
 }
-
 
 execute_seseki();
 

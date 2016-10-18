@@ -147,13 +147,13 @@ seseki = function(gis_def){
           var value;
           value = x[key];
           if(typeof value == "string"){
-            if(value.match(/^([0-9]{1,3},)([0-9]{3},)*[0-9]{3}$/)){
+            if(value.match(/^(|-)([0-9]{1,3},)([0-9]{3},)*[0-9]{3}(|\.[0-9]+)$/)){
               // カンマ区切りの数値ならば
-              value = + value.replace(",","");
+              value = parseFloat(value.replace(",",""));
             }
-            else if(value && value.match(/^[0-9]+$/)){
+            else if(value && value.match(/^(|-)[0-9]+(|\.[0-9]+)$/)){
               // 数値ならば
-              value = + value;
+              value = parseFloat(value);
             }
           }
           return value;
@@ -353,7 +353,6 @@ seseki = function(gis_def){
     }
   }
 
-  var input_file = 'instant_data/20151125_population_analysis.csv';
   $('#file_loader').change(function(e){
     var file = e.target.files[0];
     file.type = "text/plain;charset=UTF-8"
@@ -402,13 +401,20 @@ seseki = function(gis_def){
           }
         });
       }
+      var sample_data_list = d.filter(function(x){
+        for(var i=0;i<x.target_prefectures.length;i++){
+          if(gis_def.target_prefectures.indexOf(x.target_prefectures[i])!=-1) return true;
+        }
+        return false;
+      });
+      sample_data_list.unshift({title:"",file:""});
       // 列選択ボタン作成
       d3.select('#sample_data_selector')
       .on('change', function (x) {
         load_sample(this.value);
       })
       .selectAll('option')
-      .data(d)
+      .data(sample_data_list)
       .enter()
       .append('option')
       .attr("value",function(d){return d.file})
@@ -453,8 +459,8 @@ seseki = function(gis_def){
     if(data_array && data_array.length>2){
       // 読み込み済みの場合
       input_data.push(csv_keys);
-      $.map(data_array, function(d){
-        input_data.push($.map(csv_keys,function(x){return d[x]===null?"":d[x]}));
+      data_array.forEach(function(d){
+        input_data.push(csv_keys.map(function(x){return d[x]===null?"":d[x]}));
       });
       cvs_key_num = csv_keys.length;
       empty_row_num = communes.length - data_array.length + 10;
