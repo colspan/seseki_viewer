@@ -83,6 +83,7 @@ seseki = function(gis_def){
       .css('position', 'absolute')
       .css('visibility', 'hidden')
       .css('font-size', '14pt')
+      .css('top', '0px')
       .appendTo('body');
 
       // modal作成
@@ -109,7 +110,7 @@ seseki = function(gis_def){
         clear_data();
         return;
       }
-      data_array = d;
+      data_array = [];
       data = {};
       // データアクセスを容易にするために自治体名でObject作成
       d.forEach(function(x){
@@ -117,10 +118,12 @@ seseki = function(gis_def){
         if(commune_name == null || commune_name.length<2) return; // 文字列が短過ぎたらスキップ
         var commune_ids = id_map[commune_name]; // 自治体IDを取得
         if(!commune_ids) return; // 対応するIDが見つからない場合はスキップ
+        data_array.push(x); // データ格納変数に代入
         commune_ids.forEach(function(i){ // データ辞書に代入
           data[i] = x;
         });
         if(commune_ids.length>1) data_multi_ids[commune_name] = x; // 政令指定都市データを代入
+
       });
       // タイトル更新
       $('#report_title').text(csv_keys[0]);
@@ -454,7 +457,7 @@ seseki = function(gis_def){
         input_data.push($.map(csv_keys,function(x){return d[x]===null?"":d[x]}));
       });
       cvs_key_num = csv_keys.length;
-      empty_row_num = communes.length - data_array.length + 1;
+      empty_row_num = communes.length - data_array.length + 10;
     }
     else{
       // まだ読み込んでいない場合
