@@ -30,7 +30,7 @@
     "zeroclipboard": "^2.2.0",
     "handsontable": "^0.25.0",
     "jquery": "^2.2.4",
-    "materialize-css": "^0.97.6",
+    "materialize-css": "^0.97.7",
     "style-loader": "^0.13.1",
     "topojson": "^1.6.26",
     "url-loader": "^0.5.7",

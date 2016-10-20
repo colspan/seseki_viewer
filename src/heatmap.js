@@ -1,4 +1,3 @@
-var topojson = require('topojson');
 (function($) {
 
   var ua = navigator.userAgent; // ユーザーエージェントを代入
@@ -143,7 +142,6 @@ var topojson = require('topojson');
             id_map[x] = d.id_map[x];
           });
         });
-
         _this[0].japaneseMapCommunes = communes;
         _this[0].japaneseMapIdMap = id_map;
         display();

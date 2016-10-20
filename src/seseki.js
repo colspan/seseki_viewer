@@ -1,15 +1,10 @@
 
 require('d3-svg-legend');
-var $ = window.jQuery = require('jquery'); /* materialize-cssのバグ対策 https://github.com/Dogfalo/materialize/issues/1229 */
-require('materialize-css/dist/js/materialize.js');
-require('materialize-css/bin/materialize.css')
 var Handsontable = require('handsontable/dist/handsontable.full');
 require('handsontable/dist/handsontable.full.css');
 var Encoding = require('encoding-japanese');
 
-require('./common');
 require('./heatmap');
-require('./common.css');
 
 seseki = function(gis_def){
   var initialized = false;

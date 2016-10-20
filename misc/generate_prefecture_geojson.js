@@ -71,19 +71,34 @@ var promises = prefecture_def.map(function(d){
             // 地図描画
             var geojson = topojson.merge(loaded, loaded.objects[geodata_fieldname].geometries.filter(function(x){return true}));
 
-            resolve({geojson:geojson,prefecture:d.prefecture_jp});
+            resolve({geojson:geojson,prefecture_jp:d.prefecture_jp,prefecture_en:d.prefecture_en});
         });
     });
 });
 
 Promise.all(promises).then(function(results){
-    var geodata;
+    var geodata = {
+		"type":"FeatureCollection",
+		"features":[]
+	};
     results.forEach(function(d,i){
-        console.log(d.prefecture, Object.keys(d.geojson));
-        if(!geodata) geodata = Object.assign({}, d.geojson);
-        else geodata.coordinates = geodata.coordinates.concat(d.geojson.coordinates);
+		var feature = {
+			"type":"Feature",
+			"geometry":{
+				"type":"MultiPolygon",
+				"coordinates":d.geojson.coordinates
+			},
+			"properties":{
+				"prefecture_jp":d.prefecture_jp,
+				"prefecture_en":d.prefecture_en,
+				"id":i+1
+			}
+		}
+		geodata.features.push(feature);
+		console.log(d.prefecture_jp, Object.keys(d.geojson));
+
     });
-    fs.writeFile( './whole_japan_prefecture_topo.json', JSON.stringify(geodata));
+    fs.writeFile( './whole_japan_prefecture.json', JSON.stringify(geodata));
 
 });
 

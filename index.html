@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+  <title>Seseki Viewer</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="build/common.bundle.js"></script>
+</head>
+<body>
+<a class="waves-effect waves-light btn" href="seseki.html" id="seseki_link">Sesekiを開く</a>
+<div id="map"></div>
+<script>
+//    li_elem.innerHTML = '<a href="seseki.html?targets=' + (i+1) + '">' + d.prefecture_jp + '</a>';
+
+d3.json('data/japan_topo.json', display);
+
+function display(error, loaded){
+	var selector = "#map";
+	var geodata_fieldname = Object.keys(loaded.objects)[0];
+	geojson = topojson.feature(loaded, loaded.objects[geodata_fieldname]);
+
+	var projection, path;
+
+	// svg要素を作成し、データの受け皿となるg要素を追加
+	var map_container = d3.select(selector).append('svg')
+	.attr('width', "100%")
+	.attr("preserveAspectRatio", "xMinYMax meet")
+	.attr("viewBox", "0 0 700 800");
+	var map = map_container.append('g');
+
+	// 表示する際の縮尺を緯度経度の範囲から動的に求める(距離に換算せず角度のまま計算する)
+	var geo_bounds = d3.geo.bounds(geojson);
+	var scale = 52400.0 / d3.max([Math.abs(geo_bounds[0][0]-geo_bounds[1][0]), Math.abs(geo_bounds[0][1]-geo_bounds[1][1])] );
+	// 投影を処理する関数を用意した上でデータからSVGのPATHに変換
+	projection = d3.geo.mercator()
+	.scale(scale)
+	.center(d3.geo.centroid(geojson))  // データから中心点を計算
+	.translate([700 / 2, 800 / 2]);
+
+	geojson.features.forEach(function(d){
+		d.properties.checked = false;
+	});
+
+	// pathジェネレータ関数
+	path = d3.geo.path().projection(projection);
+	map.selectAll('path')
+	.data(geojson.features)
+	.enter()
+	.append('path')
+	.attr('d', path)
+	.attr("fill", "white")
+	.attr("stroke", "black")
+	.attr("stroke-width","1")
+	.attr("stroke-opacity","0.2")
+	.on('touchstart', on_click)
+	.on('click', on_click);
+
+	function on_click(d){
+		d.properties.checked = !d.properties.checked;
+
+		var japanese_map = d3.select(selector).selectAll('path');
+		japanese_map.attr('fill', function(x){return x.properties.checked ? "blue" : "white"});
+
+		var selected_prefs = japanese_map.filter(function(x){return x.properties.checked}).data();
+		var link_elem = d3.select("#seseki_link");
+		var link_attr = selected_prefs.length == 0 ? "" : "?targets=" + selected_prefs.map(function(x){return x.properties.id}).reduce(function(x,y){return x+","+y});
+		link_elem.attr("href","seseki.html" + link_attr);
+	}
+}
+
+</script>
+</body>
+</html>

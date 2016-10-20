@@ -2,7 +2,8 @@ var webpack = require("webpack");
 
 module.exports = {
   entry: {
-    seseki       : "./src/seseki.js"
+    seseki : "./src/seseki.js",
+    common : "./src/common.js"    
   },
   output: {
       path: __dirname + "/build",
@@ -25,11 +26,6 @@ module.exports = {
       ]
   },
   plugins: [
-    new webpack.ProvidePlugin({
-      $: "jquery",
-      jQuery: "jquery",
-      d3: "d3"
-    }),
     new webpack.optimize.UglifyJsPlugin()
   ]
 };
