@@ -88,7 +88,7 @@ table td{
   padding:3px 5px;
 }
 div#ranking_container{
-  max-height:70vh;
+  height:70vh;
   overflow: auto;
 }
 .modal.bottom-sheet {

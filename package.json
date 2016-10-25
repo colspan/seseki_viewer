@@ -35,6 +35,7 @@
     "topojson": "^1.6.26",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1",
+    "leaflet": "^1.0.1",
     "xmlhttprequest": "^1.8.0"
   }
 }

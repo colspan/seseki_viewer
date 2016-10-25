@@ -52,14 +52,18 @@
           </div>
         </div>
       </nav>
-      <div class="row" id="main_view">
-        <div class="col s12 m9 l9" id="map_container"></div>
+      <div class="row" id="main_view" style="display:-webkit-box;">
+        <div class="col s12 m9 l9" id="leaflet_map" style="min-height:500px;"></div>
         <div class="col s12 m3 l3" id="ranking_view">
           <div id="ranking_container">
             <table><thead><th>順位</th><th>市町村名</th><th>値</th></thead><tbody id="ranking_table"></tbody></table>
           </div>
         </div>
       </div>
+
+        <div class="col s12 m9 l9" id="map_container"></div>
+
+
       <div class="row">
         <div class="card blue-grey darken-1" id="data-info" style="visibility:hidden;">
           <div class="card-content white-text">

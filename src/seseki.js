@@ -244,6 +244,28 @@ seseki = function(gis_def){
         modal_table_elem.append(tbody);
         $("#myModal").openModal({in_duration:0,out_duration:0});
       }
+      // leaflet Feature要素書き出し
+      var eachFeature = function(x, layer){
+        var commune_id = x.commune_id;
+        var commune_name;
+        var target_value;
+        if(!data[commune_id] && x.properties.N03_003 && data_multi_ids[x.properties.N03_003]){// 区データがなく、市データが有る場合
+          commune_name = x.properties.N03_003;
+          target_value = format(get_value(data_multi_ids[x.properties.N03_003]));
+        }
+        else if(data[commune_id]){
+          commune_name = x.name;
+          target_value = format(get_value(data[commune_id]));
+        }
+        else{
+          commune_name = x.name;
+          target_value = "-";
+        } 
+        var popup_elem = $('<span>');
+        popup_elem.on('click', function(x){click({name:commune_name, commune_id:commune_id})});
+        popup_elem.html('<span>' + commune_name + '<br><span class="badge">' + target_value + '</span>');
+        layer.bindPopup(popup_elem[0]);
+      }
       // touch & over時の動作
       var mouseover = function(x){
         var pos;
@@ -304,7 +326,8 @@ seseki = function(gis_def){
           tip_elem.css('visibility', 'hidden');
         },
         on_mousedown : click,
-        on_touchstart : mouseover
+        on_touchstart : mouseover,
+        eachfeature : eachFeature
       };
       $('#'+japanesemap_elem_id).japaneseMap('update', options);
 

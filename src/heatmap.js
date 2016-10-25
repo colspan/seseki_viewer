@@ -46,6 +46,7 @@
         on_touchstart : null,
         on_touchend : null,
         on_click : null,
+        eachfeature : function(x,l){l.bindPopup(x.name)},
         show_legend : true,
         max_width : null,
         save_button : true,
@@ -151,6 +152,34 @@
         var projection, path;
 
         options.geodata = geodata;
+        console.log(d3.geo.centroid(geodata));
+        // Leaflet起動
+        var centroid = d3.geo.centroid(geodata);
+        var leafletObj = L.map('leaflet_map',{
+          zoom: 7,
+          minZoom: 4,
+          maxZoom: 18,
+          center:[centroid[1],centroid[0]]
+        });
+        var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        var osmAttrib = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
+        var osmOption = {attribution: osmAttrib, opacity:0.8};
+        L.tileLayer(osmUrl, osmOption).addTo(leafletObj);
+        var geoJsonLayer = L.geoJson(geodata, {
+          style: function(d){
+            return {
+              color:"#222",
+              weight:0.3,
+              opacity: 0.6,
+              fillOpacity: 0.6,
+              fillColor: options.map_filler(d)
+            }
+          },
+          onEachFeature: function(d,l){
+            options.eachfeature(d,l);
+          }
+        }).addTo(leafletObj);
+        options.geoJsonLayer = geoJsonLayer;
 
         // svg要素を作成し、データの受け皿となるg要素を追加
         var map_container = d3.select(selector).append('svg')
@@ -260,6 +289,11 @@
       .on('touchstart', options.on_touchstart)
       .on('touchend', options.on_touchend)
       .on('click', options.on_click);
+
+      options.geoJsonLayer.getLayers().forEach(function(x){
+        options.geoJsonLayer.resetStyle(x);
+        options.eachfeature(x.feature, x);
+      });
 
       var caption_elems = d3.select(this.selector).select('.japanese_map_caption_container')
         .selectAll('text')
