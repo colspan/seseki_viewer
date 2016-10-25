@@ -39,12 +39,6 @@
         caption_sizes : [32,20,20],
         map_filler : function(d){return '#ffffff'},
         stroke_filler: "hsl(80,100%,0%)",
-        on_mouseover : null,
-        on_mouseout : null,
-        on_mousedown : null,
-        on_mouseup : null,
-        on_touchstart : null,
-        on_touchend : null,
         on_click : null,
         eachfeature : function(x,l){l.bindPopup(x.name)},
         show_legend : true,
@@ -52,8 +46,10 @@
         save_button : true,
         save_filename : 'heatmap'
       };
+      var envs = {};
       var options = $.extend(defaults,option);
       _this[0].japaneseMapOpts = options;
+      _this[0].japaneseMapEnvs = envs;
       var selector = this.selector;
       var geodata;
       var communes = [];
@@ -152,7 +148,6 @@
         var projection, path;
 
         options.geodata = geodata;
-        console.log(d3.geo.centroid(geodata));
         // Leaflet起動
         var centroid = d3.geo.centroid(geodata);
         var leafletObj = L.map('leaflet_map',{
@@ -163,7 +158,7 @@
         });
         var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         var osmAttrib = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
-        var osmOption = {attribution: osmAttrib, opacity:0.8};
+        var osmOption = {attribution: osmAttrib, opacity:0.5};
         L.tileLayer(osmUrl, osmOption).addTo(leafletObj);
         var geoJsonLayer = L.geoJson(geodata, {
           style: function(d){
@@ -179,7 +174,28 @@
             options.eachfeature(d,l);
           }
         }).addTo(leafletObj);
-        options.geoJsonLayer = geoJsonLayer;
+        envs.geoJsonLayer = geoJsonLayer;
+        var legendView;
+        var legendWindow = L.Control.extend({
+          options: {
+            position: 'bottomleft'
+          },
+          onAdd: function (map) {
+            var container = L.DomUtil.create('div', 'legendWindow');
+
+            // 凡例作成
+            legendView = d3.select(container).append('svg')
+              .attr("class", "legendQuant")
+              .attr("transform", "translate(20,90)");
+            if(options.show_legend && options.color_scale){
+              update_legend(legendView, options);
+            }
+            envs.legendView = legendView;
+
+            return container;
+          }
+        });
+        leafletObj.addControl(new legendWindow());
 
         // svg要素を作成し、データの受け皿となるg要素を追加
         var map_container = d3.select(selector).append('svg')
@@ -199,43 +215,6 @@
           .attr('x',5)
           .attr('y',function(d,i){var y=0;for(var j=0;j<=i;j++){y+=options.caption_sizes[j]+5}return y})
           .text(function(d){return options[d]});
-
-        // 表示する際の縮尺を緯度経度の範囲から動的に求める(距離に換算せず角度のまま計算する)
-        var geo_bounds = d3.geo.bounds(geodata);
-        var scale = 22000.0 / d3.max([Math.abs(geo_bounds[0][0]-geo_bounds[1][0]), Math.abs(geo_bounds[0][1]-geo_bounds[1][1])] );
-        // 投影を処理する関数を用意した上でデータからSVGのPATHに変換
-        projection = d3.geo.mercator()
-        .scale(scale)
-        .center(d3.geo.centroid(geodata))  // データから中心点を計算
-        .translate([options.ref_size.width / 2, options.ref_size.height / 2]);
-
-        // pathジェネレータ関数
-        path = d3.geo.path().projection(projection);
-        map.selectAll('path')
-        .data(geodata.features)
-        .enter()
-        .append('path')
-        .attr('d', path)
-        .attr("fill", options.map_filler)
-        .attr("stroke", options.stroke_filler)
-        .attr("stroke-width","1")
-        .attr("stroke-opacity","0.2")
-        .on('mouseover', options.on_mouseover)
-        .on('mouseout', options.on_mouseout)
-        .on('mousedown', options.on_mousedown)
-        .on('mouseup', options.on_mouseup)
-        .on('touchstart', options.on_touchstart)
-        .on('touchend', options.on_touchend)
-        .on('click', options.on_click);
-
-        // 凡例作成
-        var legendView = map.append("g")
-          .attr("class", "legendQuant")
-          .style("font", '12px "Noto Sans CJK JP" Arial')
-          .attr("transform", "translate(20,90)");
-        if(options.show_legend && options.color_scale){
-          update_legend(legendView, options);
-        }
 
         // 保存ボタンを作成
         if(!isEdge && !isIE && options.save_button){
@@ -279,19 +258,14 @@
     },
     update : function( input_options ) {
       var options = $(this.selector)[0].japaneseMapOpts;
+      var envs = $(this.selector)[0].japaneseMapEnvs;
       options = $.extend(options, input_options);
       d3.select(this.selector).selectAll('path')
       .attr('fill', options.map_filler)
-      .on('mouseover', options.on_mouseover)
-      .on('mouseout', options.on_mouseout)
-      .on('mousedown', options.on_mousedown)
-      .on('mouseup', options.on_mouseup)
-      .on('touchstart', options.on_touchstart)
-      .on('touchend', options.on_touchend)
       .on('click', options.on_click);
 
-      options.geoJsonLayer.getLayers().forEach(function(x){
-        options.geoJsonLayer.resetStyle(x);
+      envs.geoJsonLayer.getLayers().forEach(function(x){
+        envs.geoJsonLayer.resetStyle(x);
         options.eachfeature(x.feature, x);
       });
 
@@ -301,8 +275,7 @@
 
       //  凡例更新
       if(options.show_legend && options.color_scale){
-        var legendView = d3.select(this.selector).select("g.legendQuant");
-        update_legend(legendView, options);
+        update_legend(envs.legendView, options);
       }
     },
     update_partial : function(filter, filler){

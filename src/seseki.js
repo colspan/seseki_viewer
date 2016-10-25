@@ -215,9 +215,7 @@ seseki = function(gis_def){
       var titles = key.replace(/\)/g,'').split('(');
       // ヒートマップのパラメタ生成
       // click時の動作
-      var last_touched = null;
       var click = function(d){
-        if(last_touched) d3.select(last_touched.elem).attr('fill', '#ffff00');
         $("#modal_commune_name").html(d.name);
         // データ取得
         var row = (data_multi_ids[d.name] ? data_multi_ids[d.name] : data[d.commune_id]);
@@ -266,47 +264,6 @@ seseki = function(gis_def){
         popup_elem.html('<span>' + commune_name + '<br><span class="badge">' + target_value + '</span>');
         layer.bindPopup(popup_elem[0]);
       }
-      // touch & over時の動作
-      var mouseover = function(x){
-        var pos;
-        var commune_name;
-        var commune_id = x.commune_id;
-        // 座標取得
-        if(d3.event.targetTouches){// touch
-          d3.event.preventDefault();
-          pos = {x:d3.event.targetTouches[0].pageX, y:d3.event.targetTouches[0].pageY};
-          if(last_touched && last_touched.elem == this){
-            click(x);
-          }
-        }
-        else{
-          if(isIE) pos = {x:d3.event.x,y:d3.event.y};
-          else pos = {x:$(window).scrollLeft() + d3.event.x,y:$(window).scrollTop() + d3.event.y};
-        }
-        // 元に戻す
-        if(last_touched) d3.select(last_touched.elem).attr('fill', last_touched.color);
-        last_touched = {elem:this, color:options.map_filler(x)};
-        // 色塗替え
-        d3.select(this).attr('fill', '#dddd00');
-        // tip更新
-        tip_elem.css('top' , pos.y+'px');
-        tip_elem.css('left', pos.x+'px');
-        tip_elem.css('visibility', 'visible');
-        var target_value;
-        if(!data[commune_id] && x.properties.N03_003 && data_multi_ids[x.properties.N03_003]){// 区データがなく、市データが有る場合
-          commune_name = x.properties.N03_003;
-          target_value = format(get_value(data_multi_ids[x.properties.N03_003]));
-        }
-        else if(data[commune_id]){
-          commune_name = x.name;
-          target_value = format(get_value(data[commune_id]));
-        }
-        else{
-          commune_name = x.name;
-          target_value = "-";
-        } 
-        tip_elem.html('<span>' + commune_name + ' <span class="badge">' + target_value + '</span>'  );
-      }
       var options = {
         title : titles[0],
         subtitle : titles[1]?titles[1]:'',
@@ -320,13 +277,7 @@ seseki = function(gis_def){
           if(value==null) return "#888";
           return color_scale(get_value(value));
         },
-        on_mouseover : mouseover,
-        on_mouseout  : function(x){
-          d3.select(this).attr('fill', options.map_filler);
-          tip_elem.css('visibility', 'hidden');
-        },
-        on_mousedown : click,
-        on_touchstart : mouseover,
+        on_click : click,
         eachfeature : eachFeature
       };
       $('#'+japanesemap_elem_id).japaneseMap('update', options);
