@@ -150,11 +150,13 @@
         options.geodata = geodata;
         // Leaflet起動
         var centroid = d3.geo.centroid(geodata);
+        var bounds = d3.geo.bounds(geodata);
         var leafletObj = L.map('leaflet_map',{
           zoom: 7,
           minZoom: 4,
           maxZoom: 18,
-          center:[centroid[1],centroid[0]]
+          center:[centroid[1],centroid[0]],
+          maxBounds:[[bounds[0][1],bounds[0][0]],[bounds[1][1],bounds[1][0]]]
         });
         var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         var osmAttrib = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
