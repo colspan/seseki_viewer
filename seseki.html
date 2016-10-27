@@ -10,50 +10,47 @@
 <body>
   <header>
     <div class="navbar">
-      <nav class="blue darken-3">
-        <div class="nav-wrapper container">
-          <a style="font-size:14pt" class="page-title">Seseki Viewer</a>
-          <a href="" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+      <nav style="font-size:12pt;">
+        <div class="brown darken-3 row" style="margin-bottom:0;">
+          <div class="file-field input-field col s12 m2 l2" style="margin-top:14px;"><a class="page-title" href="./index.html" style="font:24pt bold;">Seseki</a></div>
+          <form action="#">
+            <div class="file-field input-field col s12 m3 l3 tooltipped" data-position="bottom" data-delay="50" data-tooltip="CSVファイルを開く(UTF-8またはShift-JIS)" style="margin-top:14px;">
+              <div class="btn">
+                <span><i class="material-icons">description</i></span>
+                <input type="file" accept="csv" id="file_loader" style="">
+              </div>
+              <div class="file-path-wrapper">
+                <input class="file-path validate" id="file_loader_filename" type="text" value="CSVファイルを開く">
+                <label></label>
+              </div>
+            </div>
+            <div class="input-field col s12 m2 l2 tooltipped" data-position="bottom" data-delay="50" data-tooltip="スプレッドシートでデータを編集できます">
+              <a href="#modal_spreadsheet" class="btn modal-trigger">スプレッドシート</a>
+            </div>
+            <div class="input-field col s12 m5 l5">
+              <select class="browser-default tooltipped" id="sample_data_selector" data-position="bottom" data-delay="50" data-tooltip="サンプルのデータで任意データのヒートマップ表示を体験できます" style="color:black;margin-top:12px;">
+                <option value="" disabled selected>サンプルファイルで試す</option>
+              </select>
+            </div>
+          </div>
+          <div class="brown darken-1 row" style="margin:0">
+            <div class="col s12 m6 l6">
+              <h2 style="margin:18px 0 0 10px" id="report_title">ファイルを入力してください</h2>
+            </div>
+            <div class="col s12 m6 l6">
+              <div class="input-field browser-default tooltipped" id="map_datatype_selector" data-position="bottom" data-delay="50" data-tooltip="表示項目を選択できます"></div>
+            </div>
+          </form>
         </div>
+
       </nav>
     </div>
   </header>
+
   <main>
-    <div class="">
-      <div class="row">
-        <form action="#">
-          <div class="file-field input-field col s12 m4 l4 tooltipped" data-position="bottom" data-delay="50" data-tooltip="所定の書式で作成されたCSVファイルを入力できます(UTF-8またはShift-JIS)">
-            <div class="btn">
-              <span><i class="material-icons">description</i></span>
-              <input type="file" accept="csv" id="file_loader" style="display:inline">
-            </div>
-            <div class="file-path-wrapper">
-              <input class="file-path validate" id="file_loader_filename" type="text" value="CSVファイルを開く">
-              <label></label>
-            </div>
-          </div>
-          <div class="input-field col s12 m4 l4">
-            <select class="browser-default tooltipped" id="sample_data_selector" data-position="bottom" data-delay="50" data-tooltip="サンプルのデータで任意データのヒートマップ表示を体験できます">
-              <option value="" disabled selected>サンプルファイルで試す</option>
-            </select>
-          </div>
-          <div class="input-field col s12 m4 l4 tooltipped" data-position="bottom" data-delay="50" data-tooltip="スプレッドシートでデータを編集できます">
-            <a href="#modal_spreadsheet" class="btn modal-trigger" style="height:45px;"><i class="material-icons">launch</i> スプレッドシート編集する</a>
-          </div>
-        </form>
-      </div>
-      <nav class="blue darken-3">
-        <div class="row">
-          <div class="col s12 m6 l6">
-            <h2 style="margin:18px 0 0 10px" id="report_title">ファイルを入力してください</h2>
-          </div>
-          <div class="col s12 m6 l6">
-            <div class="input-field browser-default tooltipped" id="map_datatype_selector" data-position="bottom" data-delay="50" data-tooltip="表示項目を選択できます"></div>
-          </div>
-        </div>
-      </nav>
-      <div class="row" id="main_view" style="display:-webkit-box;">
-        <div class="col s12 m9 l9" id="leaflet_map" style="min-height:500px;"></div>
+    <div>
+      <div class="row" id="main_view">
+        <div class="col s12 m9 l9" id="leaflet_map"></div>
         <div class="col s12 m3 l3" id="ranking_view">
           <div id="ranking_container">
             <table><thead><th>順位</th><th>市町村名</th><th>値</th></thead><tbody id="ranking_table"></tbody></table>

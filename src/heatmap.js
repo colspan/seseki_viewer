@@ -152,7 +152,7 @@
         var centroid = d3.geo.centroid(geodata);
         var bounds = d3.geo.bounds(geodata);
         var leafletObj = L.map('leaflet_map',{
-          zoom: 7,
+          zoom: 8,
           minZoom: 4,
           maxZoom: 18,
           center:[centroid[1],centroid[0]],
@@ -160,7 +160,7 @@
         });
         var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         var osmAttrib = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
-        var osmOption = {attribution: osmAttrib, opacity:0.5};
+        var osmOption = {attribution: osmAttrib, opacity:0.1};
         L.tileLayer(osmUrl, osmOption).addTo(leafletObj);
         var geoJsonLayer = L.geoJson(geodata, {
           style: function(d){
@@ -176,6 +176,8 @@
             options.eachfeature(d,l);
           }
         }).addTo(leafletObj);
+        leafletObj.zoomControl.setPosition('bottomright');
+        leafletObj.attributionControl.addAttribution( '&copy; <a href="http://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html">国土数値情報　行政区域データ</a>' );
         envs.geoJsonLayer = geoJsonLayer;
         var legendView;
         var legendWindow = L.Control.extend({

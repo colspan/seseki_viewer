@@ -72,7 +72,8 @@ select.browser-default{
 }
 
 #main_view{
-  display:table;
+  display:-webkit-box;
+  display:-moz-box;
   width: 100%;
 }
 #map_container, #ranking_view{
