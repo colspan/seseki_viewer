@@ -9,6 +9,13 @@ body {
   font-size:16pt;
 }
 
+nav h1{
+  margin:0;
+  padding-top:18px;
+  font-weight:bold;
+  font-size:22pt;
+}
+
 h2{
   font-size:20pt;
 }

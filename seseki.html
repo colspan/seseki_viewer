@@ -6,13 +6,18 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="build/common.bundle.js"></script>
   <script src="build/seseki.bundle.js"></script>
+  <style>
+    div.row{
+      margin-bottom:0;
+    }
+  </style>
 </head>
 <body>
   <header>
     <div class="navbar">
-      <nav style="font-size:12pt;">
+      <nav>
         <div class="brown darken-3 row" style="margin-bottom:0;">
-          <div class="file-field input-field col s12 m2 l2" style="margin-top:14px;"><a class="page-title" href="./index.html" style="font:24pt bold;">Seseki</a></div>
+          <div class="file-field input-field col s12 m2 l2" style="margin-top:14px;"><h1><a class="page-title" href="./index.html">Seseki</a></h1></div>
           <form action="#">
             <div class="file-field input-field col s12 m3 l3 tooltipped" data-position="bottom" data-delay="50" data-tooltip="CSVファイルを開く(UTF-8またはShift-JIS)" style="margin-top:14px;">
               <div class="btn">
@@ -61,12 +66,14 @@
         <div class="col s12 m9 l9" id="map_container"></div>
 
 
-      <div class="row">
-        <div class="card blue-grey darken-1" id="data-info" style="visibility:hidden;">
-          <div class="card-content white-text">
-            <span class="card-title"><span id="data-title"></span></span>
-            <p><span id="data-description"></span></p>
-            <p>権利元 : <a class="yellow-text" href="#" id="data-url"></a> (<a class="yellow-text" href="#" id="convertedcsv-url">変換済CSVファイル</a>)</p>
+      <div class="row brown darken-1">
+        <div class="container">
+          <div class="card blue-grey darken-1" id="data-info" style="display:none;">
+            <div class="card-content white-text">
+              <span class="card-title"><span id="data-title"></span></span>
+              <p><span id="data-description"></span></p>
+              <p>権利元 : <a class="yellow-text" href="#" id="data-url"></a> (<a class="yellow-text" href="#" id="convertedcsv-url">変換済CSVファイル</a>)</p>
+            </div>
           </div>
         </div>
       </div>
@@ -94,8 +101,8 @@
        </div>
      </div>
   </main>
-  <footer class="page-footer blue darken-3">
-    <div class="footer-copyright blue darken-4" style="height:120px;">
+  <footer class="page-footer brown darken-3">
+    <div class="footer-copyright">
       <div class="container">
         <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="クリエイティブ・コモンズ・ライセンス" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a> <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/colspan/seseki_viewer" property="cc:attributionName" rel="cc:attributionURL">Kunihiko Miyoshi</a> 作『<span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Seseki Viewer</span>』は<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際 ライセンス</a>で提供されています。
       </div>

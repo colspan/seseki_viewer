@@ -10,7 +10,7 @@
     isEdge = true;
   }
   var captions = ['title', 'subtitle', 'subsubtitle'];
-  function update_legend(legendView, options){
+  function update_legend(legendContainer, options){
     var domain = options.color_scale.domain();
     var format_str;
     if(options.format_str) format_str = options.format_str;
@@ -20,7 +20,7 @@
       .shapeWidth(50)
       .labelFormat(d3.format(format_str))
       .scale(options.color_scale);
-    legendView.call(legend);
+    legendContainer.call(legend);
   }
   var methods = {
     init : function(option, callback){
@@ -176,10 +176,13 @@
             options.eachfeature(d,l);
           }
         }).addTo(leafletObj);
+        // 拡大縮小ボタン位置変更
         leafletObj.zoomControl.setPosition('bottomright');
-        leafletObj.attributionControl.addAttribution( '&copy; <a href="http://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html">国土数値情報　行政区域データ</a>' );
+        // 権利情報追記
+        leafletObj.attributionControl.addAttribution( '&copy; <a href="http://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html">国土数値情報 行政区域データ</a>' );
         envs.geoJsonLayer = geoJsonLayer;
-        var legendView;
+        // 凡例
+        var legendContainer;
         var legendWindow = L.Control.extend({
           options: {
             position: 'bottomleft'
@@ -188,38 +191,44 @@
             var container = L.DomUtil.create('div', 'legendWindow');
 
             // 凡例作成
-            legendView = d3.select(container).append('svg')
+            legendContainer = d3.select(container).append('svg')
               .attr("class", "legendQuant")
               .attr("transform", "translate(20,90)");
             if(options.show_legend && options.color_scale){
-              update_legend(legendView, options);
+              update_legend(legendContainer, options);
             }
-            envs.legendView = legendView;
+            envs.legendContainer = legendContainer;
 
             return container;
           }
         });
         leafletObj.addControl(new legendWindow());
 
-        // svg要素を作成し、データの受け皿となるg要素を追加
-        var map_container = d3.select(selector).append('svg')
-        .attr('width', "100%")
-        //.attr('height', options.ref_size.height)
-        .attr("preserveAspectRatio", "xMinYMax meet")
-        .attr("viewBox", "0 0 "+options.ref_size.width+" "+options.ref_size.height);
-        var map = map_container.append('g');
+        // データ説明枠
+        var captionWindow = L.Control.extend({
+          options: {
+            position: 'topleft'
+          },
+          onAdd: function(map){
+            var container = L.DomUtil.create('div', 'captionWindow');
 
-        // Caption
-        var caption_container = map_container.append('g').attr('class','japanese_map_caption_container');
-        caption_container.selectAll('text')
-          .data(captions)
-          .enter()
-          .append('text')
-          .style('font',function(d,i){return options.caption_sizes[i]+'px "Noto Sans CJK JP" Arial'})
-          .attr('x',5)
-          .attr('y',function(d,i){var y=0;for(var j=0;j<=i;j++){y+=options.caption_sizes[j]+5}return y})
-          .text(function(d){return options[d]});
+            // Caption
+            var captionContainer = d3.select(container);
+            captionContainer.selectAll('div')
+              .data(captions)
+              .enter()
+              .append('div')
+              .style('font-size',function(d,i){return options.caption_sizes[i]+'pt'})
+              .text(function(d){return options[d]});
 
+            envs.captionContainer = captionContainer;
+
+            return container;
+          }
+        });
+        leafletObj.addControl(new captionWindow());
+
+        /*
         // 保存ボタンを作成
         if(!isEdge && !isIE && options.save_button){
           $('<button>').text('画像として保存')
@@ -253,6 +262,7 @@
             .attr('class','btn btn-default')
             .appendTo(selector);
         }
+        */
 
         // 全処理が終了したらcallback呼び出し (即updateしたい場合に用いる)
         if(typeof callback == 'function') callback();
@@ -273,19 +283,14 @@
         options.eachfeature(x.feature, x);
       });
 
-      var caption_elems = d3.select(this.selector).select('.japanese_map_caption_container')
-        .selectAll('text')
+      console.log(envs);
+      var caption_elems = envs.captionContainer.selectAll('div')
         .text(function(d){return options[d]});
 
       //  凡例更新
       if(options.show_legend && options.color_scale){
-        update_legend(envs.legendView, options);
+        update_legend(envs.legendContainer, options);
       }
-    },
-    update_partial : function(filter, filler){
-      d3.select(this.selector).selectAll('path')
-      .filter(filter)
-      .attr('fill', filler);
     },
     get_commune_def : function(){
         return {communes:$(this.selector)[0].japaneseMapCommunes, id_map:$(this.selector)[0].japaneseMapIdMap};

@@ -8,27 +8,25 @@
 </head>
 <body>
 <header>
-	<div class="navbar">
-		<nav class="blue darken-3">
-			<div class="nav-wrapper container">
-				<a style="font-size:14pt" class="page-title">Seseki</a>
-				<a href="" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-			</div>
-		</nav>
-	</div>
+	<nav class="top-nav brown darken-3">
+		<div class="nav-wrapper container valign-wrapper">
+			<h1><a class="page-title">Seseki</a></h1>
+		</div>
+	</nav>
 </header>
+<main>
+	<div class="container">
+		<h2 class="header">都道府県を選ぶ</h2>
+		<div class="row" id="seseki_links"></div>
 
-<div class="container">
-	<h2 class="header">都道府県を選ぶ</h2>
-	<div class="row" id="seseki_links"></div>
+		<h2 class="header">複数の都道府県を組み合わせる</h2>
+		<div class="row">
+			<div id="map"></div>
+			<a class="waves-effect waves-light btn" href="seseki.html" id="seseki_link">上記の組み合わせで開く</a>
+		</div>
 
-	<h2 class="header">複数の都道府県を組み合わせる</h2>
-	<div class="row">
-		<div id="map"></div>
-		<a class="waves-effect waves-light btn" href="seseki.html" id="seseki_link">上記の組み合わせで開く</a>
 	</div>
-
-</div>
+</main>
 <script>
 // li_elem.innerHTML = '<a href="seseki.html?targets=' + (i+1) + '">' + d.prefecture_jp + '</a>';
 
@@ -185,5 +183,14 @@ function display(error, loaded){
 }
 
 </script>
+
+<footer class="page-footer brown darken-1">
+    <div class="footer-copyright brown darken-3" style="height:120px;">
+		<div class="container">
+        	<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="クリエイティブ・コモンズ・ライセンス" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a> <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/colspan/seseki_viewer" property="cc:attributionName" rel="cc:attributionURL">Kunihiko Miyoshi</a> 作『<span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Seseki Viewer</span>』は<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際 ライセンス</a>で提供されています。
+		</div>
+    </div>
+</footer>
+
 </body>
 </html>

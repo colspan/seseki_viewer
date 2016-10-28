@@ -311,10 +311,14 @@ seseki = function(gis_def){
         return html;
       });
       ranking_table_rows.on('mouseover', function(x){
+        /*
         $('#map').japaneseMap('update_partial', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;}, function(x){return '#dddd00'});
+        */
       })
       .on('mouseout', function(x){
+        /*
         $('#map').japaneseMap('update_partial', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;}, function(y){return options.color_scale(get_value(data[y.commune_id]))});
+        */
       })
       .on('click', function(x){
         click({name:x.key, commune_id:id_map[x.key][0]});
@@ -333,7 +337,7 @@ seseki = function(gis_def){
       csv_viewer(d3.csv.parse(data));
       // サンプルローダーを初期化
       $("#sample_data_selector").val("");
-      $("#data-info").css("visibility", "hidden");
+      $("#data-info").css("display", "none");
     }
     reader.readAsArrayBuffer(file);
   });
@@ -344,7 +348,7 @@ seseki = function(gis_def){
       function get_by_filename(k){var i;for(i=0;i<d.length;i++){if(d[i].file==k) return d[i];}return null;}
       function load_sample(filename){
         // サンプルファイルの説明を表示
-        $("#data-info").css("visibility", "visible");
+        $("#data-info").css("display", "block");
         var data_info = get_by_filename(filename);
         $("#data-description").html(data_info.file_description);
         $("#data-title").html(data_info.title);
@@ -413,7 +417,7 @@ seseki = function(gis_def){
       startRows: 30,
       startCols: 200,
       width: "100%",
-      height: 500,
+      height: "500",
       colWidths: 80,
       rowHeights: 23,
       rowHeaders: true,
@@ -436,7 +440,7 @@ seseki = function(gis_def){
     }
     else{
       // まだ読み込んでいない場合
-      var example_keys = ["データの名前","サンプルデータ系列1(説明A)(説明B)","サンプルデータ系列2(説明C)(説明D)","サンプルデータ系列3(説明E)(説明F)"];
+      var example_keys = ["ランダム生成のサンプルデータです","サンプルデータ系列1(説明A)(説明B)","サンプルデータ系列2(説明C)(説明D)","サンプルデータ系列3(説明E)(説明F)"];
       input_data.push(example_keys);
       $.map(communes,function(d,i){
         var r = [d,i,parseInt(Math.random()*1000,10),Math.random()*10-5];
@@ -494,7 +498,7 @@ seseki = function(gis_def){
     $("#file_loader_filename").val("CSVファイルを開く");
     // サンプルローダーを初期化
     $("#sample_data_selector").val("");
-    $("#data-info").css("visibility", "hidden");
+    $("#data-info").css("display", "none");
   }
   $('.modal-trigger').leanModal({
       dismissible: true,
