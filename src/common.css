@@ -102,3 +102,13 @@ div#ranking_container{
 .modal.bottom-sheet {
   max-height: 100%;
 }
+
+.legendQuant{
+  width: 120px;
+  height:210px;
+}
+.layer_tooltip{
+  font-size:14pt;
+  width: 200px;
+  height: 70px;
+}

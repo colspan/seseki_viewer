@@ -243,7 +243,8 @@ seseki = function(gis_def){
         $("#myModal").openModal({in_duration:0,out_duration:0});
       }
       // leaflet Feature要素書き出し
-      var eachFeature = function(x, layer){
+      var last_touched;
+      var eachFeature = function(parent, x, layer){
         var commune_id = x.commune_id;
         var commune_name;
         var target_value;
@@ -261,8 +262,30 @@ seseki = function(gis_def){
         } 
         var popup_elem = $('<span>');
         popup_elem.on('click', function(x){click({name:commune_name, commune_id:commune_id})});
-        popup_elem.html('<span>' + commune_name + '<br><span class="badge">' + target_value + '</span>');
-        layer.bindPopup(popup_elem[0]);
+        popup_elem.html('<span>' + commune_name + '<br /><span class="badge">' + target_value + '</span>');
+        layer.bindTooltip(popup_elem[0],{className:"layer_tooltip"});
+        layer.on({
+          mouseover: function(e){
+            var l = e.target;
+            l.setStyle({
+                weight: 5,
+                fillColor: '#dce775',
+                fillOpacity: 0.7
+            });
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                l.bringToFront();
+            }
+            l.openTooltip();
+          },
+          mouseout: function(e){
+            parent.resetStyle(e.target);
+            e.target.closeTooltip();
+          },
+          click: function(e){
+            click({name:commune_name, commune_id:commune_id});
+          },
+
+        });
       }
       var options = {
         title : titles[0],

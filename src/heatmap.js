@@ -40,7 +40,7 @@
         map_filler : function(d){return '#ffffff'},
         stroke_filler: "hsl(80,100%,0%)",
         on_click : null,
-        eachfeature : function(x,l){l.bindPopup(x.name)},
+        eachfeature : function(p,x,l){l.bindTooltip(x.name)},
         show_legend : true,
         max_width : null,
         save_button : true,
@@ -160,7 +160,7 @@
         });
         var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         var osmAttrib = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
-        var osmOption = {attribution: osmAttrib, opacity:0.1};
+        var osmOption = {attribution: osmAttrib, opacity:0.2};
         L.tileLayer(osmUrl, osmOption).addTo(leafletObj);
         var geoJsonLayer = L.geoJson(geodata, {
           style: function(d){
@@ -173,7 +173,7 @@
             }
           },
           onEachFeature: function(d,l){
-            options.eachfeature(d,l);
+            options.eachfeature(geoJsonLayer, d, l);
           }
         }).addTo(leafletObj);
         // 拡大縮小ボタン位置変更
@@ -193,7 +193,7 @@
             // 凡例作成
             legendContainer = d3.select(container).append('svg')
               .attr("class", "legendQuant")
-              .attr("transform", "translate(20,90)");
+              .attr("preserveAspectRatio", "xMinYMax meet");
             if(options.show_legend && options.color_scale){
               update_legend(legendContainer, options);
             }
@@ -280,7 +280,7 @@
 
       envs.geoJsonLayer.getLayers().forEach(function(x){
         envs.geoJsonLayer.resetStyle(x);
-        options.eachfeature(x.feature, x);
+        options.eachfeature(envs.geoJsonLayer, x.feature, x);
       });
 
       console.log(envs);
