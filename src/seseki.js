@@ -1,27 +1,23 @@
 
 require('d3-svg-legend');
-var $ = window.jQuery = require('jquery'); /* materialize-cssのバグ対策 https://github.com/Dogfalo/materialize/issues/1229 */
-require('materialize-css/dist/js/materialize.js');
-require('materialize-css/bin/materialize.css')
 var Handsontable = require('handsontable/dist/handsontable.full');
 require('handsontable/dist/handsontable.full.css');
 var Encoding = require('encoding-japanese');
 
-require('./common');
 require('./heatmap');
-require('./common.css');
 
-var seseki_main = function(gis_def){
+seseki = function(gis_def){
   var initialized = false;
   var map_elem = $('<div>');
-  var new_id = 'map';
+  var japanesemap_elem_id = 'map';
   var tip_elem = $('<div>');
   var modal_table_elem = $('<table>');
   var data = {}; // 自治体コードがキーの辞書
   var data_multi_ids = {}; // 政令指定都市向け辞書
   var data_array; // d3.csvで読み込んだCSVデータ
   var csv_keys = [];
-  var communes = gis_def.communes;
+  var communes;
+  var id_map;
 
   var ua = navigator.userAgent; // ユーザーエージェントを代入
   var isIE = false;
@@ -46,7 +42,7 @@ var seseki_main = function(gis_def){
 
     function initialize(d){
       // ヒートマップ描画
-      map_elem.attr('id', new_id);
+      map_elem.attr('id', japanesemap_elem_id);
       $('#map_container').append(map_elem);
 
       // 列選択ボタン作成
@@ -63,18 +59,16 @@ var seseki_main = function(gis_def){
       .append('option')
       .html(function(d){return d});
 
-      // 北海道地図描画
+      // 地図描画
       var options = {
         title:'',
         subtitle:'',
         subsubtitle:'',
-        geodata_file:gis_def.geodata_file,
-        geodata_fieldname:gis_def.geodata_fieldname, // topojsonのフィールド名
+        geodata_files:gis_def.geodata_files,
         ref_size:gis_def.ref_size,
-        exceptions:gis_def.exceptions,
         max_width:800
       };
-      $('#'+new_id).hokkaidoHeatmap(options, function(){init_sample();});
+      $('#'+japanesemap_elem_id).japaneseMap(options, function(){init_params();init_sample();});
 
       // tip作成
       tip_elem.attr('class', 'card-panel')
@@ -84,12 +78,18 @@ var seseki_main = function(gis_def){
       .css('position', 'absolute')
       .css('visibility', 'hidden')
       .css('font-size', '14pt')
+      .css('top', '0px')
       .appendTo('body');
 
       // modal作成
       modal_table_elem.attr('class','table bordered striped highlight');
       $("#modal_commune_data").append(modal_table_elem);
 
+    }
+    function init_params(){
+      var defs = $('#'+japanesemap_elem_id).japaneseMap('get_commune_def')
+      id_map = defs.id_map;
+      communes = defs.communes;
     }
     function update(d){
       if(!d.length){
@@ -105,18 +105,20 @@ var seseki_main = function(gis_def){
         clear_data();
         return;
       }
-      data_array = d;
+      data_array = [];
       data = {};
       // データアクセスを容易にするために自治体名でObject作成
       d.forEach(function(x){
         var commune_name = x[csv_keys[0]]; // 1列目は自治体名(制約)
-        if(commune_name.length<2) return; // 文字列が短過ぎたらスキップ
-        var commune_ids = gis_def.id_map[commune_name]; // 自治体IDを取得
+        if(commune_name == null || commune_name.length<2) return; // 文字列が短過ぎたらスキップ
+        var commune_ids = id_map[commune_name]; // 自治体IDを取得
         if(!commune_ids) return; // 対応するIDが見つからない場合はスキップ
+        data_array.push(x); // データ格納変数に代入
         commune_ids.forEach(function(i){ // データ辞書に代入
           data[i] = x;
         });
         if(commune_ids.length>1) data_multi_ids[commune_name] = x; // 政令指定都市データを代入
+
       });
       // タイトル更新
       $('#report_title').text(csv_keys[0]);
@@ -139,9 +141,20 @@ var seseki_main = function(gis_def){
         try{
           var value;
           value = x[key];
-          return isNaN(+value) ? value : +value;
+          if(typeof value == "string"){
+            if(value.match(/^(|-)([0-9]{1,3},)([0-9]{3},)*[0-9]{3}(|\.[0-9]+)$/)){
+              // カンマ区切りの数値ならば
+              value = parseFloat(value.replace(",",""));
+            }
+            else if(value && value.match(/^(|-)[0-9]+(|\.[0-9]+)$/)){
+              // 数値ならば
+              value = parseFloat(value);
+            }
+          }
+          return value;
         }
         catch(e){
+          // データが無いならば
           return null;
         }
       }
@@ -162,7 +175,7 @@ var seseki_main = function(gis_def){
       }
       else if(min < 0 && max >= 0){
         if(get_value(data_array[1])>0&&get_value(data_array[0])/get_value(data_array[1]) > 3.0){
-          // 1位と2位の比率が5倍を超えるとき
+          // 1位と2位の比率が3倍を超えるとき
           domain = [min,0,get_value(data_array[1]),get_value(data_array[0])];
           range = ["#03a9f4", "white", "#ff5722", "#dd2c00"];
         }
@@ -173,7 +186,7 @@ var seseki_main = function(gis_def){
       }
       else { // (min >= 0 && max >= 0)
         if(get_value(data_array[1])>0&&get_value(data_array[0])/get_value(data_array[1]) > 3.0){
-          // 1位と2位の比率が5倍を超えるとき
+          // 1位と2位の比率が3倍を超えるとき
           domain = [0,get_value(data_array[1]),get_value(data_array[0])];
           range = ["white", "#ff5722", "#dd2c00"];
         }
@@ -202,9 +215,7 @@ var seseki_main = function(gis_def){
       var titles = key.replace(/\)/g,'').split('(');
       // ヒートマップのパラメタ生成
       // click時の動作
-      var last_touched = null;
       var click = function(d){
-        if(last_touched) d3.select(last_touched.elem).attr('fill', '#ffff00');
         $("#modal_commune_name").html(d.name);
         // データ取得
         var row = (data_multi_ids[d.name] ? data_multi_ids[d.name] : data[d.commune_id]);
@@ -231,32 +242,11 @@ var seseki_main = function(gis_def){
         modal_table_elem.append(tbody);
         $("#myModal").openModal({in_duration:0,out_duration:0});
       }
-      // touch & over時の動作
-      var mouseover = function(x){
-        var pos;
-        var commune_name;
+      // leaflet Feature要素書き出し
+      var last_touched;
+      var eachFeature = function(parent, x, layer){
         var commune_id = x.commune_id;
-        // 座標取得
-        if(d3.event.targetTouches){// touch
-          d3.event.preventDefault();
-          pos = {x:d3.event.targetTouches[0].pageX, y:d3.event.targetTouches[0].pageY};
-          if(last_touched && last_touched.elem == this){
-            click(x);
-          }
-        }
-        else{
-          if(isIE) pos = {x:d3.event.x,y:d3.event.y};
-          else pos = {x:$(window).scrollLeft() + d3.event.x,y:$(window).scrollTop() + d3.event.y};
-        }
-        // 元に戻す
-        if(last_touched) d3.select(last_touched.elem).attr('fill', last_touched.color);
-        last_touched = {elem:this, color:options.map_filler(x)};
-        // 色塗替え
-        d3.select(this).attr('fill', '#dddd00');
-        // tip更新
-        tip_elem.css('top' , pos.y+'px');
-        tip_elem.css('left', pos.x+'px');
-        tip_elem.css('visibility', 'visible');
+        var commune_name;
         var target_value;
         if(!data[commune_id] && x.properties.N03_003 && data_multi_ids[x.properties.N03_003]){// 区データがなく、市データが有る場合
           commune_name = x.properties.N03_003;
@@ -266,8 +256,44 @@ var seseki_main = function(gis_def){
           commune_name = x.name;
           target_value = format(get_value(data[commune_id]));
         }
-        else target_value = "-";
-        tip_elem.html('<span>' + commune_name + ' <span class="badge">' + target_value + '</span>'  );
+        else{
+          commune_name = x.name;
+          target_value = "-";
+        } 
+        var popup_elem = $('<span>');
+        popup_elem.on('click', function(x){click({name:commune_name, commune_id:commune_id})});
+        popup_elem.html('<span>' + commune_name + '<br /><span class="badge">' + target_value + '</span>');
+        layer.bindTooltip(popup_elem[0],{className:"layer_tooltip"});
+        layer.on({
+          mouseover: function(e){
+            var style = {
+                weight: 5,
+                fillColor: '#dce775',
+                fillOpacity: 0.7
+            };
+            parent.getLayers()
+              .filter(function(y){ return y.feature.commune_id == commune_id })
+              .forEach(function(y){
+                y.setStyle(style);
+                if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                    y.bringToFront();
+                }
+              });
+            e.target.openTooltip();
+          },
+          mouseout: function(e){
+            parent.getLayers()
+              .filter(function(y){ return y.feature.commune_id == commune_id })
+              .forEach(function(y){
+                parent.resetStyle(y);
+              });
+            e.target.closeTooltip();
+          },
+          click: function(e){
+            click({name:commune_name, commune_id:commune_id});
+          },
+
+        });
       }
       var options = {
         title : titles[0],
@@ -282,22 +308,17 @@ var seseki_main = function(gis_def){
           if(value==null) return "#888";
           return color_scale(get_value(value));
         },
-        on_mouseover : mouseover,
-        on_mouseout  : function(x){
-          d3.select(this).attr('fill', options.map_filler);
-          tip_elem.css('visibility', 'hidden');
-        },
-        on_mousedown : click,
-        on_touchstart : mouseover
+        on_click : click,
+        eachfeature : eachFeature
       };
-      $('#'+new_id).hokkaidoHeatmap('update', options);
+      $('#'+japanesemap_elem_id).japaneseMap('update', options);
 
       // ランキング表示
       var items = [];
       data_array.forEach(function(x){
         var commune_name = x[csv_keys[0]]; // 1列目は自治体名(制約)
-        var commune_ids = gis_def.id_map[commune_name]; // 自治体IDを取得
-        var value = isNaN(+x[key]) ? x[key] : +x[key];
+        var commune_ids = id_map[commune_name]; // 自治体IDを取得
+        var value = get_value(x);
         if(commune_name.length<2) return; // 文字列が短過ぎたらスキップ
         if(commune_ids) items.push({key:commune_name, value:value, commune_ids:commune_ids});
       });
@@ -321,18 +342,22 @@ var seseki_main = function(gis_def){
         return html;
       });
       ranking_table_rows.on('mouseover', function(x){
-        $('#map').hokkaidoHeatmap('update_partial', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;}, function(x){return '#dddd00'});
+        $('#map').japaneseMap('modify_geojson_layer', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;},
+        {
+          weight: 5,
+          fillColor: '#dce775',
+          fillOpacity: 0.7
+        });
       })
       .on('mouseout', function(x){
-        $('#map').hokkaidoHeatmap('update_partial', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;}, function(y){return options.color_scale(get_value(data[y.commune_id]))});
+        $('#map').japaneseMap('modify_geojson_layer', function(y){return false;},{});
       })
       .on('click', function(x){
-        click({name:x.key, commune_id:gis_def.id_map[x.key][0]});
+        click({name:x.key, commune_id:id_map[x.key][0]});
       });
     }
   }
 
-  var input_file = 'instant_data/20151125_population_analysis.csv';
   $('#file_loader').change(function(e){
     var file = e.target.files[0];
     file.type = "text/plain;charset=UTF-8"
@@ -344,7 +369,7 @@ var seseki_main = function(gis_def){
       csv_viewer(d3.csv.parse(data));
       // サンプルローダーを初期化
       $("#sample_data_selector").val("");
-      $("#data-info").css("visibility", "hidden");
+      $("#data-info").css("display", "none");
     }
     reader.readAsArrayBuffer(file);
   });
@@ -355,7 +380,7 @@ var seseki_main = function(gis_def){
       function get_by_filename(k){var i;for(i=0;i<d.length;i++){if(d[i].file==k) return d[i];}return null;}
       function load_sample(filename){
         // サンプルファイルの説明を表示
-        $("#data-info").css("visibility", "visible");
+        $("#data-info").css("display", "block");
         var data_info = get_by_filename(filename);
         $("#data-description").html(data_info.file_description);
         $("#data-title").html(data_info.title);
@@ -381,13 +406,20 @@ var seseki_main = function(gis_def){
           }
         });
       }
+      var sample_data_list = d.filter(function(x){
+        for(var i=0;i<x.target_prefectures.length;i++){
+          if(gis_def.target_prefectures.indexOf(x.target_prefectures[i])!=-1) return true;
+        }
+        return false;
+      });
+      sample_data_list.unshift({title:"",file:""});
       // 列選択ボタン作成
       d3.select('#sample_data_selector')
       .on('change', function (x) {
         load_sample(this.value);
       })
       .selectAll('option')
-      .data(d)
+      .data(sample_data_list)
       .enter()
       .append('option')
       .attr("value",function(d){return d.file})
@@ -417,7 +449,7 @@ var seseki_main = function(gis_def){
       startRows: 30,
       startCols: 200,
       width: "100%",
-      height: 500,
+      height: "500",
       colWidths: 80,
       rowHeights: 23,
       rowHeaders: true,
@@ -425,22 +457,38 @@ var seseki_main = function(gis_def){
     };
     spreadsheet_obj = new Handsontable(spreadsheet_elem, options);
     //データを代入
+    var i;
+    var empty_row_num;
+    var csv_key_num;
     var input_data = [];
     if(data_array && data_array.length>2){
       // 読み込み済みの場合
       input_data.push(csv_keys);
-      $.map(data_array, function(d){
-        input_data.push($.map(csv_keys,function(x){return d[x]===null?"":d[x]}));
+      data_array.forEach(function(d){
+        input_data.push(csv_keys.map(function(x){return d[x]===null?"":d[x]}));
       });
+      cvs_key_num = csv_keys.length;
+      empty_row_num = communes.length - data_array.length + 10;
     }
     else{
       // まだ読み込んでいない場合
-      input_data.push(["データの名前","サンプルデータ系列1(説明A)(説明B)","サンプルデータ系列2(説明C)(説明D)","サンプルデータ系列3(説明E)(説明F)"]);
+      var example_keys = ["ランダム生成のサンプルデータです","サンプルデータ系列1(説明A)(説明B)","サンプルデータ系列2(説明C)(説明D)","サンプルデータ系列3(説明E)(説明F)"];
+      input_data.push(example_keys);
       $.map(communes,function(d,i){
         var r = [d,i,parseInt(Math.random()*1000,10),Math.random()*10-5];
         input_data.push(r);
       });
+      cvs_key_num = example_keys.length;
+      empty_row_num = 10;
     }
+    // 件数が市町村数に達していない場合のために余白行を用意する
+    for(i=0;i<empty_row_num;i++){
+      var tmp_row = [];
+      var j;
+      for(j=0;j<csv_key_num;j++) tmp_row.push("");
+      input_data.push(tmp_row);
+    }
+
     spreadsheet_obj.loadData(input_data);
     spreadsheet_obj.alter('insert_col',null,50-input_data[0].length);
   }
@@ -460,7 +508,7 @@ var seseki_main = function(gis_def){
     spreadsheet_obj.alter('remove_col', data[0].length-min_nullnum, min_nullnum);
     // データを再取得
     data = spreadsheet_obj.getData();
-    var keys = data[0];//.shift();
+    var keys = data[0];
     // NULLの列名があったら足す
     for(var i=0;i<keys.length;i++){
       if(keys[i]===null) keys[i] = i+'系列'
@@ -468,6 +516,7 @@ var seseki_main = function(gis_def){
     var json = [];
     for(var i=1;i<data.length;i++){
       var r = {};
+      if(data[i][0]==null) continue; // 市町村名が入っていない行は飛ばす
       $.map(keys,function(x,j){
         r[x] = data[i][j];
       });
@@ -481,7 +530,7 @@ var seseki_main = function(gis_def){
     $("#file_loader_filename").val("CSVファイルを開く");
     // サンプルローダーを初期化
     $("#sample_data_selector").val("");
-    $("#data-info").css("visibility", "hidden");
+    $("#data-info").css("display", "none");
   }
   $('.modal-trigger').leanModal({
       dismissible: true,
@@ -496,6 +545,6 @@ var seseki_main = function(gis_def){
 
 module.exports = function(gis_def){
   $(document).ready(function(){
-    seseki_main(gis_def);
+    seseki(gis_def);
   });
 }

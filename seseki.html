@@ -126,7 +126,19 @@ function getUrlVars(){
 
 function execute_seseki(){
   var hash = getUrlVars();
-  var target_prefectures = [11,12,13,14];
+  var target_prefectures = [];
+  if(hash.targets){
+    hash.targets.split(",").forEach(function(d){
+      var value = +d;
+      if(d>=1 && d<=prefecture_datalist.length){
+        target_prefectures.push(value);
+      }
+    });
+    if(target_prefectures.length==0) target_prefectures = [1];
+  }
+  else{
+    target_prefectures = [1];
+  }
 
   var geodata_files = target_prefectures.map(function(d){
     return 'data/' + prefecture_datalist[d-1] + '_topo.json';

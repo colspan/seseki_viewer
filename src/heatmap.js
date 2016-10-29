@@ -1,4 +1,3 @@
-var topojson = require('topojson');
 (function($) {
 
   var ua = navigator.userAgent; // ユーザーエージェントを代入
@@ -11,25 +10,7 @@ var topojson = require('topojson');
     isEdge = true;
   }
   var captions = ['title', 'subtitle', 'subsubtitle'];
-  function get_size(opt){
-    var ref_size = opt.ref_size;
-    if(!opt) return ref_size;
-    if(!opt.width && !opt.height) return ref_size;
-    var new_size = {};
-    if(!opt.width || opt.width/opt.height > ref_size.width/ref_size.height){
-      new_size.height = opt.height;
-      new_size.width  = opt.height / ref_size.height * ref_size.width;
-      new_size.scale  = opt.height / ref_size.height * ref_size.scale;
-    }
-    else{
-      //if(opt.max_width) opt.width = opt.width > opt.max_width ? opt.max_width : opt.width;
-      new_size.width  = opt.width;
-      new_size.height = opt.width / ref_size.width * ref_size.height;
-      new_size.scale  = opt.width / ref_size.width * ref_size.scale;
-    }
-    return new_size;
-  }
-  function update_legend(legendView, options){
+  function update_legend(legendContainer, options){
     var domain = options.color_scale.domain();
     var format_str;
     if(options.format_str) format_str = options.format_str;
@@ -39,136 +20,216 @@ var topojson = require('topojson');
       .shapeWidth(50)
       .labelFormat(d3.format(format_str))
       .scale(options.color_scale);
-    legendView.call(legend);
+    legendContainer.call(legend);
   }
-  var geodata_topo = {};
-  var geodata_store = {};
   var methods = {
     init : function(option, callback){
       var _this = this;
       var defaults = {
-        geodata_file : 'data/00_hokkaido_topo.json',
-        geodata_fieldname : 'hokkaido', // topojsonのフィールド名
+        geodata_files : [],
         ref_size : {
           width :  420,
           height:  330,
           scale : 3200
         },
-        exceptions:["色丹郡色丹村","国後郡泊村","国後郡留夜別村","択捉郡留別村","紗那郡紗那村","蘂取郡蘂取村"],
+        exceptions:["色丹郡色丹村","国後郡泊村","国後郡留夜別村","択捉郡留別村","紗那郡紗那村","蘂取郡蘂取村", "所属未定地"],
         title : 'title',
         subtitle : 'subtitle',
         subsubtitle : 'subsubtitle',
-        caption_sizes : [24,18,18],
+        caption_sizes : [32,20,20],
         map_filler : function(d){return '#ffffff'},
         stroke_filler: "hsl(80,100%,0%)",
-        on_mouseover : null,
-        on_mouseout : null,
-        on_mousedown : null,
-        on_mouseup : null,
-        on_touchstart : null,
-        on_touchend : null,
         on_click : null,
+        eachfeature : function(p,x,l){l.bindTooltip(x.name)},
         show_legend : true,
-        auto_resize : true,
         max_width : null,
         save_button : true,
         save_filename : 'heatmap'
       };
+      var envs = {};
       var options = $.extend(defaults,option);
-      this[0].hokkaidoHeatmap = options;
+      _this[0].japaneseMapOpts = options;
+      _this[0].japaneseMapEnvs = envs;
       var selector = this.selector;
       var geodata;
+      var communes = [];
+      var id_map = {};
 
-      if(geodata_topo[options.geodata_file]){
-        // 地図データを読み込み済みだったら即表示
-        geodata = geodata_store[options.geodata_file];
-        display();
-      }
-      else{
-        // 地図データを読み込んでいなければ読み込み
-        d3.json(options.geodata_file, load_finished);
-      }
-
-      function load_finished(error, loaded){
-        geodata_topo[options.geodata_file] = loaded;
+      // 複数ファイルを非同期読み込み
+      var promises = [];
+      options.geodata_files.forEach(function(d){
+        var p = new Promise(function(resolve, reject){
+            d3.json(d, function(error, data){
+              load_finished(error, data, resolve, reject);
+            });
+        });
+        promises.push(p);
+      });
+      // 読み込み処理
+      function load_finished(error, loaded, resolve, reject){
+        if(error){
+          reject(error);
+          return;
+        }
         // TopoJSONデータ展開
-        geodata = topojson.feature(geodata_topo[options.geodata_file], geodata_topo[options.geodata_file].objects[options.geodata_fieldname]);
+        var geodata_fieldname = Object.keys(loaded.objects)[0];
+        geojson = topojson.feature(loaded, loaded.objects[geodata_fieldname]);
         var exception_communes = options.exceptions; // 対象外の市町村
         var remove_list = [];
-        geodata.features.forEach(function(d,i){
+        var communes = [];
+        function register(k,v){
+          if(!id_map[k]) id_map[k] = [];
+          if(id_map[k].indexOf(v) == -1) id_map[k].push(v);
+        }
+        geojson.features.forEach(function(d,i){
+          // 国土数値情報　行政区域データ向けのパーサ
+
+          if(d.properties.N03_007=="") return; // 所属未定地等IDがないものは飛ばす
+
+          // 市町村名を整理する
           d.commune_id = +d.properties.N03_007; // IDを代入
+          d.prefecture = d.properties.N03_001;
           d.name = '';
           if(d.properties.N03_003) d.name += d.properties.N03_003;
           if(d.properties.N03_004) d.name += d.properties.N03_004;
+
           if(exception_communes.indexOf(d.name) != -1){
+            // 除外リストに存在すれば削除フラグを付与する
             remove_list.unshift(i);
+          }
+          else{
+            // 除外リストになければ市町村一覧に追加
+            if(communes.indexOf(d.name) == -1) communes.push(d.name);
+          }
+
+          // CSVの市町村名から白地図のIDに変換するmapを自動生成する
+          // 政令指定都市 or 郡
+          if(d.properties.N03_003){
+            // 政令指定都市または郡単位でひと塗りとする
+            register(d.properties.N03_003, d.commune_id);
+            // 町村・区単位を連結する
+            register(d.name, d.commune_id);
+            // 郡の場合は町村のみにできるようにする
+            if(d.properties.N03_003.slice(-1)=="郡"){
+              register(d.properties.N03_004, d.commune_id);
+            }
+          }
+          // 市
+          if(d.properties.N03_004){
+              register(d.properties.N03_004, d.commune_id);
           }
         });
         // 対象外の市町村を削除
         remove_list.forEach(function(d){
-          geodata.features.splice(d,1);
+          geojson.features.splice(d,1);
+        });        
+
+        // 割り切り 同じ市町村名があると区別できない
+        resolve({geojson:geojson,communes:communes,id_map:id_map});
+      }
+
+      // 処理開始
+      Promise.all(promises).then(ready);
+      function ready(results){
+        results.forEach(function(d){
+          if(!geodata) geodata = d.geojson;
+          else geodata.features = geodata.features.concat(d.geojson.features);
+          communes = communes.concat(d.communes);
+          Object.keys(d.id_map).forEach(function(x){
+            id_map[x] = d.id_map[x];
+          });
         });
-        geodata_store[options.geodata_file] = geodata;
+        _this[0].japaneseMapCommunes = communes;
+        _this[0].japaneseMapIdMap = id_map;
         display();
       }
+
       function display(){
         var projection, path;
 
         options.geodata = geodata;
+        // Leaflet起動
+        var centroid = d3.geo.centroid(geodata);
+        var bounds = d3.geo.bounds(geodata);
+        var leafletObj = L.map('leaflet_map',{
+          zoom: 7,
+          minZoom: 4,
+          maxZoom: 18,
+          center:[centroid[1],centroid[0]]
+        });
+        var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        var osmAttrib = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
+        var osmOption = {attribution: osmAttrib, opacity:0.2};
+        L.tileLayer(osmUrl, osmOption).addTo(leafletObj);
+        var geoJsonLayer = L.geoJson(geodata, {
+          style: function(d){
+            return {
+              color:"#222",
+              weight:0.3,
+              opacity: 0.6,
+              fillOpacity: 0.6,
+              fillColor: options.map_filler(d)
+            }
+          },
+          onEachFeature: function(d,l){
+            options.eachfeature(geoJsonLayer, d, l);
+          }
+        }).addTo(leafletObj);
+        // 拡大縮小ボタン位置変更
+        leafletObj.zoomControl.setPosition('bottomright');
+        // 権利情報追記
+        leafletObj.attributionControl.addAttribution( '&copy; <a href="http://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html">国土数値情報 行政区域データ</a>' );
+        leafletObj.attributionControl.addAttribution( 'CC BY NC SA 4.0 <a href="https://github.com/colspan">Miyoshi(@colspan)</a> <a href="https://github.com/colspan/seseki_viewer">Seseki</a>' );
 
-        // svg要素を作成し、データの受け皿となるg要素を追加
-        var map_container = d3.select(selector).append('svg')
-        .attr('width', "100%")
-        //.attr('height', options.ref_size.height)
-        .attr("preserveAspectRatio", "xMinYMax meet")
-        .attr("viewBox", "0 0 "+options.ref_size.width+" "+options.ref_size.height);
-        var map = map_container.append('g');
+        envs.geoJsonLayer = geoJsonLayer;
+        // 凡例
+        var legendContainer;
+        var legendWindow = L.Control.extend({
+          options: {
+            position: 'bottomleft'
+          },
+          onAdd: function (map) {
+            var container = L.DomUtil.create('div', 'legendWindow');
 
-        // Caption
-        var caption_container = map_container.append('g').attr('class','hokkaidoHeatmap_caption_container');
-        caption_container.selectAll('text')
-          .data(captions)
-          .enter()
-          .append('text')
-          .style('font',function(d,i){return options.caption_sizes[i]+'px "Noto Sans CJK JP" Arial'})
-          .attr('x',5)
-          .attr('y',function(d,i){var y=0;for(var j=0;j<=i;j++){y+=options.caption_sizes[j]+5}return y})
-          .text(function(d){return options[d]});
+            // 凡例作成
+            legendContainer = d3.select(container).append('svg')
+              .attr("class", "legendQuant")
+              .attr("preserveAspectRatio", "xMinYMax meet");
+            if(options.show_legend && options.color_scale){
+              update_legend(legendContainer, options);
+            }
+            envs.legendContainer = legendContainer;
 
-        // 投影を処理する関数を用意した上でデータからSVGのPATHに変換
-        projection = d3.geo.mercator()
-        .scale(options.ref_size.scale)
-        .center(d3.geo.centroid(geodata))  // データから中心点を計算
-        .translate([options.ref_size.width / 2, options.ref_size.height / 2]);
+            return container;
+          }
+        });
+        leafletObj.addControl(new legendWindow());
 
-        // pathジェネレータ関数
-        path = d3.geo.path().projection(projection);
-        map.selectAll('path')
-        .data(geodata.features)
-        .enter()
-        .append('path')
-        .attr('d', path)
-        .attr("fill", options.map_filler)
-        .attr("stroke", options.stroke_filler)
-        .attr("stroke-width","1")
-        .attr("stroke-opacity","0.2")
-        .on('mouseover', options.on_mouseover)
-        .on('mouseout', options.on_mouseout)
-        .on('mousedown', options.on_mousedown)
-        .on('mouseup', options.on_mouseup)
-        .on('touchstart', options.on_touchstart)
-        .on('touchend', options.on_touchend)
-        .on('click', options.on_click);
+        // データ説明枠
+        var captionWindow = L.Control.extend({
+          options: {
+            position: 'topleft'
+          },
+          onAdd: function(map){
+            var container = L.DomUtil.create('div', 'captionWindow');
 
-        // 凡例作成
-        var legendView = map.append("g")
-          .attr("class", "legendQuant")
-          .style("font", '12px "Noto Sans CJK JP" Arial')
-          .attr("transform", "translate(20,90)");
-        if(options.show_legend && options.color_scale){
-          update_legend(legendView, options);
-        }
+            // Caption
+            var captionContainer = d3.select(container);
+            captionContainer.selectAll('div')
+              .data(captions)
+              .enter()
+              .append('div')
+              .style('font-size',function(d,i){return options.caption_sizes[i]+'pt'})
+              .text(function(d){return options[d]});
 
+            envs.captionContainer = captionContainer;
+
+            return container;
+          }
+        });
+        leafletObj.addControl(new captionWindow());
+
+        /*
         // 保存ボタンを作成
         if(!isEdge && !isIE && options.save_button){
           $('<button>').text('画像として保存')
@@ -202,6 +263,7 @@ var topojson = require('topojson');
             .attr('class','btn btn-default')
             .appendTo(selector);
         }
+        */
 
         // 全処理が終了したらcallback呼び出し (即updateしたい場合に用いる)
         if(typeof callback == 'function') callback();
@@ -210,42 +272,58 @@ var topojson = require('topojson');
       return(this);
     },
     update : function( input_options ) {
-      var options = $(this.selector)[0].hokkaidoHeatmap;
+      var options = $(this.selector)[0].japaneseMapOpts;
+      var envs = $(this.selector)[0].japaneseMapEnvs;
       options = $.extend(options, input_options);
       d3.select(this.selector).selectAll('path')
       .attr('fill', options.map_filler)
-      .on('mouseover', options.on_mouseover)
-      .on('mouseout', options.on_mouseout)
-      .on('mousedown', options.on_mousedown)
-      .on('mouseup', options.on_mouseup)
-      .on('touchstart', options.on_touchstart)
-      .on('touchend', options.on_touchend)
       .on('click', options.on_click);
 
-      var caption_elems = d3.select(this.selector).select('.hokkaidoHeatmap_caption_container')
-        .selectAll('text')
+      envs.geoJsonLayer.getLayers().forEach(function(x){
+        envs.geoJsonLayer.resetStyle(x);
+        options.eachfeature(envs.geoJsonLayer, x.feature, x);
+      });
+
+      var caption_elems = envs.captionContainer.selectAll('div')
         .text(function(d){return options[d]});
 
       //  凡例更新
       if(options.show_legend && options.color_scale){
-        var legendView = d3.select(this.selector).select("g.legendQuant");
-        update_legend(legendView, options);
+        update_legend(envs.legendContainer, options);
       }
     },
-    update_partial : function(filter, filler){
-      d3.select(this.selector).selectAll('path')
-      .filter(filter)
-      .attr('fill', filler);
+    modify_geojson_layer :function(criteria, style){
+      var envs = $(this.selector)[0].japaneseMapEnvs;
+      var geoJsonLayer = envs.geoJsonLayer;
+      var openedTooltip = false;
+      geoJsonLayer.getLayers().forEach(function(l){
+        if(l.__modifiedStyle){
+          geoJsonLayer.resetStyle(l);
+          l.closeTooltip();
+          l.__modifiedStyle = false;
+        }
+        if(criteria(l.feature)){
+          l.__modifiedStyle = true;
+          l.setStyle(style);
+          if(!openedTooltip){
+            l.openTooltip();
+            openedTooltip = true;
+          }
+        }
+      });
+    },
+    get_commune_def : function(){
+        return {communes:$(this.selector)[0].japaneseMapCommunes, id_map:$(this.selector)[0].japaneseMapIdMap};
     }
   };
 
-  $.fn.hokkaidoHeatmap = function( method ) {
+  $.fn.japaneseMap = function( method ) {
     if ( methods[method] ) {
       return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
     } else if ( typeof method === 'object' || ! method ) {
       return methods.init.apply( this, arguments );
     } else {
-      $.error( 'Method ' +  method + ' does not exist on jQuery.hokkaidoHeatmap' );
+      $.error( 'Method ' +  method + ' does not exist on jQuery.japaneseMap' );
     }
   }
 

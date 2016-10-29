@@ -2,103 +2,195 @@
 <html>
 <meta charset="utf-8">
 <head>
-  <title>Seseki Viewer</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <script src="build/main_hokkaido.bundle.js"></script>
+ <title>Seseki Viewer</title>
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+ <script src="build/common.bundle.js"></script>
 </head>
 <body>
-  <header>
-    <div class="navbar">
-      <nav class="blue darken-3">
-        <div class="nav-wrapper container">
-          <a style="font-size:14pt" class="page-title">Seseki Viewer</a>
-          <a href="" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-        </div>
-      </nav>
-    </div>
-  </header>
-  <main>
-    <div class="">
-      <div class="row">
-        <form action="#">
-          <div class="file-field input-field col s12 m4 l4 tooltipped" data-position="bottom" data-delay="50" data-tooltip="所定の書式で作成されたCSVファイルを入力できます(UTF-8またはShift-JIS)">
-            <div class="btn">
-              <span><i class="material-icons">description</i></span>
-              <input type="file" accept="csv" id="file_loader" style="display:inline">
-            </div>
-            <div class="file-path-wrapper">
-              <input class="file-path validate" id="file_loader_filename" type="text" value="CSVファイルを開く">
-              <label></label>
-            </div>
-          </div>
-          <div class="input-field col s12 m4 l4">
-            <select class="browser-default tooltipped" id="sample_data_selector" data-position="bottom" data-delay="50" data-tooltip="サンプルのデータで任意データのヒートマップ表示を体験できます">
-              <option value="" disabled selected>サンプルファイルで試す</option>
-            </select>
-          </div>
-          <div class="input-field col s12 m4 l4 tooltipped" data-position="bottom" data-delay="50" data-tooltip="スプレッドシートでデータを編集できます">
-            <a href="#modal_spreadsheet" class="btn modal-trigger" style="height:45px;"><i class="material-icons">launch</i> スプレッドシート編集する</a>
-          </div>
-        </form>
-      </div>
-      <nav class="blue darken-3">
-        <div class="row">
-          <div class="col s12 m6 l6">
-            <h2 style="margin:18px 0 0 10px" id="report_title">ファイルを入力してください</h2>
-          </div>
-          <div class="col s12 m6 l6">
-            <div class="input-field browser-default tooltipped" id="map_datatype_selector" data-position="bottom" data-delay="50" data-tooltip="表示項目を選択できます"></div>
-          </div>
-        </div>
-      </nav>
-      <div class="row" id="main_view">
-        <div class="col s12 m9 l9" id="map_container"></div>
-        <div class="col s12 m3 l3" id="ranking_view">
-          <div id="ranking_container">
-            <table><thead><th>順位</th><th>市町村名</th><th>値</th></thead><tbody id="ranking_table"></tbody></table>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="card blue-grey darken-1" id="data-info" style="visibility:hidden;">
-          <div class="card-content white-text">
-            <span class="card-title"><span id="data-title"></span></span>
-            <p><span id="data-description"></span></p>
-            <p>権利元 : <a class="yellow-text" href="#" id="data-url"></a> (<a class="yellow-text" href="#" id="convertedcsv-url">変換済CSVファイル</a>)</p>
-          </div>
-        </div>
-      </div>
+<header>
+	<nav class="top-nav brown darken-3">
+		<div class="nav-wrapper container valign-wrapper">
+			<h1><a class="page-title">Seseki</a></h1>
+		</div>
+	</nav>
+</header>
+<main>
+	<div class="container">
+		<h2 class="header">都道府県を選ぶ</h2>
+		<div class="row" id="seseki_links"></div>
 
-    </div>
-    <div id="myModal" class="modal modal-fixed-footer">
-      <div class="modal-content">
-        <h4 class="modal-title tooltipped" id="modal_commune_name" data-position="bottom" data-delay="50" data-tooltip=""></h4>
-        <div class="modal-body" id="modal_commune_data"></div>
-      </div>
-      <div class="modal-footer">
-         <a href="#!" class="modal-action modal-close waves-effect waves-green btn">閉じる</a>
-      </div>
-    </div>
+		<h2 class="header">複数の都道府県を組み合わせる</h2>
+		<div class="row">
+			<div id="map"></div>
+			<a class="waves-effect waves-light btn" href="seseki.html" id="seseki_link">上記の組み合わせで開く</a>
+		</div>
 
-    <!-- スプレッドシート -->
-     <div id="modal_spreadsheet" class="modal bottom-sheet">
-       <div class="modal-content">
-         <div id="spreadsheet"></div>
-       </div>
-       <div class="modal-footer">
-         <div class="chip blue lighten-4">Excel等からコピー&amp;ペーストで入力できます。</div>
-         <div class="chip red accent-1">※ブラウザを閉じるとデータが消えますので注意してください</div>
-         <a href="#!" class="modal-action modal-close waves-effect waves-green btn">ヒートマップを更新する</a>
-       </div>
-     </div>
-  </main>
-  <footer class="page-footer blue darken-3">
-    <div class="footer-copyright blue darken-4" style="height:120px;">
-      <div class="container">
-        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="クリエイティブ・コモンズ・ライセンス" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a> <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/colspan/seseki_viewer" property="cc:attributionName" rel="cc:attributionURL">Kunihiko Miyoshi</a> 作『<span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Seseki Viewer</span>』は<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際 ライセンス</a>で提供されています。
-      </div>
-    </div>
-  </footer>
+	</div>
+</main>
+<script>
+// li_elem.innerHTML = '<a href="seseki.html?targets=' + (i+1) + '">' + d.prefecture_jp + '</a>';
 
-  <script src="ga.js"></script>
+var prefecture_def = [
+ 	{ "id" : "01", "prefecture_jp" : "北海道", "prefecture_en" : "hokkaido", scale : 5500 },
+	{ "id" : "02", "prefecture_jp" : "青森", "prefecture_en" : "aomori", scale : 18000 },
+	{ "id" : "03", "prefecture_jp" : "岩手", "prefecture_en" : "iwate", scale : 13000 },
+	{ "id" : "04", "prefecture_jp" : "宮城", "prefecture_en" : "miyagi", scale : 18673 },
+	{ "id" : "05", "prefecture_jp" : "秋田", "prefecture_en" : "akita", scale : 14033 },
+	{ "id" : "06", "prefecture_jp" : "山形", "prefecture_en" : "yamagata", scale : 15614 },
+	{ "id" : "07", "prefecture_jp" : "福島", "prefecture_en" : "fukushima", scale : 19426 },
+	{ "id" : "08", "prefecture_jp" : "茨城", "prefecture_en" : "ibaraki", scale : 19062
+ },
+	{ "id" : "09", "prefecture_jp" : "栃木", "prefecture_en" : "tochigi", scale : 24078 },
+	{ "id" : "10", "prefecture_jp" : "群馬", "prefecture_en" : "gumma", scale : 21428 },
+	{ "id" : "11", "prefecture_jp" : "埼玉", "prefecture_en" : "saitama", scale : 25000 },
+	{ "id" : "12", "prefecture_jp" : "千葉", "prefecture_en" : "chiba", scale : 19101 },
+	{ "id" : "13", "prefecture_jp" : "東京", "prefecture_en" : "tokyo", scale : 15000 },
+	{ "id" : "14", "prefecture_jp" : "神奈川", "prefecture_en" : "kanagawa", scale : 42165 },
+	{ "id" : "15", "prefecture_jp" : "新潟", "prefecture_en" : "niigata", scale : 12655 },
+	{ "id" : "16", "prefecture_jp" : "富山", "prefecture_en" : "toyama", scale : 32561 },
+	{ "id" : "17", "prefecture_jp" : "石川", "prefecture_en" : "ishikawa", scale : 12868 },
+	{ "id" : "18", "prefecture_jp" : "福井", "prefecture_en" : "fukui", scale : 24142 },
+	{ "id" : "19", "prefecture_jp" : "山梨", "prefecture_en" : "tamanashi", scale : 28593 },
+	{ "id" : "20", "prefecture_jp" : "長野", "prefecture_en" : "nagano", scale : 12551 },
+	{ "id" : "21", "prefecture_jp" : "岐阜", "prefecture_en" : "gifu", scale : 17263 },
+	{ "id" : "22", "prefecture_jp" : "静岡", "prefecture_en" : "shizuoka", scale : 21889 },
+	{ "id" : "23", "prefecture_jp" : "愛知", "prefecture_en" : "aichi", scale : 27150 },
+	{ "id" : "24", "prefecture_jp" : "三重", "prefecture_en" : "mie", scale : 14975 },
+	{ "id" : "25", "prefecture_jp" : "滋賀", "prefecture_en" : "shiga", scale : 25206 },
+	{ "id" : "26", "prefecture_jp" : "京都", "prefecture_en" : "kyoto", scale : 21428 },
+	{ "id" : "27", "prefecture_jp" : "大阪", "prefecture_en" : "osaka", scale : 29420 },
+	{ "id" : "28", "prefecture_jp" : "兵庫", "prefecture_en" : "hyogo", scale : 15123 },
+	{ "id" : "29", "prefecture_jp" : "奈良", "prefecture_en" : "nara", scale : 24931},
+	{ "id" : "30", "prefecture_jp" : "和歌山", "prefecture_en" : "wakayama", scale : 24205 },
+	{ "id" : "31", "prefecture_jp" : "鳥取", "prefecture_en" : "tottori", scale : 15000 },
+	{ "id" : "32", "prefecture_jp" : "島根", "prefecture_en" : "shimane", scale : 13000 },
+	{ "id" : "33", "prefecture_jp" : "岡山", "prefecture_en" : "okayama", scale : 21785 },
+	{ "id" : "34", "prefecture_jp" : "広島", "prefecture_en" : "hiroshima", scale : 21478 },
+	{ "id" : "35", "prefecture_jp" : "山口", "prefecture_en" : "yamaguchi", scale : 21180 },
+	{ "id" : "36", "prefecture_jp" : "徳島", "prefecture_en" : "tokushima", scale : 32217 },
+	{ "id" : "37", "prefecture_jp" : "香川", "prefecture_en" : "kagawa", scale : 41590 },
+	{ "id" : "38", "prefecture_jp" : "愛媛", "prefecture_en" : "ehime", scale : 16397 },
+	{ "id" : "39", "prefecture_jp" : "高知", "prefecture_en" : "kochi", scale : 19467 },
+	{ "id" : "40", "prefecture_jp" : "福岡", "prefecture_en" : "fukuoka", scale : 18373 },
+	{ "id" : "41", "prefecture_jp" : "佐賀", "prefecture_en" : "saga", scale : 34397 },
+	{ "id" : "42", "prefecture_jp" : "長崎", "prefecture_en" : "nagasaki", scale : 8448
+ },
+	{ "id" : "43", "prefecture_jp" : "熊本", "prefecture_en" : "kumamoto", scale : 20890 },
+	{ "id" : "44", "prefecture_jp" : "大分", "prefecture_en" : "oita", scale : 22426 },
+	{ "id" : "45", "prefecture_jp" : "宮崎", "prefecture_en" : "miyagawa", scale : 15560 },
+	{ "id" : "46", "prefecture_jp" : "鹿児島", "prefecture_en" : "kagoshima", scale : 8000 },
+	{ "id" : "47", "prefecture_jp" : "沖縄", "prefecture_en" : "okinawa", scale : 8000 },
+];
+
+
+d3.json('data/japan_topo.json', display);
+
+function display(error, loaded){
+	var selector = "#map";
+	var geodata_fieldname = Object.keys(loaded.objects)[0];
+	geojson = topojson.feature(loaded, loaded.objects[geodata_fieldname]);
+
+	var projection, path;
+
+	var link_container = d3.select("#seseki_links");
+	prefecture_def.forEach(function(p){
+		var pref_elem = link_container.append('div').attr('class', 'col s4');
+		var projection, path;
+
+		// svg要素を作成し、データの受け皿となるg要素を追加
+		var map_container = pref_elem.append('svg')
+		.attr('width', "100%")
+		.attr("preserveAspectRatio", "xMinYMax meet")
+		.attr("viewBox", "0 0 700 700");
+		var map = map_container.append('g');
+
+		var geojson_pref = {type: "FeatureCollection", features: geojson.features.filter(function(d){return p.prefecture_jp == d.properties.prefecture_jp})};
+
+		// 表示する際の縮尺を緯度経度の範囲から動的に求める(距離に換算せず角度のまま計算する)
+		var geo_bounds = d3.geo.bounds(geojson_pref);
+		var scale = p.scale;
+		// 投影を処理する関数を用意した上でデータからSVGのPATHに変換
+		projection = d3.geo.mercator()
+		.scale(scale)
+		.center(d3.geo.centroid(geojson_pref)) // データから中心点を計算
+		.translate([700 / 2, 700 / 2]);
+
+		// pathジェネレータ関数
+		path = d3.geo.path().projection(projection);
+
+		map.selectAll('path')
+		.data(geojson_pref.features)
+		.enter()
+		.append('path')
+		.attr('d', path)
+		.attr("fill", "#bbdefb")
+		.attr("stroke", "black")
+		.attr("stroke-width","1")
+		.attr("stroke-opacity","0.2")
+
+		pref_elem.append('a').attr('class', 'waves-effect waves-light btn')
+			.attr('href', 'seseki.html' + '?targets=' + p.id )
+			.html(function(d){return p.prefecture_jp});
+
+
+	});
+
+	// svg要素を作成し、データの受け皿となるg要素を追加
+	var map_container = d3.select(selector).append('svg')
+	.attr('width', "100%")
+	.attr("preserveAspectRatio", "xMinYMax meet")
+	.attr("viewBox", "0 0 500 600");
+	var map = map_container.append('g');
+
+	// 表示する際の縮尺を緯度経度の範囲から動的に求める(距離に換算せず角度のまま計算する)
+	var geo_bounds = d3.geo.bounds(geojson);
+	var scale = 38000 / d3.max([Math.abs(geo_bounds[0][0]-geo_bounds[1][0]), Math.abs(geo_bounds[0][1]-geo_bounds[1][1])] );
+	// 投影を処理する関数を用意した上でデータからSVGのPATHに変換
+	projection = d3.geo.mercator()
+	.scale(scale)
+	.center(d3.geo.centroid(geojson)) // データから中心点を計算
+	.translate([500 / 2, 600 / 2]);
+
+	geojson.features.forEach(function(d){
+		d.properties.checked = false;
+	});
+
+	// pathジェネレータ関数
+	path = d3.geo.path().projection(projection);
+	map.selectAll('path')
+	.data(geojson.features)
+	.enter()
+	.append('path')
+	.attr('d', path)
+	.attr("fill", "white")
+	.attr("stroke", "black")
+	.attr("stroke-width","1")
+	.attr("stroke-opacity","0.2")
+	.on('click', on_click);
+
+	function on_click(d){
+		d.properties.checked = !d.properties.checked;
+
+		var japanese_map = d3.select(selector).selectAll('path');
+		japanese_map.attr('fill', function(x){return x.properties.checked ? "blue" : "white"});
+
+		var selected_prefs = japanese_map.filter(function(x){return x.properties.checked}).data();
+		var link_elem = d3.select("#seseki_link");
+		var link_attr = selected_prefs.length == 0 ? "" : "?targets=" + selected_prefs.map(function(x){return x.properties.id}).reduce(function(x,y){return x+","+y});
+		link_elem.attr("href","seseki.html" + link_attr);
+	}
+}
+
+</script>
+
+<footer class="page-footer brown darken-1">
+    <div class="footer-copyright brown darken-3" style="height:120px;">
+		<div class="container">
+        	<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="クリエイティブ・コモンズ・ライセンス" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a> <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/colspan/seseki_viewer" property="cc:attributionName" rel="cc:attributionURL">Kunihiko Miyoshi</a> 作『<span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Seseki Viewer</span>』は<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">クリエイティブ・コモンズ 表示 - 非営利 - 継承 4.0 国際 ライセンス</a>で提供されています。
+		</div>
+    </div>
+</footer>
+
 </body>
+<script src="ga.js"></script>
+</html>
