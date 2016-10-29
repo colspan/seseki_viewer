@@ -266,19 +266,27 @@ seseki = function(gis_def){
         layer.bindTooltip(popup_elem[0],{className:"layer_tooltip"});
         layer.on({
           mouseover: function(e){
-            var l = e.target;
-            l.setStyle({
+            var style = {
                 weight: 5,
                 fillColor: '#dce775',
                 fillOpacity: 0.7
-            });
-            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-                l.bringToFront();
-            }
-            l.openTooltip();
+            };
+            parent.getLayers()
+              .filter(function(y){ return y.feature.commune_id == commune_id })
+              .forEach(function(y){
+                y.setStyle(style);
+                if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                    y.bringToFront();
+                }
+              });
+            e.target.openTooltip();
           },
           mouseout: function(e){
-            parent.resetStyle(e.target);
+            parent.getLayers()
+              .filter(function(y){ return y.feature.commune_id == commune_id })
+              .forEach(function(y){
+                parent.resetStyle(y);
+              });
             e.target.closeTooltip();
           },
           click: function(e){
@@ -334,14 +342,15 @@ seseki = function(gis_def){
         return html;
       });
       ranking_table_rows.on('mouseover', function(x){
-        /*
-        $('#map').japaneseMap('update_partial', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;}, function(x){return '#dddd00'});
-        */
+        $('#map').japaneseMap('modify_geojson_layer', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;},
+        {
+          weight: 5,
+          fillColor: '#dce775',
+          fillOpacity: 0.7
+        });
       })
       .on('mouseout', function(x){
-        /*
-        $('#map').japaneseMap('update_partial', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;}, function(y){return options.color_scale(get_value(data[y.commune_id]))});
-        */
+        $('#map').japaneseMap('modify_geojson_layer', function(y){return false;},{});
       })
       .on('click', function(x){
         click({name:x.key, commune_id:id_map[x.key][0]});

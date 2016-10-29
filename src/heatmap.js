@@ -152,11 +152,10 @@
         var centroid = d3.geo.centroid(geodata);
         var bounds = d3.geo.bounds(geodata);
         var leafletObj = L.map('leaflet_map',{
-          zoom: 8,
+          zoom: 7,
           minZoom: 4,
           maxZoom: 18,
-          center:[centroid[1],centroid[0]],
-          maxBounds:[[bounds[0][1],bounds[0][0]],[bounds[1][1],bounds[1][0]]]
+          center:[centroid[1],centroid[0]]
         });
         var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         var osmAttrib = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
@@ -180,6 +179,8 @@
         leafletObj.zoomControl.setPosition('bottomright');
         // 権利情報追記
         leafletObj.attributionControl.addAttribution( '&copy; <a href="http://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html">国土数値情報 行政区域データ</a>' );
+        leafletObj.attributionControl.addAttribution( 'CC BY NC SA 4.0 <a href="https://github.com/colspan">Miyoshi(@colspan)</a> <a href="https://github.com/colspan/seseki_viewer">Seseki</a>' );
+
         envs.geoJsonLayer = geoJsonLayer;
         // 凡例
         var legendContainer;
@@ -283,7 +284,6 @@
         options.eachfeature(envs.geoJsonLayer, x.feature, x);
       });
 
-      console.log(envs);
       var caption_elems = envs.captionContainer.selectAll('div')
         .text(function(d){return options[d]});
 
@@ -291,6 +291,26 @@
       if(options.show_legend && options.color_scale){
         update_legend(envs.legendContainer, options);
       }
+    },
+    modify_geojson_layer :function(criteria, style){
+      var envs = $(this.selector)[0].japaneseMapEnvs;
+      var geoJsonLayer = envs.geoJsonLayer;
+      var openedTooltip = false;
+      geoJsonLayer.getLayers().forEach(function(l){
+        if(l.__modifiedStyle){
+          geoJsonLayer.resetStyle(l);
+          l.closeTooltip();
+          l.__modifiedStyle = false;
+        }
+        if(criteria(l.feature)){
+          l.__modifiedStyle = true;
+          l.setStyle(style);
+          if(!openedTooltip){
+            l.openTooltip();
+            openedTooltip = true;
+          }
+        }
+      });
     },
     get_commune_def : function(){
         return {communes:$(this.selector)[0].japaneseMapCommunes, id_map:$(this.selector)[0].japaneseMapIdMap};
