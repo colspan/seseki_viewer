@@ -79,21 +79,26 @@ select.browser-default{
 }
 
 #main_view{
-  display:-webkit-box;
-  display:-moz-box;
+  display:flex;
   width: 100%;
+}
+#main_view div.col{
+  padding:0;
 }
 #map_container, #ranking_view{
   display:table-cell;
   position:relative;
 }
 
-table#ranking_table tr:hover{
+table#ranking_table td:hover{
   color:#9e9d24;
 }
 
 table td{
   padding:3px 5px;
+}
+div#leaflet_map{
+  height:70vh;
 }
 div#ranking_container{
   height:70vh;
