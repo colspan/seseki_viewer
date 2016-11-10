@@ -8,8 +8,7 @@ require('./heatmap');
 
 seseki = function(gis_def){
   var initialized = false;
-  var map_elem = $('<div>');
-  var japanesemap_elem_id = 'map';
+  var japanesemap_elem_id = 'leaflet_map';
   var tip_elem = $('<div>');
   var modal_table_elem = $('<table>');
   var data = {}; // 自治体コードがキーの辞書
@@ -41,9 +40,6 @@ seseki = function(gis_def){
     update(d);
 
     function initialize(d){
-      // ヒートマップ描画
-      map_elem.attr('id', japanesemap_elem_id);
-      $('#map_container').append(map_elem);
 
       // 列選択ボタン作成
       d3.select('#map_datatype_selector')
@@ -342,7 +338,7 @@ seseki = function(gis_def){
         return html;
       });
       ranking_table_rows.on('mouseover', function(x){
-        $('#map').japaneseMap('modify_geojson_layer', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;},
+        $('#'+japanesemap_elem_id).japaneseMap('modify_geojson_layer', function(y){var ret = x.commune_ids ? x.commune_ids.indexOf(y.commune_id) != -1 : false; return ret;},
         {
           weight: 5,
           fillColor: '#dce775',
@@ -350,7 +346,7 @@ seseki = function(gis_def){
         });
       })
       .on('mouseout', function(x){
-        $('#map').japaneseMap('modify_geojson_layer', function(y){return false;},{});
+        $('#'+japanesemap_elem_id).japaneseMap('modify_geojson_layer', function(y){return false;},{});
       })
       .on('click', function(x){
         click({name:x.key, commune_id:id_map[x.key][0]});

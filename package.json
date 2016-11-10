@@ -1,6 +1,6 @@
 {
   "name": "seseki_viewer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A Statistics Viewer for generating geometry heatmaps and rankings.",
   "main": "main.js",
   "scripts": {

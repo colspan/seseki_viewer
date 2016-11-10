@@ -275,9 +275,6 @@
       var options = $(this.selector)[0].japaneseMapOpts;
       var envs = $(this.selector)[0].japaneseMapEnvs;
       options = $.extend(options, input_options);
-      d3.select(this.selector).selectAll('path')
-      .attr('fill', options.map_filler)
-      .on('click', options.on_click);
 
       envs.geoJsonLayer.getLayers().forEach(function(x){
         envs.geoJsonLayer.resetStyle(x);
