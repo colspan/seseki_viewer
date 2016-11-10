@@ -2,33 +2,182 @@
 <html>
 <meta charset="utf-8">
 <head>
- <title>Seseki Viewer</title>
+ <title>Seseki</title>
  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
  <script src="build/common.bundle.js"></script>
+ <style>
+  .parallax-container h2, #carousel_demo h2{
+	  font-size:50pt;
+  }
+  #carousel_demo{
+	  height:300px;
+  }
+  #carousel_demo img{
+	  -webkit-filter: brightness(30%);
+	  filter: brightness(30%);
+	  position: relative;
+	  top: 300px;
+  }
+ </style>
 </head>
 <body>
 <header>
 	<nav class="top-nav brown darken-3">
 		<div class="nav-wrapper container valign-wrapper">
-			<h1><a class="page-title">Seseki</a></h1>
+			<h1><a class="page-title">Seseki 市町村単位統計データ閲覧アプリケーション</a></h1>
 		</div>
 	</nav>
 </header>
 <main>
-	<div class="container">
-		<h2 class="header">都道府県を選ぶ</h2>
-		<div class="row" id="seseki_links"></div>
+	<div class="carousel carousel-slider" id="carousel_demo">
+		<div class="carousel-fixed-item center">
+			<h2 class="center teal-text text-lighten-2">統計データを通して<br />私が住む都道府県を知る</h2>
+			<div class="row center">
+				<h5 class="header col s12 white-text light">市町村単位で集計されたCSV形式の統計データを簡便に可視化できます。</h5>
+			</div>
+		</div>
 
-		<h2 class="header">複数の都道府県を組み合わせる</h2>
+		<a class="carousel-item"><img src="img/demo01.jpg"></a>
+		<a class="carousel-item"><img src="img/demo02.jpg"></a>
+		<a class="carousel-item"><img src="img/demo03.jpg"></a>
+		<a class="carousel-item"><img src="img/demo04.jpg"></a>
+		<a class="carousel-item"><img src="img/demo05.jpg"></a>
+		<a class="carousel-item"><img src="img/demo06.jpg"></a>
+		<a class="carousel-item"><img src="img/demo07.jpg"></a>
+		<a class="carousel-item"><img src="img/demo08.jpg"></a>
+		<a class="carousel-item"><img src="img/demo09.jpg"></a>
+		<a class="carousel-item"><img src="img/demo10.jpg"></a>
+		<a class="carousel-item"><img src="img/demo11.jpg"></a>
+		<a class="carousel-item"><img src="img/demo12.jpg"></a>
+	</div>
+
+
+	<div class="row container">
+
+        <div class="col s12 m4 l4">
+			<h3 class="center"><img src="img/japan.png" width="100%"></h3>
+			<h5 class="center">47都道府県対応</h5>
+			<p class="light">北海道から沖縄まで、日本全国の都道府県に対応しています(都道府県単位または複数の組み合わせで表示できます)。</p>
+        </div>
+
+        <div class="col s12 m4 l4">
+			<h3 class="center"><img src="img/heatmap.png" width="100%"></h3>
+			<h5 class="center">ヒートマップ表示</h5>
+			<p class="light">入力された統計値をもとに各市町村に自動的に色付けさます。</p>
+        </div>
+
+        <div class="col s12 m4 l4">
+			<h3 class="center"><img src="img/caption.png" width="100%"></h3>
+			<h5 class="center">市町村名表示</h5>
+			<p class="light">各区画かランキングの市町村名をマウスでポイントすると対応する市町村名が表示されます。</p>
+        </div>
+
+	</div>
+	<div class="row container">
+
+        <div class="col s12 m4 l4">
+			<h3 class="center"><img src="img/column_selector.png" width="100%"></h3>
+			<h5 class="center">項目選択</h5>
+			<p class="light">入力されたCSVファイルの表示対象列を簡便に切り替えられます。</p>
+        </div>
+
+        <div class="col s12 m4 l4">
+			<h3 class="center"><img src="img/ranking.png" width="100%"></h3>
+			<h5 class="center">ランキング表示</h5>
+			<p class="light">選んだ項目におけるランキングが表示されます。</p>
+        </div>
+
+
+        <div class="col s12 m4 l4">
+			<h3 class="center"><img src="img/record_viewer.png" width="100%"></h3>
+			<h5 class="center">個別詳細表示</h5>
+			<p class="light">各区画かランキングの市町村名をマウスでクリックすると個別の統計値を一覧できます。</p>
+        </div>
+
+	</div>
+
+
+	<div class="row container">
+        <div class="col s12 m1 l1"></div>
+        <div class="col s12 m10 l10">
+			<h3 class="center">対応ファイル形式</h3>
+			<h5 class="center"><img src="img/acceptable_format.png" width="100%"></h5>
+			<p class="light">事前にExcel等で作成した行方向に市町村、列方向に項目を並べたCSVファイルを入力できます。
+			(UTF-8またはShift-JISに対応)</p>
+		</div>
+	</div>
+
+	<div class="row container">
+		<h3 class="center">サンプルデータ(動作例)</h3>
+        <div class="col s12 m6 l6">
+			<a class="tooltipped" data-position="top" data-tooltip="クリックするとサンプルデータでSesekiを起動します" href="seseki.html?targets=11,12,13,14#sample=sample_data/11-14_around_tokyo_population_analysis.csv"><img src="img/sample_around_tokyo.png" width="100%"><br />
+			住民基本台帳に基づく人口、人口動態及び世帯数(平成27年1月1日現在, 東京都, 神奈川県, 埼玉県, 千葉県)</a><br/>
+			(<a href="http://www.soumu.go.jp/menu_news/s-news/01gyosei02_03000062.html">総務省</a>, <a href="sample_data/11-14_around_tokyo_population_analysis.csv">Seseki対応CSV</a>)
+		</div>
+        <div class="col s12 m6 l6">
+			<a class="tooltipped" data-position="top" data-tooltip="クリックするとサンプルデータでSesekiを起動します" href="seseki.html?targets=01#sample=sample_data/01_01_population_analysis.csv"><img src="img/sample_hokkaido.png" width="100%"><br />
+			住民基本台帳人口・世帯数及び人口動態</a><br/>
+			(<a href="http://www.pref.hokkaido.lg.jp/ss/scs/gyousei/shityousondata.htm">CC BY 2.1 JP 北海道</a>, <a href="sample_data/01_01_population_analysis.csv">Seseki対応CSV</a>)
+        </div>
+	</div>
+
+	<div class="row container">
+		<h3 class="center">データ入力方法</h3>
+		<p class="center">データ入力方法は下記の2種類から選べます。</p>
+        <div class="col s12 m6 l6">
+			<img src="img/file_input_dialog.png" width="100%">
+			<h5 class="center">ファイル入力ダイアログボックス</h5>
+		</div>
+        <div class="col s12 m6 l6">
+			<img src="img/spreadsheet.png" width="100%">
+			<h5 class="center">内蔵スプレッドシート</h5>
+		</div>
+	</div>
+
+
+	<div class="parallax-container">
+		<h2 class="center teal-text text-lighten-2">都道府県を選ぶ</h2>
+		<div class="row center">
+			<h5 class="header col s12 white-text light">あなたが調べたい都道府県を選択してください。</h5>
+		</div>
+
+		<div class="parallax"><img src="img/background2.jpg"></div>
+	</div>
+
+	<div class="container">
+		<div class="row" id="seseki_links"></div>
+	</div>
+
+	<div class="parallax-container">
+		<h2 class="center teal-text text-lighten-2">複数の都道府県を組み合わせる</h2>
+		<div class="row center">
+			<h5 class="header col s12 white-text light">調べたい都道府県を地図から複数選択した上で「上記の組み合わせで開く」をクリックしてください。</h5>
+		</div>
+
+		<div class="parallax"><img src="img/background2.jpg"></div>
+	</div>
+
+	<div class="container">
 		<div class="row">
 			<div id="map"></div>
-			<a class="waves-effect waves-light btn" href="seseki.html" id="seseki_link">上記の組み合わせで開く</a>
+			<div class="center">
+				<a class="waves-effect waves-light btn" href="seseki.html" id="seseki_link">上記の組み合わせで開く</a>
+			</div>
 		</div>
 
 	</div>
 </main>
+
 <script>
-// li_elem.innerHTML = '<a href="seseki.html?targets=' + (i+1) + '">' + d.prefecture_jp + '</a>';
+$(document).ready(function(){
+	$('.parallax').parallax();
+	$('.carousel.carousel-slider').carousel();
+	setInterval(function(){$('.carousel').carousel('next');}, 5000);
+});
+
+</script>
+
+<script>
 
 var prefecture_def = [
  	{ "id" : "01", "prefecture_jp" : "北海道", "prefecture_en" : "hokkaido", scale : 5500 },

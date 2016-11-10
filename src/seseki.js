@@ -499,7 +499,7 @@ seseki = function(gis_def){
     for(var i=0;i<data.length;i++){
       var nullnum = 0;
       for(var j=data[i].length-1;j>=0;j--){
-        if(data[i][j]!==null) break;
+        if(data[i][j]!==null && data[i][j]!="") break;
         nullnum++;
       }
       if(min_nullnum>nullnum) min_nullnum = nullnum;
@@ -511,7 +511,7 @@ seseki = function(gis_def){
     var keys = data[0];
     // NULLの列名があったら足す
     for(var i=0;i<keys.length;i++){
-      if(keys[i]===null) keys[i] = i+'系列'
+      if(keys[i]===null || keys[i]=="") keys[i] = i+'系列'
     }
     var json = [];
     for(var i=1;i<data.length;i++){
