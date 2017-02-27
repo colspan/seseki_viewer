@@ -35,7 +35,11 @@ Original Statistics dataset are available at under URLs.
 
  - [アーバンデータチャレンジ2015 ファイナル アプリケーション部門 金賞](http://urbandata-challenge.jp/2015/prize) ([Slide](http://www.slideshare.net/colspan/udc2015-final-seseki))
 
-## License
+## License (Software)
+
+MIT License
+
+## License (Visualized Result)
 
 ### English
 
