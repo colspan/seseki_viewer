@@ -236,7 +236,7 @@ seseki = function(gis_def){
             tbody.append(td);
         }
         modal_table_elem.append(tbody);
-        $("#myModal").openModal({in_duration:0,out_duration:0});
+        $("#myModal").modal('open');
       }
       // leaflet Feature要素書き出し
       var last_touched;
@@ -528,7 +528,7 @@ seseki = function(gis_def){
     $("#sample_data_selector").val("");
     $("#data-info").css("display", "none");
   }
-  $('.modal-trigger').leanModal({
+  $('.modal').modal({
       dismissible: true,
       in_duration: 0,
       out_duration: 0,
