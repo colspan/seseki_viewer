@@ -1,6 +1,6 @@
 {
   "name": "seseki_viewer",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A Statistics Viewer for generating geometry heatmaps and rankings.",
   "main": "main.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/colspan/seseki_viewer.git"
   },
   "author": "Kunihiko Miyoshi @colspan",
-  "license": "CC BY SA NC 4.0",
+  "license": "MIT License",
   "bugs": {
     "url": "https://github.com/colspan/seseki_viewer/issues"
   },
