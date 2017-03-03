@@ -27,6 +27,7 @@
       var _this = this;
       var defaults = {
         geodata_files : [],
+        geodata_parser : null,
         ref_size : {
           width :  420,
           height:  330,
@@ -71,19 +72,42 @@
           reject(error);
           return;
         }
+        // topojsonのパーサを選択
+        var geodata_parser = options.geodata_parser ? options.geodata_parser : default_geodata_parser;
+        var result = geodata_parser(loaded);
+        resolve(result);
+      }
+
+      // 処理開始
+      Promise.all(promises).then(ready);
+      function ready(results){
+        results.forEach(function(d){
+          if(!geodata) geodata = d.geojson;
+          else geodata.features = geodata.features.concat(d.geojson.features);
+          communes = communes.concat(d.communes);
+          Object.keys(d.id_map).forEach(function(x){
+            id_map[x] = d.id_map[x];
+          });
+        });
+        _this[0].japaneseMapCommunes = communes;
+        _this[0].japaneseMapIdMap = id_map;
+        display();
+      }
+
+      function default_geodata_parser(loaded){
+        // 国土数値情報　行政区域データ向けのパーサ
         // TopoJSONデータ展開
         var geodata_fieldname = Object.keys(loaded.objects)[0];
-        geojson = topojson.feature(loaded, loaded.objects[geodata_fieldname]);
+        var geojson = topojson.feature(loaded, loaded.objects[geodata_fieldname]);
         var exception_communes = options.exceptions; // 対象外の市町村
         var remove_list = [];
         var communes = [];
+        var id_map = [];
         function register(k,v){
           if(!id_map[k]) id_map[k] = [];
           if(id_map[k].indexOf(v) == -1) id_map[k].push(v);
         }
         geojson.features.forEach(function(d,i){
-          // 国土数値情報　行政区域データ向けのパーサ
-
           if(d.properties.N03_007=="") return; // 所属未定地等IDがないものは飛ばす
 
           // 市町村名を整理する
@@ -123,25 +147,8 @@
         remove_list.forEach(function(d){
           geojson.features.splice(d,1);
         });        
-
         // 割り切り 同じ市町村名があると区別できない
-        resolve({geojson:geojson,communes:communes,id_map:id_map});
-      }
-
-      // 処理開始
-      Promise.all(promises).then(ready);
-      function ready(results){
-        results.forEach(function(d){
-          if(!geodata) geodata = d.geojson;
-          else geodata.features = geodata.features.concat(d.geojson.features);
-          communes = communes.concat(d.communes);
-          Object.keys(d.id_map).forEach(function(x){
-            id_map[x] = d.id_map[x];
-          });
-        });
-        _this[0].japaneseMapCommunes = communes;
-        _this[0].japaneseMapIdMap = id_map;
-        display();
+        return {geojson:geojson, communes:communes, id_map:id_map};
       }
 
       function display(){
