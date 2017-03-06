@@ -56,14 +56,15 @@ seseki = function(gis_def){
       .html(function(d){return d});
 
       // 地図描画
-      var options = {
+      var defaults = {
         title:'',
         subtitle:'',
         subsubtitle:'',
-        geodata_files:gis_def.geodata_files,
+        geodata_parser:null,
         ref_size:gis_def.ref_size,
         max_width:800
       };
+      var options = $.extend(defaults, gis_def);
       $('#'+japanesemap_elem_id).japaneseMap(options, function(){init_params();init_sample();});
 
       // tip作成
