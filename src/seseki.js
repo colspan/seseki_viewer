@@ -60,7 +60,6 @@ seseki = function(gis_def){
         title:'',
         subtitle:'',
         subsubtitle:'',
-        geodata_parser:null,
         ref_size:gis_def.ref_size,
         max_width:800
       };

@@ -27,7 +27,8 @@
       var _this = this;
       var defaults = {
         geodata_files : [],
-        geodata_parser : null,
+        geodata_parser : default_geodata_parser,
+        geodata_attribution : '&copy; <a href="http://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html">国土数値情報 行政区域データ</a>',
         ref_size : {
           width :  420,
           height:  330,
@@ -72,9 +73,8 @@
           reject(error);
           return;
         }
-        // topojsonのパーサを選択
-        var geodata_parser = options.geodata_parser ? options.geodata_parser : default_geodata_parser;
-        var result = geodata_parser(loaded);
+        // topojsonのパーサを呼び出し
+        var result = options.geodata_parser(loaded);
         resolve(result);
       }
 
@@ -185,7 +185,7 @@
         // 拡大縮小ボタン位置変更
         leafletObj.zoomControl.setPosition('bottomright');
         // 権利情報追記
-        leafletObj.attributionControl.addAttribution( '&copy; <a href="http://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html">国土数値情報 行政区域データ</a>' );
+        leafletObj.attributionControl.addAttribution( options.geodata_attribution );
         leafletObj.attributionControl.addAttribution( 'CC BY NC SA 4.0 <a href="https://github.com/colspan">Miyoshi(@colspan)</a> <a href="https://github.com/colspan/seseki_viewer">Seseki</a>' );
 
         envs.geoJsonLayer = geoJsonLayer;
