@@ -89,7 +89,6 @@ seseki = function(gis_def){
     }
     function update(d){
       if(!d.length){
-        console.log("No Records");
         Materialize.toast('CSVファイルを入力してください。', 3000);
         clear_data();
         return;
@@ -531,7 +530,9 @@ seseki = function(gis_def){
   $('.modal').modal({
       dismissible: true,
       in_duration: 0,
-      out_duration: 0,
+      out_duration: 0
+  })
+  $('#modal_spreadsheet').modal({
       ready: spreadsheet_open,
       complete: spreadsheet_close
     }
