@@ -159,7 +159,7 @@
         var centroid = d3.geo.centroid(geodata);
         var bounds = d3.geo.bounds(geodata);
         var leafletObj = L.map('leaflet_map',{
-          zoom: 7,
+          zoom: 9,
           minZoom: 4,
           maxZoom: 18,
           center:[centroid[1],centroid[0]]

@@ -134,10 +134,10 @@ function execute_seseki(){
         target_prefectures.push(value);
       }
     });
-    if(target_prefectures.length==0) target_prefectures = [1];
+    if(target_prefectures.length==0) target_prefectures = [33];
   }
   else{
-    target_prefectures = [1];
+    target_prefectures = [33];
   }
 
   var geodata_files = target_prefectures.map(function(d){

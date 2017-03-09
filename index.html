@@ -5,20 +5,6 @@
  <title>ヒートマップとランキングで岡山県を知る</title>
  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
  <script src="build/common.bundle.js"></script>
- <style>
-  .parallax-container h2, #carousel_demo h2{
-      font-size:50pt;
-  }
-  #carousel_demo{
-      height:300px;
-  }
-  #carousel_demo img{
-      -webkit-filter: brightness(30%);
-      filter: brightness(30%);
-      position: relative;
-      top: 300px;
-  }
- </style>
 </head>
 <body>
 <header>
@@ -33,21 +19,81 @@
     <div class="row container">
         <h3 class="center">市町村単位データ</h3>
         <div class="col s12 m3 l3">
-            <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="communes.html?targets=33#sample=./sample_data/number_of_unemployed_people.csv"><img src="img/sample_around_tokyo.png" width="100%"><br />
+            <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="communes.html?targets=33#sample=./sample_data/number_of_unemployed_people.csv"><img src="img/number_of_unemployed_people.png" width="100%"><br />
             完全失業者数</a>
         </div>
         <div class="col s12 m3 l3">
-            <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="communes.html?targets=33#sample=./sample_data/industrial_stat.csv"><img src="img/sample_around_tokyo.png" width="100%"><br />
+            <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="communes.html?targets=33#sample=./sample_data/industrial_stat.csv"><img src="img/industrial_stat.png" width="100%"><br />
             工業統計</a>
         </div>
-    </div>
-    <div class="row container">
-        <h3 class="center">小学校区単位データ</h3>
         <div class="col s12 m3 l3">
-            <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="elementary_school_districts.html#sample=./sample_data/population_in_kindergarden.csv"><img src="img/sample_around_tokyo.png" width="100%"><br />
-            幼稚園内人口</a>
+           <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="communes.html?targets=33#sample=./sample_data/number_of_households_and_population.csv"><img src="img/number_of_households_and_population.png" width="100%"><br />
+           住民基本台帳人口・世帯数及び人口動態(2005年、2010年、2015年)</a>
         </div>
     </div>
+
+    <div class="row container">
+        <div class="col s12 m3 l3">
+            <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="communes.html?targets=33#sample=./sample_data/population_by_age-all.csv"><img src="img/population_by_age-all.png" width="100%"><br />
+          年齢階級別人口(総計)</a>
+        </div>
+        <div class="col s12 m3 l3">
+            <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="communes.html?targets=33#sample=./sample_data/population_by_age-man.csv"><img src="img/population_by_age-man.png" width="100%"><br />
+            年齢階級別人口(男)</a>
+        </div>
+        <div class="col s12 m3 l3">
+            <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="communes.html?targets=33#sample=./sample_data/population_by_age-woman.csv"><img src="img/population_by_age-woman.png" width="100%"><br />
+            年齢階級別人口(女)</a>
+        </div>
+        <div class="col s12 m3 l3">
+            <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="communes.html?targets=33#sample=./sample_data/number_of_employees.csv"><img src="img/number_of_employees.png" width="100%"><br />
+            従業者数</a>
+        </div>
+        <div class="col s12 m3 l3">
+            <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="communes.html?targets=33#sample=./sample_data/population_in_kindergarden.csv"><img src="img/population_in_kindergarden.png" width="100%"><br />
+            幼稚園内人口</a>
+        </div>
+
+        <div class="col s12 m3 l3">
+           <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="communes.html?targets=33#sample=./sample_data/population-H28.csv"><img src="img/population-H28.png" width="100%"><br />
+           住民基本台帳人口・世帯数及び人口動態(2016年)</a>
+        </div>
+        <div class="col s12 m3 l3">
+           <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="communes.html?targets=33#sample=./sample_data/final_education.csv"><img src="img/final_education.png" width="100%"><br />
+           最終学歴人口</a>
+        </div>
+        <div class="col s12 m3 l3">
+            <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="communes.html?targets=33#sample=./sample_data/elderly_people_home.csv"><img src="img/elderly_people_home.png" width="100%"><br />
+            老人施設数、定員数、在所者数</a>
+        </div>
+    </div>
+
+
+    <div class="row container">
+
+        <h3 class="center">小学校区単位データ</h3>
+        <div class="col s12 m3 l3">
+            <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="elementary_school_districts.html#sample=./sample_data/population_in_kindergarden.csv"><img src="img/population_in_kindergarden.png" width="100%"><br />
+            幼稚園内人口</a>
+        </div>
+        <div class="col s12 m3 l3">
+            <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="elementary_school_districts.html#sample=./sample_data/population_elementary_school_district_sample.csv"><img src="img/population_elementary_school_district_sample.png" width="100%"><br />
+           人口・世帯数（岡山市）</a>
+        </div>
+        <div class="col s12 m3 l3">
+            <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="elementary_school_districts.html#sample=./sample_data/population_elementary_school_district_by_age_sample.csv"><img src="img/population_elementary_school_district_by_age_sample.png" width="100%"><br />
+            年齢別人口（岡山市）</a>
+        </div>
+    </div>
+
+    <div class="row container">
+        <h3 class="center">中学校区単位データ</h3>
+        <div class="col s12 m3 l3">
+            <a class="tooltipped" data-position="top" data-tooltip="クリックすると可視化画面に移動します" href="junior_high_school_districts.html#sample=./sample_data/junior_high_junior_high_district.csv"><img src="img/junior_high_junior_high_district.png" width="100%"><br />
+            中学校生徒数</a>
+        </div>
+    </div>
+
 
 <footer class="page-footer brown darken-1">
     <div class="footer-copyright brown darken-3" style="height:120px;">
