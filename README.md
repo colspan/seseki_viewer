@@ -1,6 +1,6 @@
 # Seseki 【岡山県統計View】
 
-[Seseki 【岡山県統計View】](http://colspan.github.io/seseki_viewer)は、岡山県に関する統計データの閲覧アプリです。
+[Seseki 【岡山県統計View】](http://data-cradle.github.io/seseki_viewer)は、岡山県に関する統計データの閲覧アプリです。
 
 ## 参照データ
 
