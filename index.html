@@ -2,19 +2,48 @@
 <html>
 <meta charset="utf-8">
 <head>
- <title>ヒートマップとランキングで岡山県を知る</title>
+ <title>Seseki 統計データ閲覧アプリケーション</title>
  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
  <script src="build/common.bundle.js"></script>
+ <style>
+  #carousel_demo{
+    height:220px;
+  }
+  #carousel_demo h2{
+    font-size:50pt;
+  }
+  #carousel_demo img{
+    -webkit-filter: brightness(30%);
+    filter: brightness(30%);
+    position: relative;
+    top: 300px;
+  }
+ </style>
 </head>
 <body>
 <header>
     <nav class="top-nav brown darken-3">
         <div class="nav-wrapper container valign-wrapper">
-            <h1><a class="page-title">ヒートマップとランキングで岡山県を知る</a></h1>
+            <h1><a class="page-title">Seseki 統計データ閲覧アプリケーション</a></h1>
         </div>
     </nav>
 </header>
 <main>
+
+    
+
+	<div class="carousel carousel-slider" id="carousel_demo">
+		<div class="carousel-fixed-item center">
+			<h2 class="center teal-text text-lighten-2">岡山県統計View</h2>
+			<div class="row center">
+				<h5 class="header col s12 white-text light">～ヒートマップとランキングから岡山県を知る～</h5>
+			</div>
+		</div>
+
+		<a class="carousel-item"><img src="img/population_in_kindergarden.png"></a>
+		<a class="carousel-item"><img src="img/number_of_employees.png"></a>
+		<a class="carousel-item"><img src="img/junior_high_junior_high_district.png"></a>
+	</div>
 
     <div class="row container">
         <h3 class="center">市町村単位データ</h3>
@@ -96,13 +125,20 @@
 
 
 <footer class="page-footer brown darken-1">
-    <div class="footer-copyright brown darken-3" style="height:120px;">
+    <div class="footer-copyright brown darken-3" style="height: 120px; line-height: inherit;">
         <div class="container">
-            アプリケーション : %copy; data CRADLE, &copy; Kunihiko Miyoshi 2017. MIT License.<br />
-            可視化結果 : <a rel="license" href="http://creativecommons.org/licenses/by/2.1/jp/"><img alt="クリエイティブ・コモンズ・ライセンス" style="border-width:0" src="https://i.creativecommons.org/l/by/2.1/jp/88x31.png" /></a><br />この 作品 は <a rel="license" href="http://creativecommons.org/licenses/by/2.1/jp/">クリエイティブ・コモンズ 表示 2.1 日本 ライセンス</a>の下に提供されています。
+            アプリケーション : &copy; data CRADLE, &copy; Kunihiko Miyoshi 2017. MIT License.<br />
+            可視化結果 :<br /><a rel="license" href="http://creativecommons.org/licenses/by/2.1/jp/"><img alt="クリエイティブ・コモンズ・ライセンス" style="border-width:0" src="https://i.creativecommons.org/l/by/2.1/jp/88x31.png" /></a><br />この 作品 は <a rel="license" href="http://creativecommons.org/licenses/by/2.1/jp/">クリエイティブ・コモンズ 表示 2.1 日本 ライセンス</a>の下に提供されています。
         </div>
     </div>
 </footer>
+
+<script>
+$(document).ready(function(){
+	$('.carousel').carousel();
+	setInterval(function(){$('.carousel').carousel('next');}, 5000);
+});
+</script>
 
 </body>
 </html>
