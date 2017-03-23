@@ -22,9 +22,9 @@
   {
     "file":"./sample_data/number_of_households_and_population.csv",
     "title":"住民基本台帳人口・世帯数及び人口動態(2005年、2010年、2015年)",
-    "file_description":"各市区町村における住民基本台帳人口・世帯数及び人口動態(2005年、2010年、2015年)",
+    "file_description":"各市区町村における住民基本台帳人口・世帯数及び人口動態(2005年3月31日現在、2010年3月31日現在、2015年3月31日現在)、面積は2010年の国勢調査の結果を使用",
     "column_description":"",
-    "right_holder":"e-Stat(住民基本台帳人口、人口動態及び世帯数調査2005~2015）",
+    "right_holder":"e-Stat(住民基本台帳人口、人口動態及び世帯数調査2005~2015、国勢調査2010）",
     "cc":false,
     "url":"https://www.e-stat.go.jp",
     "target_prefectures":[33]
