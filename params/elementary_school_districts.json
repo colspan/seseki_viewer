@@ -31,7 +31,7 @@
  },
  {
    "file":"./sample_data/elementary_okayama_district.csv",
-   "title":"小学生人口",
+   "title":"小学生生徒数・学級数",
    "file_description":"公立小学校の生徒数・学級数（2016年5月1日現在）</br>※小学校区は国土数値情報　小学校区データを用いています。平成22年度のデータのため現在の学区と異なる箇所があります。",
    "column_description":"",
    "right_holder":"岡山県庁",
