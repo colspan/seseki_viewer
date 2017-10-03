@@ -89,14 +89,15 @@ seseki = function(gis_def){
     }
     function update(d){
       if(!d.length){
-        Materialize.toast('CSVファイルを入力してください。', 3000);
+        //Materialize.toast('CSVファイルを入力してください。', 3000);
         clear_data();
         return;
       }
       csv_keys = Object.keys(d[0]);
       if(csv_keys.length<2){
-        console.log("Too Few Columns");
-        Materialize.toast('CSVファイル(2列以上のデータ)を入力してください。', 3000);
+        console.log("データを解釈できません");
+        console.log(d);
+        //Materialize.toast('CSVファイル(2列以上のデータ)を入力してください。', 3000);
         clear_data();
         return;
       }

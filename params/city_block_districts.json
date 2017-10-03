@@ -1,0 +1,12 @@
+[
+  {
+    "file":"./sample_data/household_city_block_districts.csv",
+    "title":"世帯構成",
+    "file_description":"高梁川流域圏の三世代，高齢者世帯数および割合",
+    "column_description":"",
+    "right_holder":"株式会社マイクロベース　マイクロメッシュ統計シリーズ（平成22年度　国勢調査）（変換済CSVファイル）",
+    "cc":false,
+    "url":"https://microbase.co/",
+    "target_prefectures":[33]
+  }
+]

@@ -1,22 +1,22 @@
 {
-  "name": "seseki_viewer",
-  "version": "0.2.1",
+  "name": "seseki_viewer_okayama",
+  "version": "0.3.0",
   "description": "A Statistics Viewer for generating geometry heatmaps and rankings.",
   "main": "main.js",
   "scripts": {
-    "build": "node_modules/webpack/bin/webpack.js",
+    "build": "node node_modules/webpack/bin/webpack.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/colspan/seseki_viewer.git"
+    "url": "git+https://github.com/data-cradle/seseki_viewer.git"
   },
-  "author": "Kunihiko Miyoshi @colspan",
-  "license": "MIT License",
+  "author": "data CRADLE, Kunihiko Miyoshi",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/colspan/seseki_viewer/issues"
+    "url": "https://github.com/data-cradle/seseki_viewer/issues"
   },
-  "homepage": "https://github.com/colspan/seseki_viewer#readme",
+  "homepage": "https://github.com/data-cradle/seseki_viewer#readme",
   "dependencies": {
   },
   "devDependencies": {

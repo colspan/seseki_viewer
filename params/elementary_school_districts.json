@@ -1,0 +1,42 @@
+[
+  {
+    "file":"./sample_data/population_in_kindergarden.csv",
+    "title":"幼稚園内人口",
+    "file_description":"岡山市の各小学校区における幼稚園に関する人口データ ※ポリゴンデータは平成22年度のデータなので現在の学区と異なる箇所があります。",
+    "column_description":"",
+    "right_holder":"e-Stat(学校基本調査　国勢調査）",
+    "cc":false,
+    "url":"https://www.e-stat.go.jp",
+    "target_prefectures":[33]
+  },
+  {
+    "file":"./sample_data/population_elementary_school_district_sample.csv",
+    "title":"人口・世帯数（岡山市）",
+    "file_description":"岡山市の各小学校区における世帯数・人口（男女別）のデータ（2017月2月）　※ポリゴンデータは平成22年度のデータなので現在の学区と異なる箇所があります。",
+    "column_description":"",
+    "right_holder":"岡山市",
+    "cc":false,
+    "url":"http://www.city.okayama.jp/kikaku/kikaku_00348.html",
+    "target_prefectures":[33]
+  },
+  {
+    "file":"./sample_data/population_elementary_school_district_by_age_sample.csv",
+    "title":"年齢別人口（岡山市）",
+    "file_description":"岡山市の各小学校区における人口（年齢別）のデータ（2017年2月）　※ポリゴンデータは平成22年度のデータなので現在の学区と異なる箇所があります。",
+    "column_description":"",
+    "right_holder":"岡山市",
+    "cc":false,
+    "url":"http://www.city.okayama.jp/kikaku/kikaku_00348.html",
+    "target_prefectures":[33]
+ },
+ {
+   "file":"./sample_data/elementary_okayama_district.csv",
+   "title":"小学生生徒数・学級数",
+   "file_description":"公立小学校の生徒数・学級数（2016年5月1日現在）</br>※小学校区は国土数値情報　小学校区データを用いています。平成22年度のデータのため現在の学区と異なる箇所があります。",
+   "column_description":"",
+   "right_holder":"岡山県庁",
+   "cc":false,
+   "url":"http://www.pref.okayama.jp/page/487326.html",
+   "target_prefectures":[33]
+}
+]
