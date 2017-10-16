@@ -1,17 +1,18 @@
-require("webpack");
-require("babel-core/register");
-const path = require("path");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const extractSass = new ExtractTextPlugin("[name].css");
+const webpack = require("webpack")
+require("babel-core/register")
+const path = require("path")
+const ExtractTextPlugin = require("extract-text-webpack-plugin")
+const OpenBrowserPlugin = require("open-browser-webpack-plugin")
+const extractSass = new ExtractTextPlugin("[name].css")
 
 module.exports = [
   {
     entry: {
-      main: "./src/seseki.js"
+      main: path.resolve(__dirname, "src/index.js")
     },
     output: {
-      path: path.resolve(__dirname, "dist/js"),
-      publicPath: "/js/",
+      path: path.resolve(__dirname, "dist/js/"),
+      publicPath: "/dist/js/",
       filename: "[name].js"
     },
     module: {
@@ -44,7 +45,7 @@ module.exports = [
     },
     output: {
       path: path.resolve(__dirname, "dist/css"),
-      publicPath: "/css/",
+      publicPath: "/dist/css/",
       filename: "[name].css"
     },
     module: {
@@ -67,7 +68,14 @@ module.exports = [
         }
       ]
     },
-    plugins: [extractSass],
+    plugins: [
+      extractSass,
+      new webpack.HotModuleReplacementPlugin(),
+      new OpenBrowserPlugin({ url: "http://localhost:8080/" }),
+      new webpack.ProvidePlugin({
+        React: "react"
+      })
+    ],
     resolve: {
       extensions: [".css", ".js", ".jsx"]
     },
@@ -76,6 +84,8 @@ module.exports = [
       port: 8080,
       hot: true,
       inline: true,
+      historyApiFallback: true,
+      progress: true
     }
   }
-];
+]

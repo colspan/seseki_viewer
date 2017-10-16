@@ -29,6 +29,7 @@
     "materialize-css": "^0.100.2",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
+    "react-hot-loader": "^3.1.1",
     "topojson": "^3.0.2"
   },
   "devDependencies": {
@@ -53,6 +54,7 @@
     "mocha": "^4.0.1",
     "mocha-loader": "^1.1.1",
     "node-sass": "^4.5.3",
+    "open-browser-webpack-plugin": "^0.0.5",
     "power-assert": "^1.4.4",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.19.0",

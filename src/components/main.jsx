@@ -1,5 +1,4 @@
 import React from "react"
-const T = React.PropTypes
 
 class CommentBox extends React.Component {
   constructor(props) {
@@ -13,13 +12,8 @@ class CommentBox extends React.Component {
     const t = this.state.text
     const m = this.props.message
     const d = this.props.date.toString()
-    return <div>{t}, {m}. ({d}){"gewagewageawhgieohio"}</div>
+    return <div>{t}, {m}. ({d}){"test"}</div>
   }
-}
-
-CommentBox.propTypes = {
-    message: T.string.isRequired,
-    date: T.instanceOf(Date).isRequired
 }
 
 export default CommentBox
