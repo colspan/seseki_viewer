@@ -31,6 +31,18 @@ module.exports = [
             loader: "babel-loader",
             options: {}
           }
+        },
+        {
+          test: /\.css$/,
+          loaders: ["style-loader", "css-loader"]
+        },
+        {
+          test: /\.(png|woff|woff2|eot|ttf|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+          use: [
+            {
+              loader: "file-loader"
+            }
+          ]
         }
       ]
     },

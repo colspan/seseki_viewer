@@ -1,5 +1,4 @@
 # for client side development
 node_modules/
 bower_components/
-dist/*.js
-dist/*.css
+dist/*

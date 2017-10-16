@@ -1,10 +1,7 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import CommentBox from "./components/main.jsx"
+import { Map } from "./components"
 
 React.version
 
-ReactDOM.render(
-  <CommentBox message="test test" date={new Date()} />,
-  document.getElementById("app")
-)
+ReactDOM.render(<Map />, document.getElementById("app"))
