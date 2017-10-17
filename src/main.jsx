@@ -1,7 +1,17 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import { Map } from "./components"
+import { createStore } from "redux"
+import { Provider } from "react-redux"
+
+import App from "./container"
+import { sesekiReducer } from "./reducers"
 
 React.version
 
-ReactDOM.render(<Map />, document.getElementById("app"))
+const store = createStore(sesekiReducer)
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById("app")
+)
