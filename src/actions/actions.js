@@ -1,6 +1,7 @@
-import { call, put, takeEvery, takeLatest } from 'redux-saga/effects'
-
 const actions = {
-  TEST: "TEST"
+  INIT: "INIT",
+  GEOJSON_FETCH_REQUEST: "GEOJSON_FETCH_REQUEST",
+  GEOJSON_FETCH_SUCCEEDED: "GEOJSON_FETCH_SUCCEEDED",
+  GEOJSON_FETCH_FAILED: "GEOJSON_FETCH_FAILED"
 }
 export default actions

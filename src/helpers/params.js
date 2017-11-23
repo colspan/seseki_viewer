@@ -1,4 +1,4 @@
-export const prefecture_def = [
+export const prefectureDef = [
   "01_hokkaido",
   "02_aomori",
   "03_iwate",

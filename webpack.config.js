@@ -1,5 +1,7 @@
 const webpack = require("webpack")
 require("babel-core/register")
+require("babel-polyfill")
+
 const path = require("path")
 const ExtractTextPlugin = require("extract-text-webpack-plugin")
 const OpenBrowserPlugin = require("open-browser-webpack-plugin")
@@ -8,7 +10,7 @@ const extractSass = new ExtractTextPlugin("[name].css")
 module.exports = [
   {
     entry: {
-      main: path.resolve(__dirname, "src/index.js")
+      main: ["babel-polyfill", path.resolve(__dirname, "src/index.js")]
     },
     output: {
       path: path.resolve(__dirname, "dist/js/"),

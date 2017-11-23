@@ -1,7 +1,7 @@
 import * as d3 from "d3"
 import * as topojson from "topojson"
 
-export default class GeoJsonLoader {
+export default class geoJsonLoader {
   constructor(options) {
     const defaults = {
       geoJsonFiles: [],
@@ -32,7 +32,7 @@ export default class GeoJsonLoader {
           }
           // TopoJSONデータ展開
           const geodataFieldname = Object.keys(loaded.objects)[0]
-          const geojson = topojson.feature(
+          const geoJson = topojson.feature(
             loaded,
             loaded.objects[geodataFieldname]
           )
@@ -45,7 +45,7 @@ export default class GeoJsonLoader {
             if (!idMap[k]) idMap[k] = []
             if (idMap[k].indexOf(v) == -1) idMap[k].push(v)
           }
-          geojson.features.forEach((d, i) => {
+          geoJson.features.forEach((d, i) => {
             // 国土数値情報 行政区域データ向けのパーサ
 
             if (d.properties.N03_007 == "") return // 所属未定地等IDがないものは飛ばす
@@ -84,10 +84,10 @@ export default class GeoJsonLoader {
           })
           // 対象外の市町村を削除
           removeList.forEach((d) => {
-            geojson.features.splice(d, 1)
+            geoJson.features.splice(d, 1)
           })
           // 割り切り 同じ市町村名があると区別できない
-          resolve({ geojson, communes, idMap })
+          resolve({ geoJson, communes, idMap })
         })
       })
       promises.push(p)
@@ -100,16 +100,16 @@ export default class GeoJsonLoader {
     return new Promise((resolve, reject) => {
       Promise.all(promises).then(ready)
       function ready(results) {
-        let geodata
+        let geoJson
         results.forEach((d) => {
-          if (!geodata) geodata = d.geojson
-          else geodata.features = geodata.features.concat(d.geojson.features)
+          if (!geoJson) geoJson = d.geoJson
+          else geoJson.features = geoJson.features.concat(d.geoJson.features)
           communes = communes.concat(d.communes)
           Object.keys(d.idMap).forEach((x) => {
             idMap[x] = d.idMap[x]
           })
         })
-        self.geodata = geodata
+        self.geoJson = geoJson
         self.communes = communes
         self.idMap = idMap
         resolve(self)
