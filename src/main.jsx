@@ -10,7 +10,7 @@ React.version
 
 import { Router, Route, IndexRoute, Link, IndexLink } from "react-router-dom"
 
-import App from "./components"
+import App from "./containers"
 import { sesekiReducer } from "./reducers"
 
 const sagaMiddleware = createSagaMiddleware()
@@ -21,7 +21,7 @@ const store = createStore(
 
 const history = syncHistoryWithStore(createBrowserHistory(), store)
 
-class WrappedApp extends React.Component {
+class Main extends React.Component {
   render() {
     const { state, actions } = this.props
     return (
@@ -34,4 +34,4 @@ class WrappedApp extends React.Component {
   }
 }
 
-ReactDOM.render(<WrappedApp />, document.getElementById("app"))
+ReactDOM.render(<Main />, document.getElementById("app"))
