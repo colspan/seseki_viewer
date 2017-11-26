@@ -23,7 +23,7 @@ function *fetchGeoJsonFiles(action) {
     const fetchedData = yield call(() => {
       const x = new GeoJsonLoader({
         geoJsonFiles: areas.map((x) => {
-          return `data/${x}_topo.json`
+          return `data/${x.id}_${x.prefecture_en}_topo.json`
         })
       })
       return x.getLoader()

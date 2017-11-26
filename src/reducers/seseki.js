@@ -14,8 +14,8 @@ const initialState = {
 export default function sesekiReducer(state = initialState, action) {
   const parsedHash = parse(location.hash)
   parsedHash.areas = parsedHash.areas.split(",")
-  const validAreas = parsedHash.areas.filter((x) => {
-    return prefectureDef.indexOf(x) != -1
+  const validAreas = prefectureDef.filter((x) => {
+    return parsedHash.areas.indexOf(x.id) != -1
   })
 
   const newState = Object.assign({}, state, { areas: validAreas })
