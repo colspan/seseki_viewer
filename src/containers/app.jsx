@@ -17,7 +17,7 @@ class App extends React.Component {
   componentDidMount() {
     this.props.dispatch({ type: actions.INIT })
   }
-  componentWillUpdate(nextProps) {}
+  componentWillUpdate(nextProps) { }
   render() {
     const center = [43.065617, 141.348541]
     const osmUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -26,7 +26,8 @@ class App extends React.Component {
 
     let geoJsonElem = null
     if (this.props.seseki.geoJson != null) {
-      geoJsonElem = <GeoJSON data={this.props.seseki.geoJson} />
+      const featureStyle = () => { return { fillColor: "#ffffff" } }
+      geoJsonElem = <GeoJSON data={this.props.seseki.geoJson} style={featureStyle} />
     }
 
     return (
