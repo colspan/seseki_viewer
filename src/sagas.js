@@ -4,21 +4,27 @@ import * as selectors from "./reducers/selectors"
 
 import GeoJsonLoader from "./helpers/geoJsonLoader"
 
-function *initialize(action) {
+function* initialize(action) {
   const areas = yield select(selectors.areas)
   if (!areas || areas.length == 0) {
-    yield put({ type: "NO_AREA" })
+    yield put({ type: actions.SHOW_AREA_SELECTOR })
   }
+  yield put({ type: actions.LOCATION_CHANGE })
+}
+
+function* locationChange(action) {
+  /* check update of areas */
   const geoJson = yield select(selectors.geoJson)
-  if (!geoJson) {
+  const geoJsonFiles = yield select(selectors.geoJsonFiles)
+  if (!geoJson || geoJson && geoJsonFiles && geoJson.length != geoJsonFiles.length) {
     yield put({ type: actions.GEOJSON_FETCH_REQUEST })
   }
 }
 
-function *fetchGeoJsonFiles(action) {
-  const areas = yield select((x) => {
-    return x.seseki.areas
-  })
+function* fetchGeoJsonFiles(action) {
+  /* 一度消さないと react-leaflet が反応しない */
+  yield put({ type: actions.GEOJSON_CLEAR })
+  const areas = yield select(selectors.areas)
   try {
     const fetchedData = yield call(() => {
       const x = new GeoJsonLoader({
@@ -34,8 +40,9 @@ function *fetchGeoJsonFiles(action) {
   }
 }
 
-function *rootSaga() {
+function* rootSaga() {
   yield takeEvery(actions.INIT, initialize)
+  yield takeEvery(actions.LOCATION_CHANGE, locationChange)
   yield takeEvery(actions.GEOJSON_FETCH_REQUEST, fetchGeoJsonFiles)
 }
 

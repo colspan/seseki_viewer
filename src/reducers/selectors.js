@@ -5,3 +5,7 @@ export function areas(x) {
 export function geoJson(x) {
   return x.seseki ? x.seseki.geoJson : null
 }
+
+export function geoJsonFiles(x) {
+  return x.seseki ? x.seseki.geoJsonFiles : null
+}

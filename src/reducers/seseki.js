@@ -8,26 +8,45 @@ const initialState = {
   idMap: {},
   communes: {},
   geoJson: null,
+  geoJsonFiles: [],
   geoCsvFiles: []
 }
 
-export default function sesekiReducer(state = initialState, action) {
+function parseHash() {
   const parsedHash = parse(location.hash)
-  parsedHash.areas = parsedHash.areas.split(",")
-  const validAreas = prefectureDef.filter((x) => {
-    return parsedHash.areas.indexOf(x.id) != -1
-  })
+  let areas = []
+  if (parsedHash.areas) {
+    const hashAreas = parsedHash.areas.split(",")
+    areas = prefectureDef.filter(x => {
+      return hashAreas.indexOf(x.id) != -1
+    })
+  }
+  return {
+    areas
+  }
+}
 
-  const newState = Object.assign({}, state, { areas: validAreas })
+export default function sesekiReducer(state = initialState, action) {
+  const parsedHash = parseHash()
+  const newState = Object.assign({}, state, parsedHash)
   switch (action.type) {
     case actions.INIT:
+      return newState
+    case actions.SHOW_AREA_SELECTOR:
+    case actions.LOCATION_CHANGE:
+      console.log("TODO") // TODO
+      return newState
+    case actions.GEOJSON_CLEAR:
+      newState.idMap = []
+      newState.geoJson = null
+      newState.geoJsonFiles = null
       return newState
     case actions.GEOJSON_FETCH_REQUEST:
       return newState
     case actions.GEOJSON_FETCH_SUCCEEDED:
-      newState.geoJson = action.data.geoJson
       newState.idMap = action.data.idMap
-      newState.communes = action.data.communes
+      newState.geoJson = action.data.geoJson
+      newState.geoJsonFiles = action.data.options.geoJsonFiles
       return newState
     case actions.GEOJSON_FETCH_FAILED:
       return newState
