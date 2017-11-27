@@ -9,7 +9,8 @@ const initialState = {
   communes: {},
   geoJson: null,
   geoJsonFiles: [],
-  geoCsvFiles: []
+  geoStatisticalData: null,
+  geoStatisticalDataFiles: []
 }
 
 function parseHash() {
@@ -45,10 +46,15 @@ export default function sesekiReducer(state = initialState, action) {
       return newState
     case actions.GEOJSON_FETCH_SUCCEEDED:
       newState.idMap = action.data.idMap
+      newState.communes = action.data.communes
       newState.geoJson = action.data.geoJson
       newState.geoJsonFiles = action.data.options.geoJsonFiles
       return newState
     case actions.GEOJSON_FETCH_FAILED:
+      return newState
+    case actions.GEOSTATISTICALDATA_FETCH_SUCCEEDED:
+      newState.geoStatisticalData = action.data.geoStatisticalData
+      newState.geoStatisticalDataFiles = ["TODO"] // TODO
       return newState
     default:
       return newState

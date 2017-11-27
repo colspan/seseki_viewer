@@ -1,11 +1,11 @@
 import * as d3 from "d3"
 
 export default class GeoStatisticalData {
-  constructor(inputData, geojsonObj) {
+  constructor(inputData, idMap, communes) {
     this.data = {} // 自治体コードがキーの辞書
     this.dataMultiIds = {} // 政令指定都市向け辞書
-    this.idMap = geojsonObj.idMap
-    this.communes = geojsonObj.communes
+    this.idMap = idMap
+    this.communes = communes
     this.csvKeys = Object.keys(inputData[0])
     if (this.csvKeys.length < 2) {
       throw "Too Few Columns"

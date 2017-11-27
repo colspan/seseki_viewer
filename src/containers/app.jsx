@@ -7,6 +7,8 @@ import "leaflet/dist/leaflet.css"
 
 import actions from "../actions"
 
+import GeoStatisticalData from "../helpers/geoStatisticalData";
+
 function mapStateToProps(state, ownProps) {
   const parsedHash = parse(location.hash)
   const props = Object.assign({}, ownProps, state, { hash: parsedHash })
@@ -25,8 +27,24 @@ class App extends React.Component {
       '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 
     let geoJsonElem = null
+    let geoStatData = null
+    let featureStyle = { fillColor: "#ffffff" }
     if (this.props.seseki.geoJson != null) {
-      const featureStyle = () => { return { fillColor: "#ffffff" } }
+      if (this.props.seseki.geoStatisticalData != null) {
+        geoStatData = new GeoStatisticalData(this.props.seseki.geoStatisticalData, this.props.seseki.idMap, this.props.seseki.communes)
+        const targetColumn = geoStatData.getByColumnName(geoStatData.csvKeys[1])
+        const idMap = this.props.seseki.idMap
+        featureStyle = (d) => {
+          const value = targetColumn.parsedData[idMap[d.name]]
+          return {
+            color: "#222",
+            weight: 0.3,
+            opacity: 0.6,
+            fillOpacity: 0.6,
+            fillColor: targetColumn.colorScale(value)
+          }
+        }
+      }
       geoJsonElem = <GeoJSON data={this.props.seseki.geoJson} style={featureStyle} />
     }
 

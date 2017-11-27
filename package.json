@@ -22,6 +22,7 @@
   "homepage": "https://github.com/colspan/seseki_viewer#readme",
   "dependencies": {
     "d3": "^4.11.0",
+    "d3-dsv": "^1.0.8",
     "d3-svg-legend": "^2.24.1",
     "encoding-japanese": "^1.0.26",
     "handsontable": "^0.34.5",
