@@ -5,6 +5,7 @@ import { parse } from "query-string"
 
 import { Map, Polygon, Popup, TileLayer } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
+import { geoCentroid } from "d3-geo"
 
 import actions from "../actions"
 
@@ -29,7 +30,7 @@ class App extends React.Component {
   }
   render() {
     /* tile layer */
-    const center = [43.065617, 141.348541] // TODO 自動計算
+    const centroid = this.props.seseki.geoJson ? geoCentroid(this.props.seseki.geoJson) : [141.348541, 43.065617]
     const osmUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
     const osmAttrib =
       '&copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -118,7 +119,7 @@ class App extends React.Component {
     const heatMapElem = this.props.seseki.geoJson ? <HeatMap data={this.props.seseki.geoJson} style={featureStyle} onEachFeature={eachFeature} attribution={heatmapAttrib} /> : null
 
     return (
-      <Map center={center} zoom={7} className="sesekimap" refs="map">
+      <Map center={[centroid[1], centroid[0]]} zoom={7} className="sesekimap" refs="map">
         {heatMapElem}
         {tileLayerElem}
       </Map>
