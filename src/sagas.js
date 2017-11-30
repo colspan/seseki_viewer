@@ -22,10 +22,6 @@ function* locationChange(action) {
   if (!geoJson || geoJson && geoJsonFiles && geoJson.length != geoJsonFiles.length) {
     yield put({ type: actions.GEOJSON_FETCH_REQUEST })
   }
-  const geoStatisticalData = yield select(selectors.geoStatisticalData)
-  if (!geoStatisticalData) {
-    yield put({ type: actions.GEOSTATISTICALDATA_FETCH_REQUEST })
-  }
 }
 
 function* fetchGeoJsonFiles(action) {
@@ -42,6 +38,7 @@ function* fetchGeoJsonFiles(action) {
       return x.getLoader()
     })
     yield put({ type: actions.GEOJSON_FETCH_SUCCEEDED, data: fetchedData })
+    yield put({ type: actions.GEOSTATISTICALDATA_FETCH_REQUEST })
   } catch (e) {
     yield put({ type: actions.GEOJSON_FETCH_FAILED, message: e.message })
   }

@@ -124,7 +124,8 @@ export default class GeoStatisticalData {
       colorScale,
       domain,
       range,
-      normDomain
+      normDomain,
+      format
     }
   }
   clearData() {
