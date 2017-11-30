@@ -3,28 +3,19 @@ import ReactDOM from "react-dom"
 import { connect } from "react-redux"
 import { parse } from "query-string"
 
-import { Map, Polygon, Popup, TileLayer, GeoJSON } from "react-leaflet"
+import { Map, Polygon, Popup, TileLayer } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 
 import actions from "../actions"
 
 import GeoStatisticalData from "../helpers/geoStatisticalData"
 
+import HeatMap from "../components/heatmap"
+
 function mapStateToProps(state, ownProps) {
   const parsedHash = parse(location.hash)
   const props = Object.assign({}, ownProps, state, { hash: parsedHash })
   return props
-}
-
-class HeatMap extends GeoJSON {
-  updateLeafletElement(fromProps, toProps) {
-    const geoJsonLayer = this.leafletElement
-    geoJsonLayer.getLayers().forEach(x => {
-      geoJsonLayer.resetStyle(x);
-      toProps.onEachFeature(x.feature, x, geoJsonLayer);
-    })
-    super.updateLeafletElement(fromProps, toProps)
-  }
 }
 
 class App extends React.Component {
@@ -38,7 +29,7 @@ class App extends React.Component {
   }
   render() {
     /* tile layer */
-    const center = [43.065617, 141.348541]
+    const center = [43.065617, 141.348541] // TODO 自動計算
     const osmUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
     const osmAttrib =
       '&copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
