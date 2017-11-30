@@ -27,7 +27,6 @@ class HeatMap extends GeoJSON {
   }
 }
 
-
 class App extends React.Component {
   constructor(props) {
     super(props)
@@ -38,11 +37,16 @@ class App extends React.Component {
   componentDidUpdate() {
   }
   render() {
+    /* tile layer */
     const center = [43.065617, 141.348541]
     const osmUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
     const osmAttrib =
       '&copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    const tileLayerElem = (<TileLayer attribution={osmAttrib} url={osmUrl} opacity={0.2} />)
 
+    /* heatmap layer */
+    const heatmapAttrib = '&copy; <a href="http://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html">国土数値情報 行政区域データ</a>, '
+      + 'CC BY NC SA 4.0 <a href="https://github.com/colspan">Miyoshi(@colspan)</a> <a href="https://github.com/colspan/seseki_viewer">Seseki</a>'
     let featureStyle = {
       color: "#222",
       weight: 0.3,
@@ -50,7 +54,18 @@ class App extends React.Component {
       fillOpacity: 0.6,
       fillColor: "#ffffff"
     }
-    let eachFeature = (d, l) => { l.bindTooltip(d.name) }
+    let eachFeature = (d, l) => {
+      l.bindTooltip(d.name)
+      l.on({
+        mouseover: e => {
+        },
+        mouseout: e => {
+        },
+        click: e => {
+        }
+      })
+    }
+    /* データがあったらイベントを付与する */
     if (this.props.seseki.geoJson && this.props.seseki.geoStatisticalData) {
       /* データをバインドする */
       const geoStatData = new GeoStatisticalData(this.props.seseki.geoStatisticalData, this.props.seseki.idMap, this.props.seseki.communes)
@@ -84,7 +99,7 @@ class App extends React.Component {
               fillOpacity: 0.7
             }
             /* 同じ市町村を同時に塗りかえる */
-            parent.getLayers()
+            if (parent) parent.getLayers()
               .filter(y => y.feature.communeId === communeId)
               .forEach(y => {
                 y.setStyle(style)
@@ -96,7 +111,7 @@ class App extends React.Component {
           },
           mouseout: e => {
             /* 同じ市町村を同時に塗りかえる */
-            parent.getLayers()
+            if (parent) parent.getLayers()
               .filter(y => y.feature.communeId == communeId)
               .forEach(y => {
                 parent.setStyle(featureStyle)
@@ -109,12 +124,12 @@ class App extends React.Component {
         })
       }
     }
+    const heatMapElem = this.props.seseki.geoJson ? <HeatMap data={this.props.seseki.geoJson} style={featureStyle} onEachFeature={eachFeature} attribution={heatmapAttrib} /> : null
 
-    const heatMapElem = this.props.seseki.geoJson ? <HeatMap data={this.props.seseki.geoJson} style={featureStyle} onEachFeature={eachFeature} /> : null
     return (
       <Map center={center} zoom={7} className="sesekimap" refs="map">
         {heatMapElem}
-        <TileLayer attribution={osmAttrib} url={osmUrl} opacity={0.2} />
+        {tileLayerElem}
       </Map>
     )
   }
