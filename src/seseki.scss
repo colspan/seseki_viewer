@@ -7,11 +7,45 @@ body{
     background-color: #fafafa;
 }
 
+#container {
+    display:flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#header {
+    background-color: rgb(48, 135, 216);
+    color: white;
+    flex: 0;
+    height: 60px;
+    padding: 6px;
+    display:flex;
+}
+
+#header h2{
+    color: white;
+    flex: 1;
+}
+
+#header div{
+    color: white;
+    flex: 1;
+}
+
+#main {
+    flex: 1;
+    display:flex;
+}
+
 .sesekimap{
     width:100vw;
-    height:100vh;
     margin:0;
     padding:0;
+    flex: 1;
+}
+
+#ranking{
+    width: 200px;
 }
 
 .layer_tooltip .commune_name{

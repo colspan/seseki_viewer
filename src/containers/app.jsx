@@ -7,6 +7,9 @@ import { Map, Polygon, Popup, TileLayer } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import { geoCentroid } from "d3-geo"
 
+import { Button, Dropdown, Header, Icon } from "semantic-ui-react"
+import "semantic-ui-css/semantic.min.css"
+
 import actions from "../actions"
 
 import GeoStatisticalData from "../helpers/geoStatisticalData"
@@ -118,11 +121,43 @@ class App extends React.Component {
     }
     const heatMapElem = this.props.seseki.geoJson ? <HeatMap data={this.props.seseki.geoJson} style={featureStyle} onEachFeature={eachFeature} attribution={heatmapAttrib} /> : null
 
+    const mapElem = (<Map center={[centroid[1], centroid[0]]} zoom={7} className="sesekimap" refs="map">
+      {heatMapElem}
+      {tileLayerElem}
+    </Map>)
+
+    const rankingElem = (<div id="ranking">ranking</div>)
+
+    const headerElem = (
+      <div id="header">
+        <Header as='h2'>
+          <Icon name='map outline' />
+          <Header.Content>
+            Seseki Viewer
+        <Header.Subheader>
+              Visualize Geo Statistical Data
+        </Header.Subheader>
+          </Header.Content>
+        </Header>
+        <div id="prefecture-selector">
+          <Dropdown placeholder="Select Prefecture" options={[]} />
+        </div>
+        <div id="toolbox">
+          <Button content='Open CSV' icon='file excel outline' labelPosition='left' />
+          <Button content='Edit' icon='edit' labelPosition='left' />
+          <Dropdown placeholder="Select column" options={[{ key: 'test', value: 'test', text: 'Test' }]} />
+        </div>
+      </div>
+    )
+
     return (
-      <Map center={[centroid[1], centroid[0]]} zoom={7} className="sesekimap" refs="map">
-        {heatMapElem}
-        {tileLayerElem}
-      </Map>
+      <div id="container">
+        {headerElem}
+        <div id="main">
+          {mapElem}
+          {rankingElem}
+        </div>
+      </div>
     )
   }
 }
