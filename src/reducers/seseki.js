@@ -59,6 +59,9 @@ export default function sesekiReducer(state = initialState, action) {
       newState.geoStatisticalDataFiles = ["TODO"] // TODO
       newState.geoStatisticalDataColumn = 0
       break
+    case actions.GEOSTATISTICALDATA_CHANGE_COLUMN:
+      newState.geoStatisticalDataColumn = action.data.column
+      break
     default:
       break
   }

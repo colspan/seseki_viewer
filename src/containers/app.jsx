@@ -27,7 +27,7 @@ class App extends React.Component {
   componentDidMount() {
     this.props.dispatch({ type: actions.INIT })
   }
-  componentDidUpdate() {}
+  componentDidUpdate() { }
   render() {
     /* tile layer */
     const centroid = this.props.seseki.geoJson ? geoCentroid(this.props.seseki.geoJson) : [141.348541, 43.065617]
@@ -49,9 +49,9 @@ class App extends React.Component {
     let eachFeature = (d, l) => {
       l.bindTooltip(d.name)
       l.on({
-        mouseover: e => {},
-        mouseout: e => {},
-        click: e => {}
+        mouseover: e => { },
+        mouseout: e => { },
+        click: e => { }
       })
     }
     /* データがあったらイベントを付与する */
@@ -63,7 +63,7 @@ class App extends React.Component {
         this.props.seseki.idMap,
         this.props.seseki.communes
       )
-      const targetColumn = geoStatData.getByColumnName(geoStatData.csvKeys[1])
+      const targetColumn = geoStatData.getByColumnName(geoStatData.csvKeys[this.props.seseki.geoStatisticalDataColumn + 1])
       const idMap = this.props.seseki.idMap
       featureStyle = d => {
         return {
@@ -110,9 +110,9 @@ class App extends React.Component {
             if (parent)
               parent
                 .getLayers()
-                .filter(y => y.feature.communeId == communeId)
+                .filter(y => y.feature.communeId === communeId)
                 .forEach(y => {
-                  parent.setStyle(featureStyle)
+                  y.setStyle(featureStyle(y.feature))
                 })
             e.target.closeTooltip()
           },
@@ -145,8 +145,8 @@ class App extends React.Component {
     })
     const columnOptions = geoStatData
       ? geoStatData.csvKeys.slice(1, -1).map((x, i) => {
-          return { key: i, value: i, text: x }
-        })
+        return { key: i, value: i, text: x }
+      })
       : []
     const headerElem = (
       <div id="header">
@@ -179,6 +179,7 @@ class App extends React.Component {
             selection
             options={columnOptions}
             value={this.props.seseki.geoStatisticalDataColumn}
+            onChange={(e, x) => this.props.dispatch({ type: actions.GEOSTATISTICALDATA_CHANGE_COLUMN, data: { column: x.value } })}
           />
         </div>
       </div>
