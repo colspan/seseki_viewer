@@ -60,9 +60,10 @@ class App extends React.Component {
       })
     }
     /* データがあったらイベントを付与する */
+    let geoStatData = null
     if (this.props.seseki.geoJson && this.props.seseki.geoStatisticalData) {
       /* データをバインドする */
-      const geoStatData = new GeoStatisticalData(this.props.seseki.geoStatisticalData, this.props.seseki.idMap, this.props.seseki.communes)
+      geoStatData = new GeoStatisticalData(this.props.seseki.geoStatisticalData, this.props.seseki.idMap, this.props.seseki.communes)
       const targetColumn = geoStatData.getByColumnName(geoStatData.csvKeys[1])
       const idMap = this.props.seseki.idMap
       featureStyle = d => {
@@ -129,6 +130,8 @@ class App extends React.Component {
 
 
     const prefectureOptions = prefectureDef.map(x => { return {key:x.id, value: x.id, text: x.prefecture_jp}})
+    const columnOptions = geoStatData ? geoStatData.csvKeys.slice(1, -1).map((x, i) => {return {key:i, value:i, text: x}}) : []
+    console.log(geoStatData, columnOptions)
     const headerElem = (
       <div id="header">
         <Header as='h2'>
@@ -148,7 +151,7 @@ class App extends React.Component {
           <Button content='Edit' icon='edit' labelPosition='left' />
         </div>
         <div id="column-selector">
-          <Dropdown placeholder="Select column" fluid selection options={[{ key: 'test', value: 'test', text: 'Test' }]} />
+          <Dropdown placeholder="Select column" fluid selection options={columnOptions} />
         </div>
       </div>
     )
