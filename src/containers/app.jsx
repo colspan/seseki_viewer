@@ -148,7 +148,6 @@ class App extends React.Component {
           return { key: i, value: i, text: x }
         })
       : []
-    console.log(this.props)
     const headerElem = (
       <div id="header">
         <Header as="h2">
@@ -166,6 +165,7 @@ class App extends React.Component {
             selection
             options={prefectureOptions}
             value={this.props.seseki.areas.map(x => x.id)}
+            onChange={(e, x) => this.props.dispatch({ type: actions.AREA_CHANGE, data: { areas: x.value } })}
           />
         </div>
         <div id="toolbox">
@@ -173,7 +173,13 @@ class App extends React.Component {
           <Button content="Edit" icon="edit" labelPosition="left" />
         </div>
         <div id="column-selector">
-          <Dropdown placeholder="Select column" fluid selection options={columnOptions} value={this.props.seseki.geoStatisticalDataColumn} />
+          <Dropdown
+            placeholder="Select column"
+            fluid
+            selection
+            options={columnOptions}
+            value={this.props.seseki.geoStatisticalDataColumn}
+          />
         </div>
       </div>
     )

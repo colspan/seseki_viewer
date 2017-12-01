@@ -30,37 +30,37 @@ function parseHash() {
 
 export default function sesekiReducer(state = initialState, action) {
   const parsedHash = parseHash()
-  const newState = Object.assign({}, state, parsedHash)
+  const newState = Object.assign({}, state)
   switch (action.type) {
     case actions.INIT:
-      return newState
     case actions.LOCATION_CHANGE:
-      console.log("TODO") // TODO
-      return newState
+      if (parsedHash.areas) newState.areas = parsedHash.areas
+      break
     case actions.AREA_CHANGE:
-      //location.href = action.areas
-      return newState
+      newState.areas = action.data.areas
+      break
     case actions.GEOJSON_CLEAR:
       newState.idMap = []
       newState.geoJson = null
       newState.geoJsonFiles = null
-      return newState
+      break
     case actions.GEOJSON_FETCH_REQUEST:
-      return newState
+      break
     case actions.GEOJSON_FETCH_SUCCEEDED:
       newState.idMap = action.data.idMap
       newState.communes = action.data.communes
       newState.geoJson = action.data.geoJson
       newState.geoJsonFiles = action.data.options.geoJsonFiles
-      return newState
+      break
     case actions.GEOJSON_FETCH_FAILED:
-      return newState
+      break
     case actions.GEOSTATISTICALDATA_FETCH_SUCCEEDED:
       newState.geoStatisticalData = action.data.geoStatisticalData
       newState.geoStatisticalDataFiles = ["TODO"] // TODO
       newState.geoStatisticalDataColumn = 0
-      return newState
+      break
     default:
-      return newState
+      break
   }
+  return newState
 }

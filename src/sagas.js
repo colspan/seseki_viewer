@@ -8,11 +8,14 @@ import * as selectors from "./reducers/selectors"
 import GeoJsonLoader from "./helpers/geoJsonLoader"
 
 function* initialize(action) {
-  const areas = yield select(selectors.areas)
-  if (!areas || areas.length == 0) {
-    yield put({ type: actions.SHOW_AREA_SELECTOR })
-  }
   yield put({ type: actions.LOCATION_CHANGE })
+}
+
+function* areaChange(action) {
+  const newAreas = yield select(selectors.areas)
+  const hashes = []
+  if(newAreas && newAreas.length > 0) hashes.push(`areas=${newAreas.join(",")}`)
+  location.hash = `#${hashes.join("&")}`
 }
 
 function* locationChange(action) {
@@ -73,6 +76,7 @@ function* fetchGeoStatisticalData(action) {
 function* rootSaga() {
   yield takeEvery(actions.INIT, initialize)
   yield takeEvery(actions.LOCATION_CHANGE, locationChange)
+  yield takeEvery(actions.AREA_CHANGE, areaChange)
   yield takeEvery(actions.GEOJSON_FETCH_REQUEST, fetchGeoJsonFiles)
   yield takeEvery(actions.GEOSTATISTICALDATA_FETCH_REQUEST, fetchGeoStatisticalData)
 }
