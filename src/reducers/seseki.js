@@ -57,7 +57,7 @@ export default function sesekiReducer(state = initialState, action) {
     case actions.GEOSTATISTICALDATA_FETCH_SUCCEEDED:
       newState.geoStatisticalData = action.data.geoStatisticalData
       newState.geoStatisticalDataFiles = ["TODO"] // TODO
-      newState.geoStatisticalDataColumn = 0
+      newState.geoStatisticalDataColumn = 0 // TODO 長さをチェックする。外から与えられるようにする。
       break
     case actions.GEOSTATISTICALDATA_CHANGE_COLUMN:
       newState.geoStatisticalDataColumn = action.data.column

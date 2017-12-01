@@ -10,6 +10,7 @@ import actions from "../actions"
 
 import HeatMap from "../components/heatmap"
 
+import GeoStatisticalData from "../helpers/geoStatisticalData"
 import { prefectureDef } from "../helpers/params"
 
 function mapStateToProps(state, ownProps) {
@@ -21,21 +22,20 @@ class App extends React.Component {
   componentDidMount() {
     this.props.dispatch({ type: actions.INIT })
   }
-  componentDidUpdate() { }
   render() {
 
     let geoStatData = null
-    if (this.props.geoJson && this.props.geoStatisticalData) {
+    if (this.props.seseki.geoJson && this.props.seseki.geoStatisticalData) {
       /* データをバインドする */
       geoStatData = new GeoStatisticalData(
-        this.props.geoStatisticalData,
-        this.props.idMap,
-        this.props.communes
+        this.props.seseki.geoStatisticalData,
+        this.props.seseki.idMap,
+        this.props.seseki.communes
       )
     }
 
-    const mapElem = (<HeatMap {...this.props.seseki} />)
-    
+    const mapElem = (<HeatMap {...Object.assign({}, this.props.seseki, { geoStatData }) } />)
+
     const rankingElem = <div id="ranking">ranking</div>
 
     const prefectureOptions = prefectureDef.map(x => {

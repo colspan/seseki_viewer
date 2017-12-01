@@ -3,9 +3,6 @@ import { Map, GeoJSON, Popup, TileLayer } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import { geoCentroid } from "d3-geo"
 
-
-import GeoStatisticalData from "../helpers/geoStatisticalData"
-
 class MyGeoJSON extends GeoJSON {
   updateLeafletElement(fromProps, toProps) {
     const geoJsonLayer = this.leafletElement
@@ -39,14 +36,9 @@ export default class Heatmap extends React.Component {
       })
     }
     /* データがあったらイベントを付与する */
-    let geoStatData = null
-    if (this.props.geoJson && this.props.geoStatisticalData) {
+    if (this.props.geoStatData) {
       /* データをバインドする */
-      geoStatData = new GeoStatisticalData(
-        this.props.geoStatisticalData,
-        this.props.idMap,
-        this.props.communes
-      )
+      const geoStatData = this.props.geoStatData
       const targetColumn = geoStatData.getByColumnName(geoStatData.csvKeys[this.props.geoStatisticalDataColumn + 1])
       const idMap = this.props.idMap
       featureStyle = d => {
