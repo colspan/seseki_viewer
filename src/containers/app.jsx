@@ -16,6 +16,8 @@ import GeoStatisticalData from "../helpers/geoStatisticalData"
 
 import HeatMap from "../components/heatmap"
 
+import { prefectureDef } from "../helpers/params"
+
 function mapStateToProps(state, ownProps) {
   const parsedHash = parse(location.hash)
   const props = Object.assign({}, ownProps, state, { hash: parsedHash })
@@ -23,9 +25,6 @@ function mapStateToProps(state, ownProps) {
 }
 
 class App extends React.Component {
-  constructor(props) {
-    super(props)
-  }
   componentDidMount() {
     this.props.dispatch({ type: actions.INIT })
   }
@@ -128,24 +127,28 @@ class App extends React.Component {
 
     const rankingElem = (<div id="ranking">ranking</div>)
 
+
+    const prefectureOptions = prefectureDef.map(x => { return {key:x.id, value: x.id, text: x.prefecture_jp}})
     const headerElem = (
       <div id="header">
         <Header as='h2'>
           <Icon name='map outline' />
           <Header.Content>
             Seseki Viewer
-        <Header.Subheader>
+            <Header.Subheader className="subtitle">
               Visualize Geo Statistical Data
-        </Header.Subheader>
+            </Header.Subheader>
           </Header.Content>
         </Header>
-        <div id="prefecture-selector">
-          <Dropdown placeholder="Select Prefecture" options={[]} />
+        <div id="prefecture_selector">
+          <Dropdown placeholder="Select Prefecture" multiple fluid selection options={prefectureOptions} />
         </div>
         <div id="toolbox">
           <Button content='Open CSV' icon='file excel outline' labelPosition='left' />
           <Button content='Edit' icon='edit' labelPosition='left' />
-          <Dropdown placeholder="Select column" options={[{ key: 'test', value: 'test', text: 'Test' }]} />
+        </div>
+        <div id="column-selector">
+          <Dropdown placeholder="Select column" fluid selection options={[{ key: 'test', value: 'test', text: 'Test' }]} />
         </div>
       </div>
     )

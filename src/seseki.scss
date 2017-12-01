@@ -15,20 +15,34 @@ body{
 
 #header {
     background-color: rgb(48, 135, 216);
-    color: white;
     flex: 0;
     height: 60px;
     padding: 6px;
     display:flex;
 }
 
-#header h2{
+#header h2.ui.header{
     color: white;
-    flex: 1;
+    margin-right: 20px;
 }
 
-#header div{
+#header h2.ui.header div{
     color: white;
+}
+
+#header #prefecture_selector{
+    width: 320px;
+    padding-top: 5px;
+    margin-right: 10px;
+}
+
+#header #toolbox{
+    padding-top: 6px;
+    margin-right: 8px;
+} 
+
+#header #column-selector{
+    padding-top: 5px;
     flex: 1;
 }
 
