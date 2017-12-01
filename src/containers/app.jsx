@@ -19,8 +19,7 @@ import HeatMap from "../components/heatmap"
 import { prefectureDef } from "../helpers/params"
 
 function mapStateToProps(state, ownProps) {
-  const parsedHash = parse(location.hash)
-  const props = Object.assign({}, ownProps, state, { hash: parsedHash })
+  const props = Object.assign({}, ownProps, state)
   return props
 }
 
@@ -131,7 +130,7 @@ class App extends React.Component {
 
     const prefectureOptions = prefectureDef.map(x => { return {key:x.id, value: x.id, text: x.prefecture_jp}})
     const columnOptions = geoStatData ? geoStatData.csvKeys.slice(1, -1).map((x, i) => {return {key:i, value:i, text: x}}) : []
-    console.log(geoStatData, columnOptions)
+    console.log(this.props)
     const headerElem = (
       <div id="header">
         <Header as='h2'>
@@ -144,7 +143,7 @@ class App extends React.Component {
           </Header.Content>
         </Header>
         <div id="prefecture_selector">
-          <Dropdown placeholder="Select Prefecture" multiple fluid selection options={prefectureOptions} />
+          <Dropdown placeholder="Select Prefecture" multiple fluid selection options={prefectureOptions} value={this.props.seseki.areas.map(x=>x.id)}/>
         </div>
         <div id="toolbox">
           <Button content='Open CSV' icon='file excel outline' labelPosition='left' />
