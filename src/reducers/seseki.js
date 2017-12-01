@@ -10,7 +10,8 @@ const initialState = {
   geoJson: null,
   geoJsonFiles: [],
   geoStatisticalData: null,
-  geoStatisticalDataFiles: []
+  geoStatisticalDataFiles: [],
+  geoStatisticalDataColumn: null
 }
 
 function parseHash() {
@@ -33,9 +34,11 @@ export default function sesekiReducer(state = initialState, action) {
   switch (action.type) {
     case actions.INIT:
       return newState
-    case actions.SHOW_AREA_SELECTOR:
     case actions.LOCATION_CHANGE:
       console.log("TODO") // TODO
+      return newState
+    case actions.AREA_CHANGE:
+      //location.href = action.areas
       return newState
     case actions.GEOJSON_CLEAR:
       newState.idMap = []
@@ -55,6 +58,7 @@ export default function sesekiReducer(state = initialState, action) {
     case actions.GEOSTATISTICALDATA_FETCH_SUCCEEDED:
       newState.geoStatisticalData = action.data.geoStatisticalData
       newState.geoStatisticalDataFiles = ["TODO"] // TODO
+      newState.geoStatisticalDataColumn = 0
       return newState
     default:
       return newState
