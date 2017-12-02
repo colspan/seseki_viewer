@@ -125,7 +125,8 @@ export default class GeoStatisticalData {
       domain,
       range,
       normDomain,
-      format
+      format,
+      getValue
     }
   }
   clearData() {

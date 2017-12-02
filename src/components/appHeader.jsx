@@ -21,7 +21,7 @@ export default class AppHeader extends React.Component {
           <Icon name="map outline" />
           <Header.Content>
             Seseki Viewer
-          <Header.Subheader className="subtitle">Visualize Geo Statistical Data</Header.Subheader>
+          <Header.Subheader className="subtitle">Geo Statistical Data Visualizer</Header.Subheader>
           </Header.Content>
         </Header>
         <div id="prefecture_selector">

@@ -15,7 +15,8 @@ body{
 
 #header {
     background-color: rgb(48, 135, 216);
-    flex: 0;
+    flex-grow: 0;
+    flex-basis: auto;
     height: 60px;
     padding: 6px;
     display:flex;
@@ -47,7 +48,8 @@ body{
 }
 
 #main {
-    flex: 1;
+    flex-grow: 1;
+    flex-basis: 0;
     display:flex;
 }
 
@@ -59,7 +61,8 @@ body{
 }
 
 #ranking{
-    width: 200px;
+    width: 320px;
+    overflow-y: scroll;
 }
 
 .layer_tooltip .commune_name{

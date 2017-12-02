@@ -8,6 +8,7 @@ import actions from "../actions"
 
 import HeatMap from "../components/heatmap"
 import AppHeader from "../components/appHeader"
+import Ranking from "../components/ranking"
 
 import GeoStatisticalData from "../helpers/geoStatisticalData"
 
@@ -36,7 +37,7 @@ class App extends React.Component {
 
     const headerElem = (<AppHeader {...childProps} />)
     const mapElem = (<HeatMap {...childProps } />)
-    const rankingElem = <div id="ranking">ranking</div>
+    const rankingElem = <Ranking {...childProps} />
 
     return (
       <div id="container">
