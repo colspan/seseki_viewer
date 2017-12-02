@@ -29,9 +29,14 @@ export default class GeoStatisticalData {
     // 各カラムの型の推定
     // TODO
   }
+  format(x) {
+    if (isNaN(x)) return x
+    const formatStr = +x % 1 === 0 && +x % 1 === 0 ? ",.0f" : "0.4f"
+    return d3.format(formatStr)(x)
+  }
   getByColumnName(columnName) {
     const dataArray = this.dataArray
-    const getValue = function (x) {
+    const getValue = function(x) {
       try {
         let value = x[columnName]
         if (typeof value == "string") {
@@ -51,11 +56,7 @@ export default class GeoStatisticalData {
         return null
       }
     }
-    const format = function (x) {
-      if (isNaN(x)) return x
-      const formatStr = +x % 1 === 0 && +x % 1 === 0 ? ",.0f" : "0.4f"
-      return d3.format(formatStr)(x)
-    }
+    const format = this.format
     // max,minを算出
     dataArray.sort((a, b) => {
       return d3.descending(getValue(a), getValue(b))

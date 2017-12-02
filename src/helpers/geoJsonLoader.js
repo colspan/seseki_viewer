@@ -40,6 +40,7 @@ export default class geoJsonLoader {
           const exceptionCommunes = self.options.exceptions // 対象外の市町村
           const removeList = []
           const idMap = {}
+          const idToCommune = {}
 
           function register(k, v) {
             if (!idMap[k]) idMap[k] = []
@@ -82,12 +83,19 @@ export default class geoJsonLoader {
               register(d.properties.N03_004, d.communeId)
             }
           })
+
+          // IDから市町村名に変換する辞書を作成
+          geoJson.features.forEach((d) => {
+            idToCommune[d.communeId] = d.name
+          })
+
           // 対象外の市町村を削除
           removeList.forEach((d) => {
             geoJson.features.splice(d, 1)
           })
+
           // 割り切り 同じ市町村名があると区別できない
-          resolve({ geoJson, communes, idMap })
+          resolve({ geoJson, communes, idMap, idToCommune })
         })
       })
       promises.push(p)
@@ -96,9 +104,12 @@ export default class geoJsonLoader {
     // 処理開始
     let communes = []
     const idMap = {}
+    const idToCommune = {}
     this.idMap = {}
+    this.idToCommune = {}
     return new Promise((resolve, reject) => {
       Promise.all(promises).then(ready)
+      /* 複数のGeoJSONをマージする */
       function ready(results) {
         let geoJson
         results.forEach((d) => {
@@ -108,10 +119,14 @@ export default class geoJsonLoader {
           Object.keys(d.idMap).forEach((x) => {
             idMap[x] = d.idMap[x]
           })
+          Object.keys(d.idToCommune).forEach((x) => {
+            idToCommune[x] = d.idToCommune[x]
+          })
         })
         self.geoJson = geoJson
         self.communes = communes
         self.idMap = idMap
+        self.idToCommune = idToCommune
         resolve(self)
       }
     })

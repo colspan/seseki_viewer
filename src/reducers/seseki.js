@@ -6,6 +6,7 @@ import { prefectureDef } from "../helpers/params"
 const initialState = {
   areas: [],
   idMap: {},
+  idToCommune: {},
   communes: {},
   geoJson: null,
   geoJsonFiles: [],
@@ -19,7 +20,7 @@ function parseHash() {
   let areas = []
   if (parsedHash.areas) {
     const hashAreas = parsedHash.areas.split(",")
-    areas = prefectureDef.filter(x => {
+    areas = prefectureDef.filter((x) => {
       return hashAreas.indexOf(x.id) != -1
     })
   }
@@ -48,6 +49,7 @@ export default function sesekiReducer(state = initialState, action) {
       break
     case actions.GEOJSON_FETCH_SUCCEEDED:
       newState.idMap = action.data.idMap
+      newState.idToCommune = action.data.idToCommune
       newState.communes = action.data.communes
       newState.geoJson = action.data.geoJson
       newState.geoJsonFiles = action.data.options.geoJsonFiles
