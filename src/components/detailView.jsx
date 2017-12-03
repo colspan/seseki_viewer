@@ -8,15 +8,17 @@ export default class DetailView extends React.Component {
       detailViewTargetName,
       closeDetailView,
       geoStatData,
-      idToCommune
+      idToCommune,
+      geoStatisticalDataColumn
     } = this.props
     const data = geoStatData.data[detailViewTarget]
     const csvKeys = geoStatData.csvKeys.slice(1, -1)
     const format = geoStatData.format
 
     const bodyRows = csvKeys.map((k, i) => {
+      const color = geoStatisticalDataColumn == i ? "orange" : ""
       return (
-        <Table.Row key={i}>
+        <Table.Row key={i} style={{ background: color }}>
           <Table.Cell>{k}</Table.Cell>
           <Table.Cell textAlign="right">{format(data[k])}</Table.Cell>
         </Table.Row>
