@@ -23,7 +23,8 @@ class App extends React.Component {
     super(props)
     this.state = {
       detailViewTarget: null,
-      detailViewTargetName: null
+      detailViewTargetName: null,
+      tooltipTarget: null
     }
   }
   componentDidMount() {
@@ -53,7 +54,14 @@ class App extends React.Component {
         this.setState({ detailViewTarget: null, detailViewTargetName: null })
       },
       detailViewTarget: this.state.detailViewTarget,
-      detailViewTargetName: this.state.detailViewTargetName
+      detailViewTargetName: this.state.detailViewTargetName,
+      openTooltip: (communeId) => {
+        this.setState({ tooltipTarget: communeId })
+      },
+      closeTooltip: () => {
+        this.setState({ tooltipTarget: null })
+      },
+      tooltipTarget: this.state.tooltipTarget
     })
 
     const headerElem = <AppHeader {...childProps} />

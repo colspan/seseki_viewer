@@ -9,7 +9,7 @@ export default class Ranking extends React.Component {
     }
   }
 
-  handleSort(clickedColumn) {
+  handleSort() {
     return () => {
       const { direction } = this.state
       this.setState({
@@ -56,7 +56,13 @@ export default class Ranking extends React.Component {
           key={x.rank}
           style={{ background: x.color }}
           onClick={() => {
-            return this.props.openDetailView(communeId, x.key)
+            this.props.openDetailView(communeId, x.key)
+          }}
+          onMouseOver={() => {
+            this.props.openTooltip(communeId)
+          }}
+          onMouseOut={() => {
+            this.props.closeTooltip()
           }}
         >
           <Table.Cell>{x.rank}</Table.Cell>
@@ -74,7 +80,7 @@ export default class Ranking extends React.Component {
             <Table.HeaderCell>Commune Name</Table.HeaderCell>
             <Table.HeaderCell
               sorted={direction}
-              onClick={this.handleSort("value")}
+              onClick={this.handleSort()}
             >
               Value
             </Table.HeaderCell>

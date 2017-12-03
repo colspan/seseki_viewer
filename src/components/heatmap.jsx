@@ -2,15 +2,57 @@ import React from "react"
 import { Map, GeoJSON, Popup, TileLayer } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import { geoCentroid } from "d3-geo"
+import { isEqual } from "lodash"
 
 class MyGeoJSON extends GeoJSON {
-  updateLeafletElement(fromProps, toProps) {
-    const geoJsonLayer = this.leafletElement
-    geoJsonLayer.getLayers().forEach((x) => {
-      geoJsonLayer.resetStyle(x)
-      toProps.onEachFeature(x.feature, x, geoJsonLayer)
+  constructor(props) {
+    super(props)
+    this.state = {
+      tooltipTarget: null
+    }
+    this.tooltips = [] // state使う実装にそのうち治す TODO
+  }
+  updateLeafletElement(currentProps, nextProps) {
+    super.updateLeafletElement(currentProps, nextProps)
+
+    /* eventを付与 */
+    if (!isEqual(currentProps.onEachFeature, nextProps.onEachFeature)) {
+      const geoJsonLayer = this.leafletElement
+      geoJsonLayer.getLayers().forEach((x) => {
+        // geoJsonLayer.resetStyle(x) // どこかで強制的にリセットされるので不要
+        nextProps.onEachFeature(x.feature, x, geoJsonLayer)
+      })
+    }
+
+    this.tooltips.forEach((x) => {
+      x._close()
     })
-    super.updateLeafletElement(fromProps, toProps)
+    /* ranking等からのmouseoverで色を塗る */
+    const geoJsonLayer = this.leafletElement
+    if (geoJsonLayer) {
+      if (this.props.tooltipTarget) {
+        geoJsonLayer
+          .getLayers()
+          .filter((y) => {
+            return y.feature.communeId === this.props.tooltipTarget
+          })
+          .forEach((y) => {
+            y.setStyle(this.props.activeStyle)
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+              y.bringToFront()
+            }
+          })
+        const targetLayer = geoJsonLayer.getLayers().find((y) => {
+          return y.feature.communeId === this.props.tooltipTarget
+        })
+        if (targetLayer) {
+          targetLayer.openTooltip()
+          this.tooltips.push(targetLayer.getTooltip())
+        }
+      }
+
+      // どこかで強制的にリセットされるので塗り直しは不要
+    }
   }
 }
 
@@ -26,6 +68,11 @@ export default class Heatmap extends React.Component {
       opacity: 0.6,
       fillOpacity: 0.6,
       fillColor: "#ffffff"
+    }
+    const activeStyle = {
+      weight: 5,
+      fillColor: "#dce775",
+      fillOpacity: 0.7
     }
     let eachFeature = (d, l) => {
       l.bindTooltip(d.name)
@@ -60,21 +107,22 @@ export default class Heatmap extends React.Component {
         const value = targetColumn.format(
           targetColumn.parsedData[idMap[d.name]]
         )
+        /* 過去のイベントを消す */
+        if (layer.__sesekiEvents) {
+          layer.off(layer.__sesekiEvents)
+        }
+        layer.unbindPopup()
+
         /* binding tooltip */
         const tooltipElem = document.createElement("span")
         tooltipElem.innerHTML = `<span class="commune_name">${commune_name}</span><div class="value">${value}</div>`
-        tooltipElem.addEventListener("click", (x) => {
-          // click({ name: commune_name, communeId: communeId })
+        tooltipElem.addEventListener("click", (e) => {
+          e.target.closeTooltip()
         })
         layer.bindTooltip(tooltipElem, { className: "layer_tooltip" })
         let lastTarget = null /* Tooltipがゴミとして残るのを防ぐ */
-        layer.on({
+        layer.__sesekiEvents = {
           mouseover: (e) => {
-            const style = {
-              weight: 5,
-              fillColor: "#dce775",
-              fillOpacity: 0.7
-            }
             /* 同じ市町村を同時に塗りかえる */
             if (parent)
               parent
@@ -83,7 +131,7 @@ export default class Heatmap extends React.Component {
                   return y.feature.communeId === communeId
                 })
                 .forEach((y) => {
-                  y.setStyle(style)
+                  y.setStyle(activeStyle)
                   if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
                     y.bringToFront()
                   }
@@ -108,15 +156,18 @@ export default class Heatmap extends React.Component {
             if (lastTarget) lastTarget.closeTooltip()
             this.props.openDetailView(communeId)
           }
-        })
+        }
+        layer.on(layer.__sesekiEvents)
       }
     }
     const heatMapElem = this.props.geoJson
       ? <MyGeoJSON
           data={this.props.geoJson}
           style={featureStyle}
+          activeStyle={activeStyle}
           onEachFeature={eachFeature}
           attribution={heatmapAttrib}
+          tooltipTarget={this.props.tooltipTarget}
         />
       : null
 
