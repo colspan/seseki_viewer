@@ -185,7 +185,7 @@ export default class Heatmap extends React.Component {
     const mapElem = (
       <Map
         center={[centroid[1], centroid[0]]}
-        zoom={7}
+        zoom={8}
         className="sesekimap"
         refs="map"
       >
