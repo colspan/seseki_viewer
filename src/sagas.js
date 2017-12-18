@@ -22,7 +22,7 @@ function* locationChange(action) {
   /* check update of areas */
   const geoJson = yield select(selectors.geoJson)
   const geoJsonFiles = yield select(selectors.geoJsonFiles)
-  if (!geoJson || geoJson && geoJsonFiles && geoJson.length != geoJsonFiles.length) {
+  if (!geoJson || geoJson && geoJsonFiles && geoJson.length !== geoJsonFiles.length) {
     yield put({ type: actions.GEOJSON_FETCH_REQUEST })
   }
 }

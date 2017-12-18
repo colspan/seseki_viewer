@@ -44,12 +44,12 @@ export default class geoJsonLoader {
 
           function register(k, v) {
             if (!idMap[k]) idMap[k] = []
-            if (idMap[k].indexOf(v) == -1) idMap[k].push(v)
+            if (idMap[k].indexOf(v) === -1) idMap[k].push(v)
           }
           geoJson.features.forEach((d, i) => {
             // 国土数値情報 行政区域データ向けのパーサ
 
-            if (d.properties.N03_007 == "") return // 所属未定地等IDがないものは飛ばす
+            if (d.properties.N03_007 === "") return // 所属未定地等IDがないものは飛ばす
 
             // 市町村名を整理する
             d.communeId = +d.properties.N03_007 // IDを代入
@@ -58,12 +58,12 @@ export default class geoJsonLoader {
             if (d.properties.N03_003) d.name += d.properties.N03_003
             if (d.properties.N03_004) d.name += d.properties.N03_004
 
-            if (exceptionCommunes.indexOf(d.name) != -1) {
+            if (exceptionCommunes.indexOf(d.name) !== -1) {
               // 除外リストに存在すれば削除フラグを付与する
               removeList.unshift(i)
             } else {
               // 除外リストになければ市町村一覧に追加
-              if (communes.indexOf(d.name) == -1) communes.push(d.name)
+              if (communes.indexOf(d.name) === -1) communes.push(d.name)
             }
 
             // CSVの市町村名から白地図のIDに変換するmapを自動生成する
@@ -74,7 +74,7 @@ export default class geoJsonLoader {
               // 町村・区単位を連結する
               register(d.name, d.communeId)
               // 郡の場合は町村のみにできるようにする
-              if (d.properties.N03_003.slice(-1) == "郡") {
+              if (d.properties.N03_003.slice(-1) === "郡") {
                 register(d.properties.N03_004, d.communeId)
               }
             }
