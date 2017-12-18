@@ -24,7 +24,7 @@ export default class SpreadSheet extends React.Component {
       ],
       communes.map((x, i) => {
         if (withDummy)
-          return [x, i + 1, communes.length - i - 1, Math.random() * 200 - 400]
+          return [x, i + 1, communes.length - i - 1, Math.random() * 200 - 100]
         else return [x, "", "", ""]
       }),
       new Array(30)
@@ -71,7 +71,7 @@ export default class SpreadSheet extends React.Component {
       /* d3.csvと同じ形式になるようにデータを再代入する */
       const newData = []
       const columns = rawData[0]
-      rawData.slice(1, -1).forEach((x) => {
+      rawData.slice(1, rawData.length).forEach((x) => {
         const row = {}
         columns.forEach((y, i) => {
           return (row[y] = x[i])
