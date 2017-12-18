@@ -92,7 +92,6 @@ export default class SpreadSheet extends React.Component {
     }
 
     const updateByExample = () => {
-      console.log(this.generateExample(true))
       this.setState({ spreadSheetData: this.generateExample(true) })
     }
 
