@@ -35,6 +35,7 @@
     "query-string": "^5.0.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
+    "react-handsontable": "^0.3.1",
     "react-hot-loader": "^3.1.1",
     "react-leaflet": "^1.7.1",
     "react-redux": "^5.0.6",

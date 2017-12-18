@@ -10,6 +10,7 @@ import HeatMap from "../components/heatmap"
 import AppHeader from "../components/appHeader"
 import Ranking from "../components/ranking"
 import DetailView from "../components/detailView"
+import SpreadSheet from "../components/spreadSheet"
 
 import GeoStatisticalData from "../helpers/geoStatisticalData"
 
@@ -33,7 +34,7 @@ class App extends React.Component {
   render() {
     let geoStatData = null
     if (this.props.seseki.geoJson && this.props.seseki.geoStatisticalData) {
-      /* データをバインドする */
+      /* データをバインドする MEMO reducerでやりきりたいが一旦ここで実装 */
       geoStatData = new GeoStatisticalData(
         this.props.seseki.geoStatisticalData,
         this.props.seseki.idMap,
@@ -61,7 +62,13 @@ class App extends React.Component {
       closeTooltip: () => {
         this.setState({ tooltipTarget: null })
       },
-      tooltipTarget: this.state.tooltipTarget
+      tooltipTarget: this.state.tooltipTarget,
+      openSpreadSheet: () => {
+        this.props.dispatch({ type: actions.SPREADSHEET_OPEN })
+      },
+      closeSpreadSheet: (newData) => {
+        this.props.dispatch({ type: actions.SPREADSHEET_CLOSE, data: newData })
+      }
     })
 
     const headerElem = <AppHeader {...childProps} />
@@ -70,15 +77,17 @@ class App extends React.Component {
     const detailView = this.state.detailViewTarget !== null
       ? <DetailView {...childProps} />
       : null
+    const spreadSheet = <SpreadSheet {...childProps} />
 
     return (
       <div id="container">
-        {detailView}
         {headerElem}
         <div id="main">
           {mapElem}
           {rankingElem}
         </div>
+        {detailView}
+        {spreadSheet}
       </div>
     )
   }

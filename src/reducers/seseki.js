@@ -21,7 +21,7 @@ function parseHash() {
   if (parsedHash.areas) {
     const hashAreas = parsedHash.areas.split(",")
     areas = prefectureDef.filter((x) => {
-      return hashAreas.indexOf(x.id) != -1
+      return hashAreas.indexOf(x.id) !== -1
     })
   }
   return {
@@ -63,6 +63,14 @@ export default function sesekiReducer(state = initialState, action) {
       break
     case actions.GEOSTATISTICALDATA_CHANGE_COLUMN:
       newState.geoStatisticalDataColumn = action.data.column
+      break
+    case actions.SPREADSHEET_OPEN:
+      newState.showSpreadSheet = true
+      break
+    case actions.SPREADSHEET_CLOSE:
+      newState.showSpreadSheet = false
+      if (action.data === null) break
+      newState.geoStatisticalData = action.data.geoStatisticalData
       break
     default:
       break
