@@ -47,7 +47,7 @@ function* fetchGeoJsonFiles(action) {
   }
 }
 
-function* fetchGeoStatisticalData(action) {
+function* fetchGeoStatisticalDataRemote(action) {
   const geoStatisticalDataFiles = yield select(selectors.geoStatisticalDataFiles)
   try {
     const fetchedData = yield new Promise((resolve, reject) => {
@@ -73,12 +73,54 @@ function* fetchGeoStatisticalData(action) {
   }
 }
 
+function* fetchGeoStatisticalDataLocal(action) {
+
+  // function(e){
+  //   var file = e.target.files[0];
+  //   file.type = "text/plain;charset=UTF-8"
+  //   var reader = new FileReader();
+  //   reader.onloadend = function(evt){
+  //     Materialize.toast('ファイル"'+file.name+'"を読み込みました', 3000);
+  //     var input = new Uint8Array(reader.result);
+  //     var data = Encoding.codeToString(Encoding.convert(input, {to:'UNICODE'}));
+  //     csv_viewer(d3.csv.parse(data));
+  //     // サンプルローダーを初期化
+  //     $("#sample_data_selector").val("");
+  //     $("#data-info").css("display", "none");
+  //   }
+  //   reader.readAsArrayBuffer(file);
+  // const geoStatisticalDataFiles = yield select(selectors.geoStatisticalDataFiles)
+  // try {
+  //   const fetchedData = yield new Promise((resolve, reject) => {
+  //     const filename = "sample_data/01_01_population_analysis.csv" // TODO
+  //     d3.request(filename)
+  //       .responseType("arraybuffer")
+  //       .response(function (r) {
+  //         return new Uint8Array(r.response);
+  //       })
+  //       .get(function (error, d) {
+  //         if (error) {
+  //           reject(error)
+  //         }
+  //         else {
+  //           var data = Encoding.codeToString(Encoding.convert(d, { to: 'UNICODE' }));
+  //           resolve(csvParse(data));
+  //         }
+  //       });
+  //   })
+  //   yield put({ type: actions.GEOSTATISTICALDATA_FETCH_SUCCEEDED, data: { geoStatisticalData: fetchedData } })
+  // } catch (e) {
+  //   yield put({ type: actions.GEOSTATISTICALDATA_FETCH_FAILED, message: e.message })
+  // }
+}
+
 function* rootSaga() {
   yield takeEvery(actions.INIT, initialize)
   yield takeEvery(actions.LOCATION_CHANGE, locationChange)
   yield takeEvery(actions.AREA_CHANGE, areaChange)
   yield takeEvery(actions.GEOJSON_FETCH_REQUEST, fetchGeoJsonFiles)
-  yield takeEvery(actions.GEOSTATISTICALDATA_FETCH_REQUEST, fetchGeoStatisticalData)
+  yield takeEvery(actions.GEOSTATISTICALDATA_FETCH_REQUEST, fetchGeoStatisticalDataRemote)
+  yield takeEvery(actions.GEOSTATISTICALDATA_LOCAL_CHANGED, fetchGeoStatisticalDataLocal)
 }
 
 export default rootSaga

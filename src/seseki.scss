@@ -42,6 +42,10 @@ body{
     margin-right: 8px;
 } 
 
+#header #toolbox #file_input{
+    display: none;
+}
+
 #header #column-selector{
     padding-top: 5px;
     flex: 1;
