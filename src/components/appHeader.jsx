@@ -1,7 +1,6 @@
 import React from "react"
 import { Button, Dropdown, Header, Icon, Label } from "semantic-ui-react"
 
-import actions from "../actions"
 import { prefectureDef } from "../helpers/params"
 
 export default class AppHeader extends React.Component {
@@ -11,8 +10,8 @@ export default class AppHeader extends React.Component {
     })
     const columnOptions = this.props.geoStatData
       ? this.props.geoStatData.csvKeys.slice(1, -1).map((x, i) => {
-        return { key: i, value: i, text: x }
-      })
+          return { key: i, value: i, text: x }
+        })
       : []
 
     const headerElem = (
@@ -33,23 +32,23 @@ export default class AppHeader extends React.Component {
             fluid
             selection
             options={prefectureOptions}
-            value={this.props.areas.map((x) => { return x.id })}
-            onChange={(e, x) => {
-              return this.props.dispatch({
-                type: actions.AREA_CHANGE,
-                data: { areas: x.value }
-              })
-            }}
+            value={this.props.areas.map((x) => {
+              return x.id
+            })}
+            onChange={this.props.changePrefecture}
           />
         </div>
         <div id="toolbox">
-          <Button><label htmlFor="file_input"><Icon name="file excel outline" /> Open CSV
-            <input type="file" id="file_input" onChange={(e, x) => {
-              return this.props.dispatch({
-                // TODO イベントを代入
-                type: actions.GEOSTATISTICALDATA_LOCAL_CHANGED
-              })
-            }} /></label></Button>
+          <Button>
+            <label htmlFor="file_input">
+              <Icon name="file excel outline" /> Open CSV
+              <input
+                type="file"
+                id="file_input"
+                onChange={this.props.changeLocalFile}
+              />
+            </label>
+          </Button>
           <Button
             content="Edit"
             icon="edit"
@@ -64,12 +63,7 @@ export default class AppHeader extends React.Component {
             selection
             options={columnOptions}
             value={this.props.geoStatisticalDataColumn}
-            onChange={(e, x) => {
-              return this.props.dispatch({
-                type: actions.GEOSTATISTICALDATA_CHANGE_COLUMN,
-                data: { column: x.value }
-              })
-            }}
+            onChange={this.props.changeGeoStatisticalDataColumn}
           />
         </div>
       </div>

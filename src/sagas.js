@@ -7,27 +7,31 @@ import * as Encoding from "encoding-japanese"
 import * as selectors from "./reducers/selectors"
 import GeoJsonLoader from "./helpers/geoJsonLoader"
 
-function* initialize(action) {
+function *initialize(action) {
   yield put({ type: actions.LOCATION_CHANGE })
 }
 
-function* areaChange(action) {
+function *areaChange(action) {
   const newAreas = yield select(selectors.areas)
   const hashes = []
-  if(newAreas && newAreas.length > 0) hashes.push(`areas=${newAreas.join(",")}`)
+  if (newAreas && newAreas.length > 0)
+    hashes.push(`areas=${newAreas.join(",")}`)
   location.hash = `#${hashes.join("&")}`
 }
 
-function* locationChange(action) {
+function *locationChange(action) {
   /* check update of areas */
   const geoJson = yield select(selectors.geoJson)
   const geoJsonFiles = yield select(selectors.geoJsonFiles)
-  if (!geoJson || geoJson && geoJsonFiles && geoJson.length !== geoJsonFiles.length) {
+  if (
+    !geoJson ||
+    (geoJson && geoJsonFiles && geoJson.length !== geoJsonFiles.length)
+  ) {
     yield put({ type: actions.GEOJSON_FETCH_REQUEST })
   }
 }
 
-function* fetchGeoJsonFiles(action) {
+function *fetchGeoJsonFiles(action) {
   /* 一度消さないと react-leaflet が反応しない */
   yield put({ type: actions.GEOJSON_CLEAR })
   const areas = yield select(selectors.areas)
@@ -47,80 +51,66 @@ function* fetchGeoJsonFiles(action) {
   }
 }
 
-function* fetchGeoStatisticalDataRemote(action) {
-  const geoStatisticalDataFiles = yield select(selectors.geoStatisticalDataFiles)
+function *fetchGeoStatisticalDataRemote(action) {
+  const geoStatisticalDataFiles = yield select(
+    selectors.geoStatisticalDataFiles
+  )
   try {
     const fetchedData = yield new Promise((resolve, reject) => {
       const filename = "sample_data/01_01_population_analysis.csv" // TODO
-      d3.request(filename)
+      d3
+        .request(filename)
         .responseType("arraybuffer")
-        .response(function (r) {
-          return new Uint8Array(r.response);
+        .response((r) => {
+          return new Uint8Array(r.response)
         })
-        .get(function (error, d) {
+        .get((error, d) => {
           if (error) {
             reject(error)
+          } else {
+            var data = Encoding.codeToString(
+              Encoding.convert(d, { to: "UNICODE" })
+            )
+            resolve(csvParse(data))
           }
-          else {
-            var data = Encoding.codeToString(Encoding.convert(d, { to: 'UNICODE' }));
-            resolve(csvParse(data));
-          }
-        });
+        })
     })
-    yield put({ type: actions.GEOSTATISTICALDATA_FETCH_SUCCEEDED, data: { geoStatisticalData: fetchedData } })
+    yield put({
+      type: actions.GEOSTATISTICALDATA_FETCH_SUCCEEDED,
+      data: { geoStatisticalData: fetchedData }
+    })
   } catch (e) {
-    yield put({ type: actions.GEOSTATISTICALDATA_FETCH_FAILED, message: e.message })
+    yield put({
+      type: actions.GEOSTATISTICALDATA_FETCH_FAILED,
+      message: e.message
+    })
   }
 }
 
-function* fetchGeoStatisticalDataLocal(action) {
-
-  // function(e){
-  //   var file = e.target.files[0];
-  //   file.type = "text/plain;charset=UTF-8"
-  //   var reader = new FileReader();
-  //   reader.onloadend = function(evt){
-  //     Materialize.toast('ファイル"'+file.name+'"を読み込みました', 3000);
-  //     var input = new Uint8Array(reader.result);
-  //     var data = Encoding.codeToString(Encoding.convert(input, {to:'UNICODE'}));
-  //     csv_viewer(d3.csv.parse(data));
-  //     // サンプルローダーを初期化
-  //     $("#sample_data_selector").val("");
-  //     $("#data-info").css("display", "none");
-  //   }
-  //   reader.readAsArrayBuffer(file);
-  // const geoStatisticalDataFiles = yield select(selectors.geoStatisticalDataFiles)
-  // try {
-  //   const fetchedData = yield new Promise((resolve, reject) => {
-  //     const filename = "sample_data/01_01_population_analysis.csv" // TODO
-  //     d3.request(filename)
-  //       .responseType("arraybuffer")
-  //       .response(function (r) {
-  //         return new Uint8Array(r.response);
-  //       })
-  //       .get(function (error, d) {
-  //         if (error) {
-  //           reject(error)
-  //         }
-  //         else {
-  //           var data = Encoding.codeToString(Encoding.convert(d, { to: 'UNICODE' }));
-  //           resolve(csvParse(data));
-  //         }
-  //       });
-  //   })
-  //   yield put({ type: actions.GEOSTATISTICALDATA_FETCH_SUCCEEDED, data: { geoStatisticalData: fetchedData } })
-  // } catch (e) {
-  //   yield put({ type: actions.GEOSTATISTICALDATA_FETCH_FAILED, message: e.message })
-  // }
+function *fetchGeoStatisticalDataLocal(action) {
+  const data = Encoding.codeToString(
+    Encoding.convert(action.data.content, { to: "UNICODE" })
+  )
+  const fetchedData = csvParse(data)
+  yield put({
+    type: actions.GEOSTATISTICALDATA_FETCH_SUCCEEDED,
+    data: { geoStatisticalData: fetchedData, filename: action.filename }
+  })
 }
 
-function* rootSaga() {
+function *rootSaga() {
   yield takeEvery(actions.INIT, initialize)
   yield takeEvery(actions.LOCATION_CHANGE, locationChange)
   yield takeEvery(actions.AREA_CHANGE, areaChange)
   yield takeEvery(actions.GEOJSON_FETCH_REQUEST, fetchGeoJsonFiles)
-  yield takeEvery(actions.GEOSTATISTICALDATA_FETCH_REQUEST, fetchGeoStatisticalDataRemote)
-  yield takeEvery(actions.GEOSTATISTICALDATA_LOCAL_CHANGED, fetchGeoStatisticalDataLocal)
+  yield takeEvery(
+    actions.GEOSTATISTICALDATA_FETCH_REQUEST,
+    fetchGeoStatisticalDataRemote
+  )
+  yield takeEvery(
+    actions.GEOSTATISTICALDATA_LOCAL_CHANGED,
+    fetchGeoStatisticalDataLocal
+  )
 }
 
 export default rootSaga
