@@ -1,5 +1,5 @@
 import React from "react"
-import { Map, GeoJSON, Popup, TileLayer } from "react-leaflet"
+import { Map, GeoJSON, Popup, TileLayer, MapControl } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import { geoCentroid } from "d3-geo"
 import { isEqual } from "lodash"
@@ -56,11 +56,31 @@ class MyGeoJSON extends GeoJSON {
   }
 }
 
+const caption = L.Control.extend({
+  options: {
+    position: 'topleft'
+  },
+  onAdd: function(map){
+    const container = L.DomUtil.create('div', 'caption')
+    const { title, subtitle } = this.options
+    container.innerHTML = `${title}<br />${subtitle}`;
+    return container
+  }
+  // TODO props書き換えによる更新処理
+})
+
+class CaptionControl extends MapControl {
+  createLeafletElement(props: Props): LeafletElement {
+    return new caption(props);
+  }
+}
+
 export default class Heatmap extends React.Component {
   render() {
+    let captionControl = null
     /* heatmap layer */
     const heatmapAttrib =
-      '&copy; <a href="http://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html">国土数値情報 行政区域データ</a>, ' +
+      '&copy <a href="http://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html">国土数値情報 行政区域データ</a>, ' +
       'CC BY NC SA 4.0 <a href="https://github.com/colspan">Miyoshi(@colspan)</a> <a href="https://github.com/colspan/seseki_viewer">Seseki</a>'
     let featureStyle = {
       color: "#222",
@@ -85,9 +105,10 @@ export default class Heatmap extends React.Component {
     /* データがあったらイベントを付与する */
     if (this.props.geoStatData) {
       /* データをバインドする */
-      const geoStatData = this.props.geoStatData
-      const targetColumn = geoStatData.getByColumnName(
-        geoStatData.csvKeys[this.props.geoStatisticalDataColumn + 1]
+      const { geoStatData } = this.props
+      const targetColumnName = geoStatData.csvKeys[this.props.geoStatisticalDataColumn + 1]
+      const targetColumnData = geoStatData.getByColumnName(
+        targetColumnName
       )
       const idMap = this.props.idMap
       featureStyle = (d) => {
@@ -96,16 +117,16 @@ export default class Heatmap extends React.Component {
           weight: 0.3,
           opacity: 0.6,
           fillOpacity: 0.6,
-          fillColor: targetColumn.colorScale(
-            targetColumn.parsedData[idMap[d.name]]
+          fillColor: targetColumnData.colorScale(
+            targetColumnData.parsedData[idMap[d.name]]
           )
         }
       }
       eachFeature = (d, layer, parent) => {
         const communeId = d.communeId
         const commune_name = d.name
-        const value = targetColumn.format(
-          targetColumn.parsedData[idMap[d.name]]
+        const value = targetColumnData.format(
+          targetColumnData.parsedData[idMap[d.name]]
         )
         /* 過去のイベントを消す */
         if (layer.__sesekiEvents) {
@@ -159,6 +180,7 @@ export default class Heatmap extends React.Component {
         }
         layer.on(layer.__sesekiEvents)
       }
+      captionControl = (<CaptionControl title={this.props.geoStatData.csvKeys[0]} subtitle={targetColumnName} />)
     }
     const heatMapElem = this.props.geoJson
       ? <MyGeoJSON
@@ -189,6 +211,7 @@ export default class Heatmap extends React.Component {
         className="sesekimap"
         refs="map"
       >
+        {captionControl}
         {heatMapElem}
         {tileLayerElem}
       </Map>
