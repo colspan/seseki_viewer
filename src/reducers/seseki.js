@@ -1,7 +1,7 @@
-import { parse } from "query-string"
+import { parse } from 'query-string'
 
-import actions from "../actions"
-import { prefectureDef } from "../helpers/params"
+import actions from '../actions'
+import { prefectureDef } from '../helpers/params'
 
 const initialState = {
   areas: [],
@@ -19,8 +19,8 @@ function parseHash() {
   const parsedHash = parse(location.hash)
   let areas = []
   if (parsedHash.areas) {
-    const hashAreas = parsedHash.areas.split(",")
-    areas = prefectureDef.filter((x) => {
+    const hashAreas = parsedHash.areas.split(',')
+    areas = prefectureDef.filter(x => {
       return hashAreas.indexOf(x.id) !== -1
     })
   }
@@ -58,7 +58,7 @@ export default function sesekiReducer(state = initialState, action) {
       break
     case actions.GEOSTATISTICALDATA_FETCH_SUCCEEDED:
       newState.geoStatisticalData = action.data.geoStatisticalData
-      newState.geoStatisticalDataFiles = ["TODO"] // TODO
+      newState.geoStatisticalDataFiles = ['TODO'] // TODO
       newState.geoStatisticalDataColumn = 0 // TODO 長さをチェックする。外から与えられるようにする。
       break
     case actions.GEOSTATISTICALDATA_CHANGE_COLUMN:

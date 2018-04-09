@@ -1,25 +1,25 @@
-import { select, call, put, takeEvery } from "redux-saga/effects"
-import actions from "./actions"
-import * as d3 from "d3-request"
-import { csvParse } from "d3-dsv"
-import * as Encoding from "encoding-japanese"
+import { select, call, put, takeEvery } from 'redux-saga/effects'
+import actions from './actions'
+import * as d3 from 'd3-request'
+import { csvParse } from 'd3-dsv'
+import * as Encoding from 'encoding-japanese'
 
-import * as selectors from "./reducers/selectors"
-import GeoJsonLoader from "./helpers/geoJsonLoader"
+import * as selectors from './reducers/selectors'
+import GeoJsonLoader from './helpers/geoJsonLoader'
 
-function *initialize(action) {
+function* initialize(action) {
   yield put({ type: actions.LOCATION_CHANGE })
 }
 
-function *areaChange(action) {
+function* areaChange(action) {
   const newAreas = yield select(selectors.areas)
   const hashes = []
   if (newAreas && newAreas.length > 0)
-    hashes.push(`areas=${newAreas.join(",")}`)
-  location.hash = `#${hashes.join("&")}`
+    hashes.push(`areas=${newAreas.join(',')}`)
+  location.hash = `#${hashes.join('&')}`
 }
 
-function *locationChange(action) {
+function* locationChange(action) {
   /* check update of areas */
   const geoJson = yield select(selectors.geoJson)
   const geoJsonFiles = yield select(selectors.geoJsonFiles)
@@ -31,14 +31,14 @@ function *locationChange(action) {
   }
 }
 
-function *fetchGeoJsonFiles(action) {
+function* fetchGeoJsonFiles(action) {
   /* 一度消さないと react-leaflet が反応しない */
   yield put({ type: actions.GEOJSON_CLEAR })
   const areas = yield select(selectors.areas)
   try {
     const fetchedData = yield call(() => {
       const x = new GeoJsonLoader({
-        geoJsonFiles: areas.map((x) => {
+        geoJsonFiles: areas.map(x => {
           return `data/${x.id}_${x.prefecture_en}_topo.json`
         })
       })
@@ -51,17 +51,17 @@ function *fetchGeoJsonFiles(action) {
   }
 }
 
-function *fetchGeoStatisticalDataRemote(action) {
+function* fetchGeoStatisticalDataRemote(action) {
   const geoStatisticalDataFiles = yield select(
     selectors.geoStatisticalDataFiles
   )
   try {
     const fetchedData = yield new Promise((resolve, reject) => {
-      const filename = "sample_data/01_01_population_analysis.csv" // TODO
+      const filename = 'sample_data/01_01_population_analysis.csv' // TODO
       d3
         .request(filename)
-        .responseType("arraybuffer")
-        .response((r) => {
+        .responseType('arraybuffer')
+        .response(r => {
           return new Uint8Array(r.response)
         })
         .get((error, d) => {
@@ -69,7 +69,7 @@ function *fetchGeoStatisticalDataRemote(action) {
             reject(error)
           } else {
             const data = Encoding.codeToString(
-              Encoding.convert(d, { to: "UNICODE" })
+              Encoding.convert(d, { to: 'UNICODE' })
             )
             resolve(csvParse(data))
           }
@@ -87,9 +87,9 @@ function *fetchGeoStatisticalDataRemote(action) {
   }
 }
 
-function *fetchGeoStatisticalDataLocal(action) {
+function* fetchGeoStatisticalDataLocal(action) {
   const data = Encoding.codeToString(
-    Encoding.convert(action.data.content, { to: "UNICODE" })
+    Encoding.convert(action.data.content, { to: 'UNICODE' })
   )
   const fetchedData = csvParse(data)
   yield put({
@@ -98,7 +98,7 @@ function *fetchGeoStatisticalDataLocal(action) {
   })
 }
 
-function *rootSaga() {
+function* rootSaga() {
   yield takeEvery(actions.INIT, initialize)
   yield takeEvery(actions.LOCATION_CHANGE, locationChange)
   yield takeEvery(actions.AREA_CHANGE, areaChange)

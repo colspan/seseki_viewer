@@ -1,2 +1,2 @@
-import sesekiReducer from "./seseki"
+import sesekiReducer from './seseki'
 export { sesekiReducer }

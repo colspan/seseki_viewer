@@ -1,6 +1,6 @@
 function getColorImg(colors) {
-  const canvas = document.createElement("canvas")
-  const ctx = canvas.getContext("2d")
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')
   canvas.width = colors.length
   canvas.height = 1
   ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -37,8 +37,7 @@ function durationToColor(second) {
   } else {
     opacity_ratio = 1.0
   }
-  const color =
-    `hsl(${hsl_hue},100%, ${parseInt(50 * opacity_ratio, 10)}%)`
+  const color = `hsl(${hsl_hue},100%, ${parseInt(50 * opacity_ratio, 10)}%)`
   return color
 }
 

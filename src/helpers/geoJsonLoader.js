@@ -1,18 +1,18 @@
-import * as d3 from "d3"
-import * as topojson from "topojson"
+import * as d3 from 'd3'
+import * as topojson from 'topojson'
 
 export default class geoJsonLoader {
   constructor(options) {
     const defaults = {
       geoJsonFiles: [],
       exceptions: [
-        "色丹郡色丹村",
-        "国後郡泊村",
-        "国後郡留夜別村",
-        "択捉郡留別村",
-        "紗那郡紗那村",
-        "蘂取郡蘂取村",
-        "所属未定地"
+        '色丹郡色丹村',
+        '国後郡泊村',
+        '国後郡留夜別村',
+        '択捉郡留別村',
+        '紗那郡紗那村',
+        '蘂取郡蘂取村',
+        '所属未定地'
       ]
     }
     this.options = Object.assign(defaults, options)
@@ -22,7 +22,7 @@ export default class geoJsonLoader {
 
     // 複数ファイルを非同期読み込み
     const promises = []
-    this.options.geoJsonFiles.forEach((d) => {
+    this.options.geoJsonFiles.forEach(d => {
       const p = new Promise((resolve, reject) => {
         // 読み込み処理
         d3.json(d, (error, loaded) => {
@@ -49,12 +49,12 @@ export default class geoJsonLoader {
           geoJson.features.forEach((d, i) => {
             // 国土数値情報 行政区域データ向けのパーサ
 
-            if (d.properties.N03_007 === "") return // 所属未定地等IDがないものは飛ばす
+            if (d.properties.N03_007 === '') return // 所属未定地等IDがないものは飛ばす
 
             // 市町村名を整理する
             d.communeId = +d.properties.N03_007 // IDを代入
             d.prefecture = d.properties.N03_001
-            d.name = ""
+            d.name = ''
             if (d.properties.N03_003) d.name += d.properties.N03_003
             if (d.properties.N03_004) d.name += d.properties.N03_004
 
@@ -74,7 +74,7 @@ export default class geoJsonLoader {
               // 町村・区単位を連結する
               register(d.name, d.communeId)
               // 郡の場合は町村のみにできるようにする
-              if (d.properties.N03_003.slice(-1) === "郡") {
+              if (d.properties.N03_003.slice(-1) === '郡') {
                 register(d.properties.N03_004, d.communeId)
               }
             }
@@ -85,12 +85,12 @@ export default class geoJsonLoader {
           })
 
           // IDから市町村名に変換する辞書を作成
-          geoJson.features.forEach((d) => {
+          geoJson.features.forEach(d => {
             idToCommune[d.communeId] = d.name
           })
 
           // 対象外の市町村を削除
-          removeList.forEach((d) => {
+          removeList.forEach(d => {
             geoJson.features.splice(d, 1)
           })
 
@@ -112,14 +112,14 @@ export default class geoJsonLoader {
       /* 複数のGeoJSONをマージする */
       function ready(results) {
         let geoJson
-        results.forEach((d) => {
+        results.forEach(d => {
           if (!geoJson) geoJson = d.geoJson
           else geoJson.features = geoJson.features.concat(d.geoJson.features)
           communes = communes.concat(d.communes)
-          Object.keys(d.idMap).forEach((x) => {
+          Object.keys(d.idMap).forEach(x => {
             idMap[x] = d.idMap[x]
           })
-          Object.keys(d.idToCommune).forEach((x) => {
+          Object.keys(d.idToCommune).forEach(x => {
             idToCommune[x] = d.idToCommune[x]
           })
         })
