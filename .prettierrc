@@ -1,3 +1,3 @@
 {
-    "prettier.semi": false
+    "semi": false
 }
