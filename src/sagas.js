@@ -68,7 +68,7 @@ function *fetchGeoStatisticalDataRemote(action) {
           if (error) {
             reject(error)
           } else {
-            var data = Encoding.codeToString(
+            const data = Encoding.codeToString(
               Encoding.convert(d, { to: "UNICODE" })
             )
             resolve(csvParse(data))
