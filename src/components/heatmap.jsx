@@ -1,5 +1,5 @@
 import React from "react"
-import { Map, GeoJSON, Popup, TileLayer, MapControl } from "react-leaflet"
+import { Map, GeoJSON, Popup, TileLayer, MapControl, ZoomControl } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
 import { geoCentroid } from "d3-geo"
 import { isEqual } from "lodash"
@@ -197,7 +197,7 @@ export default class Heatmap extends React.Component {
     const centroid = this.props.geoJson
       ? geoCentroid(this.props.geoJson)
       : [141.348541, 43.065617]
-    const osmUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    const osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     const osmAttrib =
       '&copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     const tileLayerElem = (
@@ -210,10 +210,12 @@ export default class Heatmap extends React.Component {
         zoom={8}
         className="sesekimap"
         refs="map"
+        zoomControl={false}
       >
         {captionControl}
         {heatMapElem}
         {tileLayerElem}
+        <ZoomControl position="bottomleft" />
       </Map>
     )
 
