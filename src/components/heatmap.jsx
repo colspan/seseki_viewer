@@ -1,8 +1,15 @@
-import React from "react"
-import { Map, GeoJSON, Popup, TileLayer, MapControl, ZoomControl } from "react-leaflet"
-import "leaflet/dist/leaflet.css"
-import { geoCentroid } from "d3-geo"
-import { isEqual } from "lodash"
+import React from 'react'
+import {
+  Map,
+  GeoJSON,
+  Popup,
+  TileLayer,
+  MapControl,
+  ZoomControl
+} from 'react-leaflet'
+import 'leaflet/dist/leaflet.css'
+import { geoCentroid } from 'd3-geo'
+import { isEqual } from 'lodash'
 
 class MyGeoJSON extends GeoJSON {
   constructor(props) {
@@ -18,13 +25,13 @@ class MyGeoJSON extends GeoJSON {
     /* eventを付与 */
     if (!isEqual(currentProps.onEachFeature, nextProps.onEachFeature)) {
       const geoJsonLayer = this.leafletElement
-      geoJsonLayer.getLayers().forEach((x) => {
+      geoJsonLayer.getLayers().forEach(x => {
         // geoJsonLayer.resetStyle(x) // どこかで強制的にリセットされるので不要
         nextProps.onEachFeature(x.feature, x, geoJsonLayer)
       })
     }
 
-    this.tooltips.forEach((x) => {
+    this.tooltips.forEach(x => {
       x._close()
     })
     /* ranking等からのmouseoverで色を塗る */
@@ -33,16 +40,16 @@ class MyGeoJSON extends GeoJSON {
       if (this.props.tooltipTarget) {
         geoJsonLayer
           .getLayers()
-          .filter((y) => {
+          .filter(y => {
             return y.feature.communeId === this.props.tooltipTarget
           })
-          .forEach((y) => {
+          .forEach(y => {
             y.setStyle(this.props.activeStyle)
             if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
               y.bringToFront()
             }
           })
-        const targetLayer = geoJsonLayer.getLayers().find((y) => {
+        const targetLayer = geoJsonLayer.getLayers().find(y => {
           return y.feature.communeId === this.props.tooltipTarget
         })
         if (targetLayer) {
@@ -60,10 +67,10 @@ const caption = L.Control.extend({
   options: {
     position: 'topleft'
   },
-  onAdd: function(map){
+  onAdd: function(map) {
     const container = L.DomUtil.create('div', 'caption')
     const { title, subtitle } = this.options
-    container.innerHTML = `${title}<br />${subtitle}`;
+    container.innerHTML = `${title}<br />${subtitle}`
     return container
   }
   // TODO props書き換えによる更新処理
@@ -71,7 +78,7 @@ const caption = L.Control.extend({
 
 class CaptionControl extends MapControl {
   createLeafletElement(props: Props): LeafletElement {
-    return new caption(props);
+    return new caption(props)
   }
 }
 
@@ -83,37 +90,36 @@ export default class Heatmap extends React.Component {
       '&copy <a href="http://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html">国土数値情報 行政区域データ</a>, ' +
       'CC BY NC SA 4.0 <a href="https://github.com/colspan">Miyoshi(@colspan)</a> <a href="https://github.com/colspan/seseki_viewer">Seseki</a>'
     let featureStyle = {
-      color: "#222",
+      color: '#222',
       weight: 0.3,
       opacity: 0.6,
       fillOpacity: 0.6,
-      fillColor: "#ffffff"
+      fillColor: '#ffffff'
     }
     const activeStyle = {
       weight: 5,
-      fillColor: "#dce775",
+      fillColor: '#dce775',
       fillOpacity: 0.7
     }
     let eachFeature = (d, l) => {
       l.bindTooltip(d.name)
       l.on({
-        mouseover: (e) => {},
-        mouseout: (e) => {},
-        click: (e) => {}
+        mouseover: e => {},
+        mouseout: e => {},
+        click: e => {}
       })
     }
     /* データがあったらイベントを付与する */
     if (this.props.geoStatData) {
       /* データをバインドする */
       const { geoStatData } = this.props
-      const targetColumnName = geoStatData.csvKeys[this.props.geoStatisticalDataColumn + 1]
-      const targetColumnData = geoStatData.getByColumnName(
-        targetColumnName
-      )
+      const targetColumnName =
+        geoStatData.csvKeys[this.props.geoStatisticalDataColumn + 1]
+      const targetColumnData = geoStatData.getByColumnName(targetColumnName)
       const idMap = this.props.idMap
-      featureStyle = (d) => {
+      featureStyle = d => {
         return {
-          color: "#222",
+          color: '#222',
           weight: 0.3,
           opacity: 0.6,
           fillOpacity: 0.6,
@@ -135,23 +141,23 @@ export default class Heatmap extends React.Component {
         layer.unbindPopup()
 
         /* binding tooltip */
-        const tooltipElem = document.createElement("span")
+        const tooltipElem = document.createElement('span')
         tooltipElem.innerHTML = `<span class="commune_name">${commune_name}</span><div class="value">${value}</div>`
-        tooltipElem.addEventListener("click", (e) => {
+        tooltipElem.addEventListener('click', e => {
           e.target.closeTooltip()
         })
-        layer.bindTooltip(tooltipElem, { className: "layer_tooltip" })
+        layer.bindTooltip(tooltipElem, { className: 'layer_tooltip' })
         let lastTarget = null /* Tooltipがゴミとして残るのを防ぐ */
         layer.__sesekiEvents = {
-          mouseover: (e) => {
+          mouseover: e => {
             /* 同じ市町村を同時に塗りかえる */
             if (parent)
               parent
                 .getLayers()
-                .filter((y) => {
+                .filter(y => {
                   return y.feature.communeId === communeId
                 })
-                .forEach((y) => {
+                .forEach(y => {
                   y.setStyle(activeStyle)
                   if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
                     y.bringToFront()
@@ -160,19 +166,19 @@ export default class Heatmap extends React.Component {
             /* Tooltipがゴミとして残るのを防ぐ */
             lastTarget = e.target
           },
-          mouseout: (e) => {
+          mouseout: e => {
             /* 同じ市町村を同時に塗りかえる */
             if (parent)
               parent
                 .getLayers()
-                .filter((y) => {
+                .filter(y => {
                   return y.feature.communeId === communeId
                 })
-                .forEach((y) => {
+                .forEach(y => {
                   y.setStyle(featureStyle(y.feature))
                 })
           },
-          click: (e) => {
+          click: e => {
             /* Tooltipがゴミとして残るのを防ぐ */
             if (lastTarget) lastTarget.closeTooltip()
             this.props.openDetailView(communeId)
@@ -180,18 +186,23 @@ export default class Heatmap extends React.Component {
         }
         layer.on(layer.__sesekiEvents)
       }
-      captionControl = (<CaptionControl title={this.props.geoStatData.csvKeys[0]} subtitle={targetColumnName} />)
-    }
-    const heatMapElem = this.props.geoJson
-      ? <MyGeoJSON
-          data={this.props.geoJson}
-          style={featureStyle}
-          activeStyle={activeStyle}
-          onEachFeature={eachFeature}
-          attribution={heatmapAttrib}
-          tooltipTarget={this.props.tooltipTarget}
+      captionControl = (
+        <CaptionControl
+          title={this.props.geoStatData.csvKeys[0]}
+          subtitle={targetColumnName}
         />
-      : null
+      )
+    }
+    const heatMapElem = this.props.geoJson ? (
+      <MyGeoJSON
+        data={this.props.geoJson}
+        style={featureStyle}
+        activeStyle={activeStyle}
+        onEachFeature={eachFeature}
+        attribution={heatmapAttrib}
+        tooltipTarget={this.props.tooltipTarget}
+      />
+    ) : null
 
     /* tile layer */
     const centroid = this.props.geoJson
@@ -210,8 +221,7 @@ export default class Heatmap extends React.Component {
         zoom={8}
         className="sesekimap"
         refs="map"
-        zoomControl={false}
-      >
+        zoomControl={false}>
         {captionControl}
         {heatMapElem}
         {tileLayerElem}

@@ -1,18 +1,18 @@
-import React from "react"
-import ReactDOM from "react-dom"
-import { connect } from "react-redux"
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { connect } from 'react-redux'
 
-import "semantic-ui-css/semantic.min.css"
+import 'semantic-ui-css/semantic.min.css'
 
-import actions from "../actions"
+import actions from '../actions'
 
-import HeatMap from "../components/heatmap"
-import AppHeader from "../components/appHeader"
-import Ranking from "../components/ranking"
-import DetailView from "../components/detailView"
-import SpreadSheet from "../components/spreadSheet"
+import HeatMap from '../components/heatmap'
+import AppHeader from '../components/appHeader'
+import Ranking from '../components/ranking'
+import DetailView from '../components/detailView'
+import SpreadSheet from '../components/spreadSheet'
 
-import GeoStatisticalData from "../helpers/geoStatisticalData"
+import GeoStatisticalData from '../helpers/geoStatisticalData'
 
 function mapStateToProps(state, ownProps) {
   const props = Object.assign({}, ownProps, state)
@@ -62,28 +62,30 @@ class App extends React.Component {
       },
       detailViewTarget: this.state.detailViewTarget,
       detailViewTargetName: this.state.detailViewTargetName,
-      openTooltip: (communeId) => {
+      openTooltip: communeId => {
         this.setState({ tooltipTarget: communeId })
       },
       closeTooltip: () => {
         this.setState({ tooltipTarget: null })
       },
       tooltipTarget: this.state.tooltipTarget,
-      changeLocalFile: (e) => {
-        if(e.target.files.length == 0){
+      changeLocalFile: e => {
+        if (e.target.files.length == 0) {
           // Cancelされた
           this.props.dispatch({
             type: actions.GEOSTATISTICALDATA_LOCAL_CHANGED,
             data: { filename: null, content: null }
           })
-        }
-        else{
+        } else {
           const file = e.target.files[0]
           const reader = new FileReader()
           reader.onloadend = () => {
             this.props.dispatch({
               type: actions.GEOSTATISTICALDATA_LOCAL_CHANGED,
-              data: { filename: file.name, content:  new Uint8Array(reader.result) }
+              data: {
+                filename: file.name,
+                content: new Uint8Array(reader.result)
+              }
             })
           }
           reader.readAsArrayBuffer(file)
@@ -92,7 +94,7 @@ class App extends React.Component {
       openSpreadSheet: () => {
         this.props.dispatch({ type: actions.SPREADSHEET_OPEN })
       },
-      closeSpreadSheet: (newData) => {
+      closeSpreadSheet: newData => {
         this.props.dispatch({ type: actions.SPREADSHEET_CLOSE, data: newData })
       },
       changeGeoStatisticalDataColumn: (e, x) => {
@@ -106,9 +108,10 @@ class App extends React.Component {
     const headerElem = <AppHeader {...childProps} />
     const mapElem = <HeatMap {...childProps} />
     const rankingElem = <Ranking {...childProps} />
-    const detailView = this.state.detailViewTarget !== null
-      ? <DetailView {...childProps} />
-      : null
+    const detailView =
+      this.state.detailViewTarget !== null ? (
+        <DetailView {...childProps} />
+      ) : null
     const spreadSheet = <SpreadSheet {...childProps} />
 
     return (

@@ -1,11 +1,11 @@
-import React from "react"
-import { Table } from "semantic-ui-react"
+import React from 'react'
+import { Table } from 'semantic-ui-react'
 
 export default class Ranking extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      direction: "descending"
+      direction: 'descending'
     }
   }
 
@@ -13,7 +13,7 @@ export default class Ranking extends React.Component {
     return () => {
       const { direction } = this.state
       this.setState({
-        direction: direction === "ascending" ? "descending" : "ascending"
+        direction: direction === 'ascending' ? 'descending' : 'ascending'
       })
     }
   }
@@ -42,14 +42,14 @@ export default class Ranking extends React.Component {
         })
       }
     }
-    if (this.state.direction === "ascending") items.reverse()
+    if (this.state.direction === 'ascending') items.reverse()
     return items
   }
 
   render() {
     const { direction } = this.state
     const items = this.getData()
-    const bodyRows = items.map((x) => {
+    const bodyRows = items.map(x => {
       const communeId = x.communeIds[0]
       return (
         <Table.Row
@@ -63,8 +63,7 @@ export default class Ranking extends React.Component {
           }}
           onMouseOut={() => {
             this.props.closeTooltip()
-          }}
-        >
+          }}>
           <Table.Cell>{x.rank}</Table.Cell>
           <Table.Cell>{x.key}</Table.Cell>
           <Table.Cell textAlign="right">{x.value}</Table.Cell>
@@ -78,25 +77,16 @@ export default class Ranking extends React.Component {
           <Table.Row>
             <Table.HeaderCell>Rank</Table.HeaderCell>
             <Table.HeaderCell>Commune Name</Table.HeaderCell>
-            <Table.HeaderCell
-              sorted={direction}
-              onClick={this.handleSort()}
-            >
+            <Table.HeaderCell sorted={direction} onClick={this.handleSort()}>
               Value
             </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
 
-        <Table.Body>
-          {bodyRows}
-        </Table.Body>
+        <Table.Body>{bodyRows}</Table.Body>
       </Table>
     )
 
-    return (
-      <div id="ranking">
-        {rankingTable}
-      </div>
-    )
+    return <div id="ranking">{rankingTable}</div>
   }
 }

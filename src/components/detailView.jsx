@@ -1,5 +1,5 @@
-import React from "react"
-import { Button, Header, Icon, Modal, Table } from "semantic-ui-react"
+import React from 'react'
+import { Button, Header, Icon, Modal, Table } from 'semantic-ui-react'
 
 export default class DetailView extends React.Component {
   render() {
@@ -16,7 +16,7 @@ export default class DetailView extends React.Component {
     const format = geoStatData.format
 
     const bodyRows = csvKeys.map((k, i) => {
-      const color = geoStatisticalDataColumn == i ? "orange" : ""
+      const color = geoStatisticalDataColumn == i ? 'orange' : ''
       return (
         <Table.Row key={i} style={{ background: color }}>
           <Table.Cell>{k}</Table.Cell>
@@ -33,9 +33,7 @@ export default class DetailView extends React.Component {
             <Table.HeaderCell>Value</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
-        <Table.Body>
-          {bodyRows}
-        </Table.Body>
+        <Table.Body>{bodyRows}</Table.Body>
       </Table>
     )
 
@@ -47,13 +45,10 @@ export default class DetailView extends React.Component {
       <Modal
         open={detailViewTarget !== null}
         closeOnDimmerClick
-        onClose={closeDetailView}
-      >
+        onClose={closeDetailView}>
         <Modal.Header>{communeName}</Modal.Header>
         <Modal.Content>
-          <Modal.Description>
-            {detailTable}
-          </Modal.Description>
+          <Modal.Description>{detailTable}</Modal.Description>
         </Modal.Content>
         <Modal.Actions>
           <Button primary onClick={closeDetailView}>

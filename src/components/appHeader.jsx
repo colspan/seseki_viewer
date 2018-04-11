@@ -1,11 +1,11 @@
-import React from "react"
-import { Button, Dropdown, Header, Icon, Label } from "semantic-ui-react"
+import React from 'react'
+import { Button, Dropdown, Header, Icon, Label } from 'semantic-ui-react'
 
-import { prefectureDef } from "../helpers/params"
+import { prefectureDef } from '../helpers/params'
 
 export default class AppHeader extends React.Component {
   render() {
-    const prefectureOptions = prefectureDef.map((x) => {
+    const prefectureOptions = prefectureDef.map(x => {
       return { key: x.id, value: x.id, text: x.prefecture_jp }
     })
     const columnOptions = this.props.geoStatData
@@ -32,7 +32,7 @@ export default class AppHeader extends React.Component {
             fluid
             selection
             options={prefectureOptions}
-            value={this.props.areas.map((x) => {
+            value={this.props.areas.map(x => {
               return x.id
             })}
             onChange={this.props.changePrefecture}

@@ -1,7 +1,7 @@
-import React from "react"
+import React from 'react'
 
-import { Button, Icon, Modal } from "semantic-ui-react"
-import HotTable from "react-handsontable"
+import { Button, Icon, Modal } from 'semantic-ui-react'
+import HotTable from 'react-handsontable'
 
 export default class SpreadSheet extends React.Component {
   constructor(props) {
@@ -18,14 +18,14 @@ export default class SpreadSheet extends React.Component {
     return Array.concat(
       [
         Array.concat(
-          ["Title of data file", "Column 1", "Column 2", "Column 3"],
+          ['Title of data file', 'Column 1', 'Column 2', 'Column 3'],
           new Array(30).fill(null)
         )
       ],
       communes.map((x, i) => {
         if (withDummy)
           return [x, i + 1, communes.length - i - 1, Math.random() * 200 - 100]
-        else return [x, "", "", ""]
+        else return [x, '', '', '']
       }),
       new Array(30)
     )
@@ -42,8 +42,8 @@ export default class SpreadSheet extends React.Component {
     } else if (geoStatisticalData) {
       spreadSheetData = Array.concat(
         [geoStatisticalData.columns],
-        geoStatisticalData.map((d) => {
-          return geoStatisticalData.columns.map((x) => {
+        geoStatisticalData.map(d => {
+          return geoStatisticalData.columns.map(x => {
             return d[x]
           })
         })
@@ -71,7 +71,7 @@ export default class SpreadSheet extends React.Component {
       /* d3.csvと同じ形式になるようにデータを再代入する */
       const newData = []
       const columns = rawData[0]
-      rawData.slice(1, rawData.length).forEach((x) => {
+      rawData.slice(1, rawData.length).forEach(x => {
         const row = {}
         columns.forEach((y, i) => {
           return (row[y] = x[i])
@@ -80,7 +80,7 @@ export default class SpreadSheet extends React.Component {
       })
       /* 列名がnullな列は無視する */
       newData.columns = []
-      columns.forEach((x) => {
+      columns.forEach(x => {
         if (x !== null) newData.columns.push(x)
       })
       this.setState({ spreadSheetData: null })
@@ -101,12 +101,9 @@ export default class SpreadSheet extends React.Component {
         open={showSpreadSheet}
         closeOnDimmerClick
         onClose={updateData}
-        size="fullscreen"
-      >
+        size="fullscreen">
         <Modal.Header>Spread Sheet Editor</Modal.Header>
-        <Modal.Content>
-          {hotTable}
-        </Modal.Content>
+        <Modal.Content>{hotTable}</Modal.Content>
         <Modal.Actions>
           <Button color="blue" onClick={updateByExample}>
             <Icon name="columns" /> Generate Example
