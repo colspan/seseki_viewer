@@ -68,17 +68,27 @@ const caption = L.Control.extend({
     position: 'topleft'
   },
   onAdd: function(map) {
-    const container = L.DomUtil.create('div', 'caption')
+    this.container = L.DomUtil.create('div', 'caption')
+    this.render()
+    return this.container
+  },
+  update: function(options) {
+    this.options = Object.assign(this.options, options)
+    this.render()
+  },
+  render: function() {
     const { title, subtitle } = this.options
-    container.innerHTML = `${title}<br />${subtitle}`
-    return container
+    this.container.innerHTML = `<h2>${title}</h2><h3>${subtitle}</h3>`
   }
-  // TODO props書き換えによる更新処理
 })
 
 class CaptionControl extends MapControl {
-  createLeafletElement(props: Props): LeafletElement {
-    return new caption(props)
+  createLeafletElement(props) {
+    this.caption = new caption(props)
+    return this.caption
+  }
+  componentDidUpdate() {
+    this.caption.update(this.props)
   }
 }
 
