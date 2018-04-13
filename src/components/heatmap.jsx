@@ -1,96 +1,11 @@
+import * as L from 'leaflet'
 import React from 'react'
-import {
-  Map,
-  GeoJSON,
-  Popup,
-  TileLayer,
-  MapControl,
-  ZoomControl
-} from 'react-leaflet'
+import { Map, Popup, TileLayer, MapControl, ZoomControl } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { geoCentroid } from 'd3-geo'
-import { isEqual } from 'lodash'
 
-class MyGeoJSON extends GeoJSON {
-  constructor(props) {
-    super(props)
-    this.state = {
-      tooltipTarget: null
-    }
-    this.tooltips = [] // state使う実装にそのうち治す TODO
-  }
-  updateLeafletElement(currentProps, nextProps) {
-    super.updateLeafletElement(currentProps, nextProps)
-
-    /* eventを付与 */
-    if (!isEqual(currentProps.onEachFeature, nextProps.onEachFeature)) {
-      const geoJsonLayer = this.leafletElement
-      geoJsonLayer.getLayers().forEach(x => {
-        // geoJsonLayer.resetStyle(x) // どこかで強制的にリセットされるので不要
-        nextProps.onEachFeature(x.feature, x, geoJsonLayer)
-      })
-    }
-
-    this.tooltips.forEach(x => {
-      x._close()
-    })
-    /* ranking等からのmouseoverで色を塗る */
-    const geoJsonLayer = this.leafletElement
-    if (geoJsonLayer) {
-      if (this.props.tooltipTarget) {
-        geoJsonLayer
-          .getLayers()
-          .filter(y => {
-            return y.feature.communeId === this.props.tooltipTarget
-          })
-          .forEach(y => {
-            y.setStyle(this.props.activeStyle)
-            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-              y.bringToFront()
-            }
-          })
-        const targetLayer = geoJsonLayer.getLayers().find(y => {
-          return y.feature.communeId === this.props.tooltipTarget
-        })
-        if (targetLayer) {
-          targetLayer.openTooltip()
-          this.tooltips.push(targetLayer.getTooltip())
-        }
-      }
-
-      // どこかで強制的にリセットされるので塗り直しは不要
-    }
-  }
-}
-
-const caption = L.Control.extend({
-  options: {
-    position: 'topleft'
-  },
-  onAdd: function(map) {
-    this.container = L.DomUtil.create('div', 'caption')
-    this.render()
-    return this.container
-  },
-  update: function(options) {
-    this.options = Object.assign(this.options, options)
-    this.render()
-  },
-  render: function() {
-    const { title, subtitle } = this.options
-    this.container.innerHTML = `<h2>${title}</h2><h3>${subtitle}</h3>`
-  }
-})
-
-class CaptionControl extends MapControl {
-  createLeafletElement(props) {
-    this.caption = new caption(props)
-    return this.caption
-  }
-  componentDidUpdate() {
-    this.caption.update(this.props)
-  }
-}
+import BoundaryData from './boundaryData'
+import CaptionControl from './captionControl'
 
 export default class Heatmap extends React.Component {
   render() {
@@ -204,7 +119,7 @@ export default class Heatmap extends React.Component {
       )
     }
     const heatMapElem = this.props.geoJson ? (
-      <MyGeoJSON
+      <BoundaryData
         data={this.props.geoJson}
         style={featureStyle}
         activeStyle={activeStyle}
