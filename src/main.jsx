@@ -26,7 +26,6 @@ const history = syncHistoryWithStore(createBrowserHistory(), store)
 
 class Main extends React.Component {
   render() {
-    const { state, actions } = this.props
     return (
       <Provider store={store}>
         <Router history={history} hashType={'noslash'}>
