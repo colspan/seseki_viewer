@@ -10,8 +10,9 @@ const initialState = {
   communes: {},
   geoJson: null,
   geoJsonFiles: [],
+  sampleDataDef: [],
+  sampleDataEntry: null,
   geoStatisticalData: null,
-  geoStatisticalDataFiles: [],
   geoStatisticalDataColumn: null
 }
 
@@ -24,8 +25,10 @@ function parseHash() {
       return hashAreas.indexOf(x.id) !== -1
     })
   }
+  let sampleDataEntry = parsedHash.sample
   return {
-    areas
+    areas,
+    sampleDataEntry
   }
 }
 
@@ -35,7 +38,13 @@ export default function sesekiReducer(state = initialState, action) {
   switch (action.type) {
     case actions.INIT:
     case actions.LOCATION_CHANGE:
-      if (parsedHash.areas) newState.areas = parsedHash.areas
+      /* 表示都道府県 */
+      newState.areas = parsedHash.areas
+      /* サンプルデータ */
+      if (parsedHash.sampleDataEntry)
+        newState.sampleDataEntry = state.sampleDataDef.find(
+          d => d['file'] === parsedHash.sampleDataEntry
+        )
       break
     case actions.AREA_CHANGE:
       newState.areas = action.data.areas
@@ -58,7 +67,6 @@ export default function sesekiReducer(state = initialState, action) {
       break
     case actions.GEOSTATISTICALDATA_FETCH_SUCCEEDED:
       newState.geoStatisticalData = action.data.geoStatisticalData
-      newState.geoStatisticalDataFiles = ['TODO'] // TODO
       newState.geoStatisticalDataColumn = 0 // TODO 長さをチェックする。外から与えられるようにする。
       break
     case actions.GEOSTATISTICALDATA_CHANGE_COLUMN:
@@ -71,6 +79,9 @@ export default function sesekiReducer(state = initialState, action) {
       newState.showSpreadSheet = false
       if (action.data === null) break
       newState.geoStatisticalData = action.data.geoStatisticalData
+      break
+    case actions.SAMPLEDATADEF_FETCH_SUCCEEDED:
+      newState.sampleDataDef = action.sampleDataDef
       break
     default:
       break

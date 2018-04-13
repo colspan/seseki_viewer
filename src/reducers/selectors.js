@@ -17,3 +17,7 @@ export function geoStatisticalData(x) {
 export function geoStatisticalDataFiles(x) {
   return x.seseki ? x.seseki.geoStatisticalDataFiles : null
 }
+
+export function sampleDataEntry(x) {
+  return x.seseki ? x.seseki.sampleDataEntry : null
+}

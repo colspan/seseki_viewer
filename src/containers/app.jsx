@@ -72,7 +72,7 @@ class App extends React.Component {
         if (e.target.files.length == 0) {
           // Cancelされた
           this.props.dispatch({
-            type: actions.GEOSTATISTICALDATA_LOCAL_CHANGED,
+            type: actions.GEOSTATISTICALDATA_LOCALFETCH_REQUEST,
             data: { filename: null, content: null }
           })
         } else {
@@ -80,7 +80,7 @@ class App extends React.Component {
           const reader = new FileReader()
           reader.onloadend = () => {
             this.props.dispatch({
-              type: actions.GEOSTATISTICALDATA_LOCAL_CHANGED,
+              type: actions.GEOSTATISTICALDATA_LOCALFETCH_REQUEST,
               data: {
                 filename: file.name,
                 content: new Uint8Array(reader.result)

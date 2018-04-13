@@ -1,4 +1,4 @@
-import { select, call, put, takeEvery } from 'redux-saga/effects'
+import { select, call, put, take, takeEvery } from 'redux-saga/effects'
 import actions from './actions'
 import * as d3 from 'd3-request'
 import { csvParse } from 'd3-dsv'
@@ -7,11 +7,30 @@ import * as Encoding from 'encoding-japanese'
 import * as selectors from './reducers/selectors'
 import GeoJsonLoader from './helpers/geoJsonLoader'
 
-function* initialize(action) {
+function* initialize() {
+  let sampleDataDef = null
+  try {
+    sampleDataDef = yield new Promise((resolve, reject) => {
+      d3.json('params/sample_data.json', (error, d) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(d)
+        }
+      })
+    })
+    yield put({
+      type: actions.SAMPLEDATADEF_FETCH_SUCCEEDED,
+      sampleDataDef
+    })
+  } catch (e) {
+    // TODO error
+    return
+  }
   yield put({ type: actions.LOCATION_CHANGE })
 }
 
-function* areaChange(action) {
+function* areaChange() {
   const newAreas = yield select(selectors.areas)
   const hashes = []
   if (newAreas && newAreas.length > 0)
@@ -19,7 +38,7 @@ function* areaChange(action) {
   location.hash = `#${hashes.join('&')}`
 }
 
-function* locationChange(action) {
+function* locationChange() {
   /* check update of areas */
   const geoJson = yield select(selectors.geoJson)
   const geoJsonFiles = yield select(selectors.geoJsonFiles)
@@ -29,9 +48,10 @@ function* locationChange(action) {
   ) {
     yield put({ type: actions.GEOJSON_FETCH_REQUEST })
   }
+  yield put({ type: actions.GEOSTATISTICALDATA_REMOTEFETCH_REQUEST })
 }
 
-function* fetchGeoJsonFiles(action) {
+function* fetchGeoJsonFiles() {
   /* 一度消さないと react-leaflet が反応しない */
   yield put({ type: actions.GEOJSON_CLEAR })
   const areas = yield select(selectors.areas)
@@ -45,19 +65,17 @@ function* fetchGeoJsonFiles(action) {
       return x.getLoader()
     })
     yield put({ type: actions.GEOJSON_FETCH_SUCCEEDED, data: fetchedData })
-    yield put({ type: actions.GEOSTATISTICALDATA_FETCH_REQUEST })
   } catch (e) {
     yield put({ type: actions.GEOJSON_FETCH_FAILED, message: e.message })
   }
 }
 
-function* fetchGeoStatisticalDataRemote(action) {
-  const geoStatisticalDataFiles = yield select(
-    selectors.geoStatisticalDataFiles
-  )
+function* fetchGeoStatisticalDataRemote() {
+  const sampleDataEntry = yield select(selectors.sampleDataEntry)
+  if (sampleDataEntry === null) return
   try {
     const fetchedData = yield new Promise((resolve, reject) => {
-      const filename = 'sample_data/01_01_population_analysis.csv' // TODO
+      const filename = sampleDataEntry['file']
       d3
         .request(filename)
         .responseType('arraybuffer')
@@ -104,11 +122,11 @@ function* rootSaga() {
   yield takeEvery(actions.AREA_CHANGE, areaChange)
   yield takeEvery(actions.GEOJSON_FETCH_REQUEST, fetchGeoJsonFiles)
   yield takeEvery(
-    actions.GEOSTATISTICALDATA_FETCH_REQUEST,
+    actions.GEOSTATISTICALDATA_REMOTEFETCH_REQUEST,
     fetchGeoStatisticalDataRemote
   )
   yield takeEvery(
-    actions.GEOSTATISTICALDATA_LOCAL_CHANGED,
+    actions.GEOSTATISTICALDATA_LOCALFETCH_REQUEST,
     fetchGeoStatisticalDataLocal
   )
 }
