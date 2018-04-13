@@ -5,7 +5,7 @@ const caption = L.Control.extend({
   options: {
     position: 'topleft'
   },
-  onAdd: function(map) {
+  onAdd: function() {
     this.container = L.DomUtil.create('div', 'caption')
     this.render()
     return this.container

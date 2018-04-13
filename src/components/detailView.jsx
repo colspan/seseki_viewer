@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Header, Icon, Modal, Table } from 'semantic-ui-react'
+import { Button, Icon, Modal, Table } from 'semantic-ui-react'
 
 export default class DetailView extends React.Component {
   render() {

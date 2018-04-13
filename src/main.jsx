@@ -9,7 +9,7 @@ import { createBrowserHistory } from 'history'
 
 React.version
 
-import { Router, Route, IndexRoute, Link, IndexLink } from 'react-router-dom'
+import { Router, Route } from 'react-router-dom'
 
 import App from './containers'
 import { sesekiReducer } from './reducers'

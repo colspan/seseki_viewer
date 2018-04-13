@@ -1,6 +1,6 @@
 import * as L from 'leaflet'
 import React from 'react'
-import { Map, Popup, TileLayer, MapControl, ZoomControl } from 'react-leaflet'
+import { Map, TileLayer, ZoomControl } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { geoCentroid } from 'd3-geo'
 
@@ -29,9 +29,9 @@ export default class Heatmap extends React.Component {
     let eachFeature = (d, l) => {
       l.bindTooltip(d.name)
       l.on({
-        mouseover: e => {},
-        mouseout: e => {},
-        click: e => {}
+        mouseover: () => {},
+        mouseout: () => {},
+        click: () => {}
       })
     }
     /* データがあったらイベントを付与する */
@@ -91,7 +91,7 @@ export default class Heatmap extends React.Component {
             /* Tooltipがゴミとして残るのを防ぐ */
             lastTarget = e.target
           },
-          mouseout: e => {
+          mouseout: () => {
             /* 同じ市町村を同時に塗りかえる */
             if (parent)
               parent
@@ -103,7 +103,7 @@ export default class Heatmap extends React.Component {
                   y.setStyle(featureStyle(y.feature))
                 })
           },
-          click: e => {
+          click: () => {
             /* Tooltipがゴミとして残るのを防ぐ */
             if (lastTarget) lastTarget.closeTooltip()
             this.props.openDetailView(communeId)

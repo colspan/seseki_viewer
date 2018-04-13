@@ -10,6 +10,7 @@
     },
     "extends": [
         "eslint:recommended",
+        "plugin:react/recommended",
         "prettier",
         "prettier/react"
     ],
@@ -30,6 +31,15 @@
                 "bracketSpacing": true,
                 "jsxBracketSameLine": true
             }
-        ]
+        ],
+        "react/prop-types": "warn"
+    },
+    "globals": {
+        "document": true,
+        "FileReader": true,
+        "location": true,
+        "Promise": true,
+        "Uint8Array": true,
+        "window": true
     }
 }

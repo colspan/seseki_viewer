@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Dropdown, Header, Icon, Label } from 'semantic-ui-react'
+import { Button, Dropdown, Header, Icon } from 'semantic-ui-react'
 
 import { prefectureDef } from '../helpers/params'
 
