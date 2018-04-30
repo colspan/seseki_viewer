@@ -11,7 +11,7 @@ const initialState = {
   geoJson: null,
   geoJsonFiles: [],
   sampleDataDef: [],
-  sampleDataEntry: null,
+  exampleDataEntry: null,
   geoStatisticalData: null,
   geoStatisticalDataColumn: null
 }
@@ -25,10 +25,10 @@ function parseHash() {
       return hashAreas.indexOf(x.id) !== -1
     })
   }
-  let sampleDataEntry = parsedHash.sample
+  let exampleDataPath = parsedHash.example
   return {
     areas,
-    sampleDataEntry
+    exampleDataPath
   }
 }
 
@@ -41,13 +41,15 @@ export default function sesekiReducer(state = initialState, action) {
       /* 表示都道府県 */
       newState.areas = parsedHash.areas
       /* サンプルデータ */
-      if (parsedHash.sampleDataEntry)
-        newState.sampleDataEntry = state.sampleDataDef.find(
-          d => d['file'] === parsedHash.sampleDataEntry
+      if (parsedHash.exampleDataPath)
+        newState.exampleDataPath = state.sampleDataDef.find(
+          d => d['file'] === parsedHash.exampleDataPath
         )
       break
     case actions.AREA_CHANGE:
-      newState.areas = action.data.areas
+      newState.areas = prefectureDef.filter(x => {
+        return action.data.areas.indexOf(x.id) !== -1
+      })
       break
     case actions.GEOJSON_CLEAR:
       newState.idMap = []
@@ -82,6 +84,9 @@ export default function sesekiReducer(state = initialState, action) {
       break
     case actions.SAMPLEDATADEF_FETCH_SUCCEEDED:
       newState.sampleDataDef = action.sampleDataDef
+      break
+    case actions.EXAMPLEDATA_FETCH_REQUEST:
+      newState.exampleDataEntry = action.exampleDataEntry
       break
     default:
       break

@@ -34,7 +34,7 @@ function* areaChange() {
   const newAreas = yield select(selectors.areas)
   const hashes = []
   if (newAreas && newAreas.length > 0)
-    hashes.push(`areas=${newAreas.join(',')}`)
+    hashes.push(`areas=${newAreas.map(x => x.id).join(',')}`)
   location.hash = `#${hashes.join('&')}`
 }
 
@@ -71,11 +71,11 @@ function* fetchGeoJsonFiles() {
 }
 
 function* fetchGeoStatisticalDataRemote() {
-  const sampleDataEntry = yield select(selectors.sampleDataEntry)
-  if (sampleDataEntry === null) return
+  const exampleDataEntry = yield select(selectors.exampleDataEntry)
+  if (exampleDataEntry === null) return
   try {
     const fetchedData = yield new Promise((resolve, reject) => {
-      const filename = sampleDataEntry['file']
+      const filename = exampleDataEntry['file']
       d3
         .request(filename)
         .responseType('arraybuffer')
@@ -116,6 +116,18 @@ function* fetchGeoStatisticalDataLocal(action) {
   })
 }
 
+function* exampleDataFetchRequest() {
+  const newAreas = yield select(selectors.areas)
+  const hashes = []
+  if (newAreas && newAreas.length > 0)
+    hashes.push(`areas=${newAreas.map(x => x.id).join(',')}`)
+  const exampleDataEntry = yield select(selectors.exampleDataEntry)
+  if (exampleDataEntry) {
+    hashes.push(`example=${exampleDataEntry.file}`)
+  }
+  location.hash = `#${hashes.join('&')}`
+}
+
 function* rootSaga() {
   yield takeEvery(actions.INIT, initialize)
   yield takeEvery(actions.LOCATION_CHANGE, locationChange)
@@ -129,6 +141,7 @@ function* rootSaga() {
     actions.GEOSTATISTICALDATA_LOCALFETCH_REQUEST,
     fetchGeoStatisticalDataLocal
   )
+  yield takeEvery(actions.EXAMPLEDATA_FETCH_REQUEST, exampleDataFetchRequest)
 }
 
 export default rootSaga

@@ -110,6 +110,12 @@ class App extends React.Component {
       },
       closeExampleSelector: () => {
         this.setState({ exampleSelector: false })
+      },
+      selectExampleSelector: entry => {
+        this.props.dispatch({
+          type: actions.EXAMPLEDATA_FETCH_REQUEST,
+          exampleDataEntry: entry
+        })
       }
     })
 

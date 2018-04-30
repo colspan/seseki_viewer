@@ -13,7 +13,7 @@ export default class ExampleSelector extends React.Component {
         <Table.Row
           key={x.file}
           onClick={() => {
-            // this.props.openDetailView(communeId, x.key)
+            this.props.selectExampleSelector(x)
           }}
           onMouseOver={() => {
             null
@@ -39,19 +39,18 @@ export default class ExampleSelector extends React.Component {
         <Table.Body>{bodyRows}</Table.Body>
       </Table>
     )
-    const closeDetailView = null
     return (
       <Modal
         open={this.props.exampleSelector}
         closeOnDimmerClick
-        onClose={closeDetailView}>
+        onClose={this.props.closeExampleSelector}>
         <Modal.Header>Example Datasets</Modal.Header>
         <Modal.Content>
           <Modal.Description>{rankingTable}</Modal.Description>
         </Modal.Content>
         <Modal.Actions>
           <Button primary onClick={this.props.closeExampleSelector}>
-            Close <Icon name="right chevron" />
+            Close
           </Button>
         </Modal.Actions>
       </Modal>
