@@ -25,8 +25,7 @@ class App extends React.Component {
     this.state = {
       detailViewTarget: null,
       detailViewTargetName: null,
-      tooltipTarget: null,
-      exampleSelector: false
+      tooltipTarget: null
     }
   }
   componentDidMount() {
@@ -106,10 +105,14 @@ class App extends React.Component {
       },
       exampleSelector: this.state.exampleSelector,
       openExampleSelector: () => {
-        this.setState({ exampleSelector: true })
+        this.props.dispatch({
+          type: actions.EXAMPLESELECTOR_OPEN
+        })
       },
       closeExampleSelector: () => {
-        this.setState({ exampleSelector: false })
+        this.props.dispatch({
+          type: actions.EXAMPLESELECTOR_CLOSE
+        })
       },
       selectExampleSelector: entry => {
         this.props.dispatch({

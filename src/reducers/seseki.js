@@ -42,7 +42,7 @@ export default function sesekiReducer(state = initialState, action) {
       newState.areas = parsedHash.areas
       /* サンプルデータ */
       if (parsedHash.exampleDataPath)
-        newState.exampleDataPath = state.sampleDataDef.find(
+        newState.exampleDataEntry = state.sampleDataDef.find(
           d => d['file'] === parsedHash.exampleDataPath
         )
       break
@@ -50,6 +50,7 @@ export default function sesekiReducer(state = initialState, action) {
       newState.areas = prefectureDef.filter(x => {
         return action.data.areas.indexOf(x.id) !== -1
       })
+      newState.exampleDataEntry = null
       break
     case actions.GEOJSON_CLEAR:
       newState.idMap = []
@@ -66,10 +67,12 @@ export default function sesekiReducer(state = initialState, action) {
       newState.geoJsonFiles = action.data.options.geoJsonFiles
       break
     case actions.GEOJSON_FETCH_FAILED:
+      newState.exampleDataEntry = null
       break
     case actions.GEOSTATISTICALDATA_FETCH_SUCCEEDED:
       newState.geoStatisticalData = action.data.geoStatisticalData
       newState.geoStatisticalDataColumn = 0 // TODO 長さをチェックする。外から与えられるようにする。
+      newState.exampleDataEntry = null
       break
     case actions.GEOSTATISTICALDATA_CHANGE_COLUMN:
       newState.geoStatisticalDataColumn = action.data.column
@@ -87,6 +90,13 @@ export default function sesekiReducer(state = initialState, action) {
       break
     case actions.EXAMPLEDATA_FETCH_REQUEST:
       newState.exampleDataEntry = action.exampleDataEntry
+      newState.showExampleDataSelector = false
+      break
+    case actions.EXAMPLESELECTOR_OPEN:
+      newState.showExampleDataSelector = true
+      break
+    case actions.EXAMPLESELECTOR_CLOSE:
+      newState.showExampleDataSelector = false
       break
     default:
       break

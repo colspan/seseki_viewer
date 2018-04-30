@@ -30,12 +30,21 @@ function* initialize() {
   yield put({ type: actions.LOCATION_CHANGE })
 }
 
-function* areaChange() {
+function* hashUpdate() {
   const newAreas = yield select(selectors.areas)
   const hashes = []
-  if (newAreas && newAreas.length > 0)
+  if (newAreas && newAreas.length > 0) {
     hashes.push(`areas=${newAreas.map(x => x.id).join(',')}`)
+    const exampleDataEntry = yield select(selectors.exampleDataEntry)
+    if (exampleDataEntry) {
+      hashes.push(`example=${exampleDataEntry.file}`)
+    }
+  }
   location.hash = `#${hashes.join('&')}`
+}
+
+function* areaChange() {
+  yield put({ type: actions.HASH_UPDATE })
 }
 
 function* locationChange() {
@@ -117,20 +126,13 @@ function* fetchGeoStatisticalDataLocal(action) {
 }
 
 function* exampleDataFetchRequest() {
-  const newAreas = yield select(selectors.areas)
-  const hashes = []
-  if (newAreas && newAreas.length > 0)
-    hashes.push(`areas=${newAreas.map(x => x.id).join(',')}`)
-  const exampleDataEntry = yield select(selectors.exampleDataEntry)
-  if (exampleDataEntry) {
-    hashes.push(`example=${exampleDataEntry.file}`)
-  }
-  location.hash = `#${hashes.join('&')}`
+  yield put({ type: actions.HASH_UPDATE })
 }
 
 function* rootSaga() {
   yield takeEvery(actions.INIT, initialize)
   yield takeEvery(actions.LOCATION_CHANGE, locationChange)
+  yield takeEvery(actions.HASH_UPDATE, hashUpdate)
   yield takeEvery(actions.AREA_CHANGE, areaChange)
   yield takeEvery(actions.GEOJSON_FETCH_REQUEST, fetchGeoJsonFiles)
   yield takeEvery(

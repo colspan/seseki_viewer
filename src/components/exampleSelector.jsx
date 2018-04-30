@@ -7,19 +7,19 @@ export default class ExampleSelector extends React.Component {
   }
 
   render() {
-    const { sampleDataDef } = this.props
+    const {
+      sampleDataDef,
+      showExampleDataSelector,
+      closeExampleSelector,
+      selectExampleSelector
+    } = this.props
     const bodyRows = sampleDataDef.map(x => {
       return (
         <Table.Row
           key={x.file}
+          style={{ cursor: 'pointer' }}
           onClick={() => {
-            this.props.selectExampleSelector(x)
-          }}
-          onMouseOver={() => {
-            null
-          }}
-          onMouseOut={() => {
-            null
+            selectExampleSelector(x)
           }}>
           <Table.Cell>{x.title}</Table.Cell>
           <Table.Cell>{x.right_holder}</Table.Cell>
@@ -41,15 +41,15 @@ export default class ExampleSelector extends React.Component {
     )
     return (
       <Modal
-        open={this.props.exampleSelector}
+        open={showExampleDataSelector}
         closeOnDimmerClick
-        onClose={this.props.closeExampleSelector}>
+        onClose={closeExampleSelector}>
         <Modal.Header>Example Datasets</Modal.Header>
         <Modal.Content>
           <Modal.Description>{rankingTable}</Modal.Description>
         </Modal.Content>
         <Modal.Actions>
-          <Button primary onClick={this.props.closeExampleSelector}>
+          <Button primary onClick={closeExampleSelector}>
             Close
           </Button>
         </Modal.Actions>
