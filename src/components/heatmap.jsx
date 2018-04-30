@@ -6,10 +6,12 @@ import { geoCentroid } from 'd3-geo'
 
 import BoundaryData from './boundaryData'
 import CaptionControl from './captionControl'
+import LegendControl from './legendControl'
 
 export default class Heatmap extends React.Component {
   render() {
     let captionControl = null
+    let legendControl = null
     /* heatmap layer */
     const heatmapAttrib =
       '&copy <a href="http://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html">国土数値情報 行政区域データ</a>, ' +
@@ -117,6 +119,7 @@ export default class Heatmap extends React.Component {
           subtitle={targetColumnName}
         />
       )
+      legendControl = <LegendControl colorScale={targetColumnData.colorScale} />
     }
     const heatMapElem = this.props.geoJson ? (
       <BoundaryData
@@ -150,9 +153,10 @@ export default class Heatmap extends React.Component {
         zoomDelta={0.2}
         zoomSnap={0.2}>
         {captionControl}
+        {legendControl}
         {heatMapElem}
         {tileLayerElem}
-        <ZoomControl position="bottomleft" />
+        <ZoomControl position="bottomright" />
       </Map>
     )
 
