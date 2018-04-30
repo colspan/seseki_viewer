@@ -1,0 +1,46 @@
+{
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true,
+            "modules": true
+        }
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "prettier",
+        "prettier/react"
+    ],
+    "plugins": [
+        "react",
+        "prettier"
+    ],
+    "rules": {
+        "strict": "warn",
+        "no-console": "warn",
+        "no-undef": "warn",
+        "semi": 0,
+        "no-var": "warn",
+        "no-unused-vars": "warn",
+        "prettier/prettier": [
+            "error",
+            {
+                "singleQuote": true,
+                "bracketSpacing": true,
+                "jsxBracketSameLine": true
+            }
+        ],
+        "react/prop-types": "warn"
+    },
+    "globals": {
+        "document": true,
+        "FileReader": true,
+        "location": true,
+        "Promise": true,
+        "Uint8Array": true,
+        "window": true
+    }
+}
