@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "build": "webpack",
+    "build_production" : "NODE_ENV=production webpack --config webpack.config.production.js -p",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ./src/*.js ./src/*.jsx ./src/**/*.js ./src/**/*.jsx --fix",
     "start": "webpack-dev-server",

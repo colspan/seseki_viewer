@@ -14,7 +14,7 @@ module.exports = [
     },
     output: {
       path: path.resolve(__dirname, 'dist/js/'),
-      publicPath: '/dist/js/',
+      publicPath: './dist/js/',
       filename: '[name].js'
     },
     module: {
@@ -48,7 +48,25 @@ module.exports = [
         }
       ]
     },
-    plugins: [],
+    plugins: [
+      new webpack.optimize.UglifyJsPlugin({
+        compress: {
+          warnings: false,
+          screw_ie8: true,
+          conditionals: true,
+          unused: true,
+          comparisons: true,
+          sequences: true,
+          dead_code: true,
+          evaluate: true,
+          if_return: true,
+          join_vars: true
+        },
+        output: {
+          comments: false
+        }
+      })
+    ],
     resolve: {
       extensions: ['.js', '.jsx']
     }
@@ -84,19 +102,12 @@ module.exports = [
     },
     plugins: [
       extractSass,
-      new webpack.HotModuleReplacementPlugin(),
-      new OpenBrowserPlugin({ url: 'http://localhost:8080/seseki.html' })
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('production')
+      })
     ],
     resolve: {
       extensions: ['.css', '.js', '.jsx']
-    },
-    devServer: {
-      contentBase: '/dist',
-      port: 8080,
-      hot: true,
-      inline: true,
-      historyApiFallback: true,
-      progress: true
     }
   }
 ]
