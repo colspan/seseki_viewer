@@ -1,0 +1,76 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #fcfcfc; }
+
+#app {
+  background-color: #fafafa; }
+
+#container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; }
+
+#header {
+  background-color: #3087d8;
+  flex-grow: 0;
+  flex-basis: auto;
+  height: 60px;
+  padding: 6px;
+  display: flex; }
+
+#header h2.ui.header {
+  color: white;
+  margin-right: 20px; }
+
+#header h2.ui.header div {
+  color: white; }
+
+#header #prefecture_selector {
+  width: 350px;
+  padding-top: 5px;
+  margin-right: 10px; }
+
+#header #toolbox {
+  padding-top: 6px;
+  margin-right: 8px; }
+
+#header #toolbox #open_csv {
+  margin: -1px 4px 0 0;
+  padding: 0; }
+
+#header #toolbox #open_csv label i {
+  margin: 0;
+  padding: 10px 9px 10px 10px;
+  width: 38px;
+  height: 36px; }
+
+#header #toolbox #file_input {
+  display: none; }
+
+#header #column-selector {
+  padding-top: 5px;
+  flex: 1; }
+
+#main {
+  flex-grow: 1;
+  flex-basis: 0;
+  display: flex;
+  z-index: 9; }
+
+.sesekimap {
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  flex: 1; }
+
+#ranking {
+  width: 320px;
+  overflow-y: scroll; }
+
+.layer_tooltip .commune_name {
+  font-size: 16pt; }
+
+.layer_tooltip .value {
+  font-size: 14pt;
+  text-align: right; }
