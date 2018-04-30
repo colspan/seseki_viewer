@@ -54,7 +54,7 @@ export default class Ranking extends React.Component {
       return (
         <Table.Row
           key={x.rank}
-          style={{ background: x.color }}
+          style={{ background: x.color, cursor: 'pointer' }}
           onClick={() => {
             this.props.openDetailView(communeId, x.key)
           }}
