@@ -3,7 +3,6 @@
 A Statistics Viewer for generating geometry heatmaps and rankings.
 
 [Demo is available at gh-pages](http://colspan.github.io/seseki_viewer).
-[Around Tokyo Version is also available](http://colspan.github.io/seseki_viewer/around_tokyo.html)
 
 ## Specification of importable CSV format
 
@@ -34,6 +33,15 @@ Original Statistics dataset are available at under URLs.
 ## Awards
 
  - [アーバンデータチャレンジ2015 ファイナル アプリケーション部門 金賞](http://urbandata-challenge.jp/2015/prize) ([Slide](http://www.slideshare.net/colspan/udc2015-final-seseki))
+
+## Development
+
+```bash
+yarn install
+yarn start # for webpack-dev-server
+yarn build # for test build
+yarn build_production # for production build
+```
 
 ## License (Software)
 
