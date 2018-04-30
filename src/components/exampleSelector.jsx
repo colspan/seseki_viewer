@@ -8,12 +8,12 @@ export default class ExampleSelector extends React.Component {
 
   render() {
     const {
-      sampleDataDef,
+      exampleDatasetDef,
       showExampleDataSelector,
       closeExampleSelector,
       selectExampleSelector
     } = this.props
-    const bodyRows = sampleDataDef.map(x => {
+    const bodyRows = exampleDatasetDef.map(x => {
       return (
         <Table.Row
           key={x.file}

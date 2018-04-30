@@ -10,7 +10,7 @@ const initialState = {
   communes: {},
   geoJson: null,
   geoJsonFiles: [],
-  sampleDataDef: [],
+  exampleDatasetDef: [],
   exampleDataEntry: null,
   geoStatisticalData: null,
   geoStatisticalDataColumn: null
@@ -42,7 +42,7 @@ export default function sesekiReducer(state = initialState, action) {
       newState.areas = parsedHash.areas
       /* サンプルデータ */
       if (parsedHash.exampleDataPath)
-        newState.exampleDataEntry = state.sampleDataDef.find(
+        newState.exampleDataEntry = state.exampleDatasetDef.find(
           d => d['file'] === parsedHash.exampleDataPath
         )
       break
@@ -85,8 +85,8 @@ export default function sesekiReducer(state = initialState, action) {
       if (action.data === null) break
       newState.geoStatisticalData = action.data.geoStatisticalData
       break
-    case actions.SAMPLEDATADEF_FETCH_SUCCEEDED:
-      newState.sampleDataDef = action.sampleDataDef
+    case actions.EXAMPLEDATASETDEF_FETCH_SUCCEEDED:
+      newState.exampleDatasetDef = action.exampleDatasetDef
       break
     case actions.EXAMPLEDATA_FETCH_REQUEST:
       newState.exampleDataEntry = action.exampleDataEntry

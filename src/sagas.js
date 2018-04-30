@@ -8,10 +8,10 @@ import * as selectors from './reducers/selectors'
 import GeoJsonLoader from './helpers/geoJsonLoader'
 
 function* initialize() {
-  let sampleDataDef = null
+  let exampleDatasetDef = null
   try {
-    sampleDataDef = yield new Promise((resolve, reject) => {
-      d3.json('params/sample_data.json', (error, d) => {
+    exampleDatasetDef = yield new Promise((resolve, reject) => {
+      d3.json('params/example_dataset_def.json', (error, d) => {
         if (error) {
           reject(error)
         } else {
@@ -20,8 +20,8 @@ function* initialize() {
       })
     })
     yield put({
-      type: actions.SAMPLEDATADEF_FETCH_SUCCEEDED,
-      sampleDataDef
+      type: actions.EXAMPLEDATASETDEF_FETCH_SUCCEEDED,
+      exampleDatasetDef
     })
   } catch (e) {
     // TODO error
