@@ -146,7 +146,9 @@ export default class Heatmap extends React.Component {
         zoom={8}
         className="sesekimap"
         refs="map"
-        zoomControl={false}>
+        zoomControl={false}
+        zoomDelta={0.2}
+        zoomSnap={0.2}>
         {captionControl}
         {heatMapElem}
         {tileLayerElem}
