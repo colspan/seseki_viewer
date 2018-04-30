@@ -17,11 +17,10 @@ export default class AppHeader extends React.Component {
     const headerElem = (
       <div id="header">
         <Header as="h2">
-          <Icon name="map outline" />
           <Header.Content>
             Seseki Viewer
             <Header.Subheader className="subtitle">
-              Geo Statistical Data Visualizer
+              for Geo Statistical Data
             </Header.Subheader>
           </Header.Content>
         </Header>
@@ -39,9 +38,10 @@ export default class AppHeader extends React.Component {
           />
         </div>
         <div id="toolbox">
-          <Button>
+          <Button icon="file text outline" title="Examples" />
+          <Button title="Open CSV" id="open_csv">
             <label htmlFor="file_input">
-              <Icon name="file excel outline" /> Open CSV
+              <Icon name="folder open" />
               <input
                 type="file"
                 id="file_input"
@@ -50,9 +50,8 @@ export default class AppHeader extends React.Component {
             </label>
           </Button>
           <Button
-            content="Edit"
+            title="Edit"
             icon="edit"
-            labelPosition="left"
             onClick={this.props.openSpreadSheet}
           />
         </div>

@@ -32,7 +32,7 @@ body{
 }
 
 #header #prefecture_selector{
-    width: 320px;
+    width: 300px;
     padding-top: 5px;
     margin-right: 10px;
 }
@@ -41,6 +41,10 @@ body{
     padding-top: 6px;
     margin-right: 8px;
 } 
+
+#header #toolbox #open_csv{
+    padding: 11px 5px 11px 11px;
+}
 
 #header #toolbox #file_input{
     display: none;
