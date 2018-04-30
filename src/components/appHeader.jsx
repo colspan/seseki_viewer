@@ -38,7 +38,11 @@ export default class AppHeader extends React.Component {
           />
         </div>
         <div id="toolbox">
-          <Button icon="file text outline" title="Examples" />
+          <Button
+            icon="file text outline"
+            title="Examples"
+            onClick={this.props.openExampleSelector}
+          />
           <Button title="Open CSV" id="open_csv">
             <label htmlFor="file_input">
               <Icon name="folder open" />

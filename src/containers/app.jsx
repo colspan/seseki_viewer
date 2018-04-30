@@ -10,6 +10,7 @@ import AppHeader from '../components/appHeader'
 import Ranking from '../components/ranking'
 import DetailView from '../components/detailView'
 import SpreadSheet from '../components/spreadSheet'
+import ExampleSelector from '../components/exampleSelector'
 
 import GeoStatisticalData from '../helpers/geoStatisticalData'
 
@@ -24,7 +25,8 @@ class App extends React.Component {
     this.state = {
       detailViewTarget: null,
       detailViewTargetName: null,
-      tooltipTarget: null
+      tooltipTarget: null,
+      exampleSelector: false
     }
   }
   componentDidMount() {
@@ -101,6 +103,13 @@ class App extends React.Component {
           type: actions.GEOSTATISTICALDATA_CHANGE_COLUMN,
           data: { column: x.value }
         })
+      },
+      exampleSelector: this.state.exampleSelector,
+      openExampleSelector: () => {
+        this.setState({ exampleSelector: true })
+      },
+      closeExampleSelector: () => {
+        this.setState({ exampleSelector: false })
       }
     })
 
@@ -112,6 +121,7 @@ class App extends React.Component {
         <DetailView {...childProps} />
       ) : null
     const spreadSheet = <SpreadSheet {...childProps} />
+    const examples = <ExampleSelector {...childProps} />
 
     return (
       <div id="container">
@@ -122,6 +132,7 @@ class App extends React.Component {
         </div>
         {detailView}
         {spreadSheet}
+        {examples}
       </div>
     )
   }
