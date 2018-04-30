@@ -15,6 +15,9 @@ export default class ExampleSelector extends React.Component {
       closeExampleSelector,
       selectExampleSelector
     } = this.props
+
+    if (!showExampleDataSelector) return null
+
     const bodyRows = exampleDatasetDef.map(x => {
       return (
         <Table.Row

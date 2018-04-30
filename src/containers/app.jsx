@@ -130,7 +130,7 @@ class App extends React.Component {
         <DetailView {...childProps} />
       ) : null
     const spreadSheet = <SpreadSheet {...childProps} />
-    const examples = <ExampleSelector {...childProps} />
+    const exampleSelector = <ExampleSelector {...childProps} />
 
     return (
       <div id="container">
@@ -141,7 +141,7 @@ class App extends React.Component {
         </div>
         {detailView}
         {spreadSheet}
-        {examples}
+        {exampleSelector}
       </div>
     )
   }
