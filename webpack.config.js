@@ -14,7 +14,7 @@ module.exports = [
     },
     output: {
       path: path.resolve(__dirname, "dist/js/"),
-      publicPath: "/dist/js/",
+      publicPath: "./dist/js/",
       filename: "[name].js"
     },
     module: {
@@ -59,7 +59,7 @@ module.exports = [
     },
     output: {
       path: path.resolve(__dirname, "dist/css"),
-      publicPath: "/dist/css/",
+      publicPath: "./dist/css/",
       filename: "[name].css"
     },
     module: {
