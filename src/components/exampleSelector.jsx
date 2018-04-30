@@ -1,6 +1,8 @@
 import React from 'react'
 import { Button, Icon, Modal, Table } from 'semantic-ui-react'
 
+import { prefectureDef } from '../helpers/params'
+
 export default class ExampleSelector extends React.Component {
   getData() {
     return []
@@ -23,6 +25,12 @@ export default class ExampleSelector extends React.Component {
           }}>
           <Table.Cell>{x.title}</Table.Cell>
           <Table.Cell>{x.right_holder}</Table.Cell>
+          <Table.Cell>
+            {x.target_prefectures
+              .map(t => prefectureDef.find(d => +d.id === +t))
+              .map(t => t.prefecture_jp)
+              .join(',')}
+          </Table.Cell>
         </Table.Row>
       )
     })
@@ -33,6 +41,7 @@ export default class ExampleSelector extends React.Component {
           <Table.Row>
             <Table.HeaderCell>Title</Table.HeaderCell>
             <Table.HeaderCell>Right Holder</Table.HeaderCell>
+            <Table.HeaderCell>Prefectures</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
 
