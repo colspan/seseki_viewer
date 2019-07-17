@@ -30,7 +30,9 @@ const legend = L.Control.extend({
     const domain = colorScale.domain()
     const formatter = d3Format(
       domain
-        ? domain[0] % 1 === 0 && domain[1] % 1 === 0 ? ',.0f' : '0.2f'
+        ? domain[0] % 1 === 0 && domain[1] % 1 === 0
+          ? ',.0f'
+          : '0.2f'
         : ',.0f'
     )
     const legend = d3Legend

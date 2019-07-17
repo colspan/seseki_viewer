@@ -85,8 +85,7 @@ function* fetchGeoStatisticalDataRemote() {
   try {
     const fetchedData = yield new Promise((resolve, reject) => {
       const filename = exampleDataEntry['file']
-      d3
-        .request(filename)
+      d3.request(filename)
         .responseType('arraybuffer')
         .response(r => {
           return new Uint8Array(r.response)

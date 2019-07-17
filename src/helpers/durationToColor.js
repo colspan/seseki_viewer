@@ -22,7 +22,7 @@ function getColorImg(colors) {
 */
 function durationToColor(second) {
   let opacity_ratio
-  let hsl_hue = +second / 3600 * (300 - 60) + 60
+  let hsl_hue = (+second / 3600) * (300 - 60) + 60
   if (hsl_hue > 300) {
     // 超えていたら300になおす
     hsl_hue = 300
