@@ -74,7 +74,7 @@
     "flow-bin": "^0.57.2",
     "mocha": "^4.0.1",
     "mocha-loader": "^2.0.1",
-    "node-sass": "^4.5.3",
+    "node-sass": "^4.13.1",
     "open-browser-webpack-plugin": "^0.0.5",
     "power-assert": "^1.4.4",
     "prettier": "^1.11.1",
