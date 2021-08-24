@@ -30,7 +30,7 @@
     "handsontable": "^7.1.0",
     "history": "^4.7.2",
     "leaflet": "^1.2.0",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "marked": "^0.7.0",
     "materialize-css": "^1.0.0",
     "query-string": "^5.0.1",
