@@ -27,7 +27,7 @@
     "d3-geo": "^1.9.0",
     "d3-svg-legend": "^2.24.1",
     "encoding-japanese": "^1.0.26",
-    "handsontable": "^7.1.0",
+    "handsontable": "^10.0.0",
     "history": "^4.7.2",
     "leaflet": "^1.2.0",
     "lodash": "^4.17.21",
