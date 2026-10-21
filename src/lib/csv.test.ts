@@ -13,9 +13,8 @@ describe('parseCsv', () => {
   })
 
   it('decodes a UTF-8 buffer', () => {
-    const buffer = new TextEncoder().encode(
-      '市町村,人口\n東京,100\n',
-    ).buffer as ArrayBuffer
+    const buffer = new TextEncoder().encode('市町村,人口\n東京,100\n')
+      .buffer as ArrayBuffer
 
     const dataset = parseCsvBuffer(buffer)
 

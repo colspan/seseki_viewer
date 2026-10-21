@@ -20,11 +20,7 @@ const idMap = {
 
 describe('GeoStatisticalData', () => {
   it('binds rows to commune ids', () => {
-    const stats = new GeoStatisticalData(dataset, idMap, [
-      '東京',
-      '大阪',
-      '北海道',
-    ])
+    const stats = new GeoStatisticalData(dataset, idMap, ['東京', '大阪', '北海道'])
 
     expect(stats.csvKeys).toEqual(['市町村', '人口', '面積'])
     expect(stats.data[1]['人口']).toBe('100')
@@ -33,11 +29,7 @@ describe('GeoStatisticalData', () => {
   })
 
   it('builds a normalized color scale', () => {
-    const stats = new GeoStatisticalData(dataset, idMap, [
-      '東京',
-      '大阪',
-      '北海道',
-    ])
+    const stats = new GeoStatisticalData(dataset, idMap, ['東京', '大阪', '北海道'])
     const column = stats.getByColumnName('人口')
 
     expect(column.parsedData[1]).toBe(100)

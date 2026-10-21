@@ -9,7 +9,7 @@ export function parseHash(hash: string): HashState {
   const params = new URLSearchParams(hash.replace(/^#/, ''))
   const areaIds = (params.get('areas') ?? '')
     .split(',')
-    .map(value => value.trim())
+    .map((value) => value.trim())
     .filter(Boolean)
 
   return {
@@ -21,7 +21,7 @@ export function parseHash(hash: string): HashState {
 export function buildHash(areas: Prefecture[], exampleFile?: string | null): string {
   if (areas.length === 0) return '#'
 
-  const parts = [`areas=${areas.map(area => area.id).join(',')}`]
+  const parts = [`areas=${areas.map((area) => area.id).join(',')}`]
   if (exampleFile) {
     parts.push(`example=${exampleFile}`)
   }

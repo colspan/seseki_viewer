@@ -4,16 +4,10 @@ import { prefectureDef } from '../lib/params'
 import { useSesekiStore } from '../store'
 
 export function ExampleSelector() {
-  const exampleDatasetDef = useSesekiStore(
-    state => state.exampleDatasetDef,
-  )
-  const showExampleDataSelector = useSesekiStore(
-    state => state.showExampleDataSelector,
-  )
-  const closeExampleSelector = useSesekiStore(
-    state => state.closeExampleSelector,
-  )
-  const selectExample = useSesekiStore(state => state.selectExample)
+  const exampleDatasetDef = useSesekiStore((state) => state.exampleDatasetDef)
+  const showExampleDataSelector = useSesekiStore((state) => state.showExampleDataSelector)
+  const closeExampleSelector = useSesekiStore((state) => state.closeExampleSelector)
+  const selectExample = useSesekiStore((state) => state.selectExample)
 
   if (!showExampleDataSelector) return null
 
@@ -35,7 +29,7 @@ export function ExampleSelector() {
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {exampleDatasetDef.map(entry => (
+            {exampleDatasetDef.map((entry) => (
               <Table.Tr
                 key={entry.file}
                 style={{ cursor: 'pointer' }}
@@ -45,12 +39,12 @@ export function ExampleSelector() {
                 <Table.Td>{entry.right_holder}</Table.Td>
                 <Table.Td>
                   {entry.target_prefectures
-                    .map(target =>
+                    .map((target) =>
                       prefectureDef.find(
-                        prefecture => Number(prefecture.id) === Number(target),
+                        (prefecture) => Number(prefecture.id) === Number(target),
                       ),
                     )
-                    .map(prefecture => prefecture?.prefecture_jp ?? '')
+                    .map((prefecture) => prefecture?.prefecture_jp ?? '')
                     .filter(Boolean)
                     .join(',')}
                 </Table.Td>

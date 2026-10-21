@@ -20,14 +20,27 @@ export default defineConfig({
       output: {
         entryFileNames: 'js/[name].js',
         chunkFileNames: 'js/chunks/[name]-[hash].js',
-        assetFileNames: assetInfo => {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return
+
+          if (id.includes('@mantine') || id.includes('@tabler')) {
+            return 'mantine'
+          }
+          if (id.includes('react-data-grid')) return 'data-grid'
+          if (id.includes('leaflet')) return 'leaflet'
+          if (/\/node_modules\/(react|react-dom|scheduler|zustand)\//.test(id)) {
+            return 'react'
+          }
+          if (id.includes('d3-') || id.includes('topojson')) return 'd3'
+
+          return 'vendor'
+        },
+        assetFileNames: (assetInfo) => {
           const name =
             (assetInfo as { names?: string[] }).names?.[0] ??
             (assetInfo as { name?: string }).name ??
             ''
-          return name.endsWith('.css')
-            ? 'css/main.css'
-            : 'assets/[name]-[hash][extname]'
+          return name.endsWith('.css') ? 'css/main.css' : 'assets/[name]-[hash][extname]'
         },
       },
     },

@@ -53,7 +53,7 @@ async function loadPrefecture(
   }
 
   const features = loaded.features
-    .map(featureItem => {
+    .map((featureItem) => {
       const properties = featureItem.properties ?? {}
 
       if (!properties.N03_007) return null
@@ -70,9 +70,9 @@ async function loadPrefecture(
       } as CommuneFeature
     })
     .filter((featureItem): featureItem is CommuneFeature => featureItem !== null)
-    .filter(featureItem => !exceptions.includes(featureItem.name))
+    .filter((featureItem) => !exceptions.includes(featureItem.name))
 
-  features.forEach(featureItem => {
+  features.forEach((featureItem) => {
     const properties = featureItem.properties ?? {}
 
     if (!communes.includes(featureItem.name)) {
@@ -112,7 +112,7 @@ export async function loadGeoJsonFiles(
 ): Promise<GeoJsonLoadResult> {
   const exceptions = options.exceptions ?? DEFAULT_EXCEPTIONS
   const results = await Promise.all(
-    files.map(file => loadPrefecture(file, exceptions, options.signal)),
+    files.map((file) => loadPrefecture(file, exceptions, options.signal)),
   )
 
   const merged: CommuneFeatureCollection = {
@@ -123,10 +123,10 @@ export async function loadGeoJsonFiles(
   const idMap: Record<string, number[]> = {}
   const idToCommune: Record<number, string> = {}
 
-  results.forEach(result => {
+  results.forEach((result) => {
     merged.features.push(...result.geoJson.features)
 
-    result.communes.forEach(commune => {
+    result.communes.forEach((commune) => {
       if (!communes.includes(commune)) communes.push(commune)
     })
 

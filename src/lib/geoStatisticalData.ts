@@ -20,7 +20,7 @@ export interface ParsedColumn {
 }
 
 function normalizeDomain(domain: number[]): number[] {
-  return domain.map(value => {
+  return domain.map((value) => {
     if (value === 0) return 0
 
     const absolute = Math.abs(value)
@@ -53,7 +53,7 @@ export default class GeoStatisticalData {
       throw new Error('Too Few Columns')
     }
 
-    inputData.rows.forEach(row => {
+    inputData.rows.forEach((row) => {
       const rawCommuneName = row[this.csvKeys[0]]
       if (rawCommuneName == null) return
 
@@ -64,7 +64,7 @@ export default class GeoStatisticalData {
       if (!communeIds) return
 
       this.dataArray.push(row)
-      communeIds.forEach(id => {
+      communeIds.forEach((id) => {
         this.data[id] = row
       })
 
@@ -154,12 +154,10 @@ export default class GeoStatisticalData {
     }
 
     const normDomain = normalizeDomain(domain)
-    const colorScale = scaleLinear<string>()
-      .domain(normDomain)
-      .range(range)
+    const colorScale = scaleLinear<string>().domain(normDomain).range(range)
 
     const parsedData: Record<number, number | null> = {}
-    Object.keys(this.data).forEach(id => {
+    Object.keys(this.data).forEach((id) => {
       parsedData[Number(id)] = getValue(this.data[Number(id)])
     })
 

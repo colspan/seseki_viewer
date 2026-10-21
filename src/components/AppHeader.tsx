@@ -7,11 +7,7 @@ import {
   Text,
   Title,
 } from '@mantine/core'
-import {
-  IconEdit,
-  IconFileText,
-  IconFolderOpen,
-} from '@tabler/icons-react'
+import { IconEdit, IconFileText, IconFolderOpen } from '@tabler/icons-react'
 
 import { prefectureDef } from '../lib/params'
 import type GeoStatisticalData from '../lib/geoStatisticalData'
@@ -22,19 +18,17 @@ interface AppHeaderProps {
 }
 
 export function AppHeader({ geoStatData }: AppHeaderProps) {
-  const areas = useSesekiStore(state => state.areas)
+  const areas = useSesekiStore((state) => state.areas)
   const geoStatisticalDataColumn = useSesekiStore(
-    state => state.geoStatisticalDataColumn,
+    (state) => state.geoStatisticalDataColumn,
   )
-  const setAreas = useSesekiStore(state => state.setAreas)
-  const changeColumn = useSesekiStore(state => state.changeColumn)
-  const loadLocalCsv = useSesekiStore(state => state.loadLocalCsv)
-  const openExampleSelector = useSesekiStore(
-    state => state.openExampleSelector,
-  )
-  const openSpreadSheet = useSesekiStore(state => state.openSpreadSheet)
+  const setAreas = useSesekiStore((state) => state.setAreas)
+  const changeColumn = useSesekiStore((state) => state.changeColumn)
+  const loadLocalCsv = useSesekiStore((state) => state.loadLocalCsv)
+  const openExampleSelector = useSesekiStore((state) => state.openExampleSelector)
+  const openSpreadSheet = useSesekiStore((state) => state.openSpreadSheet)
 
-  const prefectureOptions = prefectureDef.map(prefecture => ({
+  const prefectureOptions = prefectureDef.map((prefecture) => ({
     value: prefecture.id,
     label: prefecture.prefecture_jp,
   }))
@@ -68,8 +62,8 @@ export function AppHeader({ geoStatData }: AppHeaderProps) {
         className="prefecture-select"
         placeholder="Select Prefecture"
         data={prefectureOptions}
-        value={areas.map(area => area.id)}
-        onChange={ids => void setAreas(ids)}
+        value={areas.map((area) => area.id)}
+        onChange={(ids) => void setAreas(ids)}
         searchable
         clearable
         hidePickedOptions
@@ -87,11 +81,8 @@ export function AppHeader({ geoStatData }: AppHeaderProps) {
           Examples
         </Button>
 
-        <FileButton
-          accept=".csv,text/csv"
-          onChange={file => void handleFile(file)}
-        >
-          {props => (
+        <FileButton accept=".csv,text/csv" onChange={(file) => void handleFile(file)}>
+          {(props) => (
             <Button
               {...props}
               variant="light"
@@ -117,12 +108,8 @@ export function AppHeader({ geoStatData }: AppHeaderProps) {
         className="column-select"
         placeholder="Select column"
         data={columnOptions}
-        value={
-          columnOptions.length > 0
-            ? String(geoStatisticalDataColumn)
-            : null
-        }
-        onChange={value => {
+        value={columnOptions.length > 0 ? String(geoStatisticalDataColumn) : null}
+        onChange={(value) => {
           if (value !== null) changeColumn(Number(value))
         }}
         searchable

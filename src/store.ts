@@ -3,10 +3,7 @@ import { create } from 'zustand'
 import { parseCsvBuffer } from './lib/csv'
 import { loadGeoJsonFiles } from './lib/geoJsonLoader'
 import { buildHash, parseHash, writeHash } from './lib/hash'
-import {
-  prefecturesFromIds,
-  prefecturesFromNumbers,
-} from './lib/params'
+import { prefecturesFromIds, prefecturesFromNumbers } from './lib/params'
 import type {
   CommuneFeatureCollection,
   CsvDataset,
@@ -71,10 +68,7 @@ function isAbortError(error: unknown): boolean {
   return error instanceof Error && error.name === 'AbortError'
 }
 
-async function loadGeoJsonForAreas(
-  areas: Prefecture[],
-  set: SetState,
-): Promise<void> {
+async function loadGeoJsonForAreas(areas: Prefecture[], set: SetState): Promise<void> {
   geoController?.abort()
 
   if (areas.length === 0) {
@@ -90,9 +84,7 @@ async function loadGeoJsonForAreas(
 
   const controller = new AbortController()
   geoController = controller
-  const files = areas.map(
-    area => `data/${area.id}_${area.prefecture_en}_topo.json`,
-  )
+  const files = areas.map((area) => `data/${area.id}_${area.prefecture_en}_topo.json`)
 
   try {
     const result = await loadGeoJsonFiles(files, {
@@ -122,10 +114,7 @@ async function loadGeoJsonForAreas(
   }
 }
 
-async function loadExampleData(
-  entry: ExampleDatasetEntry,
-  set: SetState,
-): Promise<void> {
+async function loadExampleData(entry: ExampleDatasetEntry, set: SetState): Promise<void> {
   dataController?.abort()
   const controller = new AbortController()
   dataController = controller
@@ -209,9 +198,8 @@ export const useSesekiStore = create<SesekiState>((set, get) => ({
     const hashState = parseHash(window.location.hash)
     const areas = prefecturesFromIds(hashState.areaIds)
     const exampleDataEntry = hashState.examplePath
-      ? (get().exampleDatasetDef.find(
-          entry => entry.file === hashState.examplePath,
-        ) ?? null)
+      ? (get().exampleDatasetDef.find((entry) => entry.file === hashState.examplePath) ??
+        null)
       : null
 
     set({ areas, exampleDataEntry })
@@ -271,7 +259,7 @@ export const useSesekiStore = create<SesekiState>((set, get) => ({
     }
   },
 
-  setAreas: async ids => {
+  setAreas: async (ids) => {
     const areas = prefecturesFromIds(ids)
     const previousSource = get().dataSource
 
@@ -291,7 +279,7 @@ export const useSesekiStore = create<SesekiState>((set, get) => ({
     await get().refresh()
   },
 
-  selectExample: async entry => {
+  selectExample: async (entry) => {
     const currentAreas = get().areas
     const areas =
       currentAreas.length > 0
@@ -331,11 +319,11 @@ export const useSesekiStore = create<SesekiState>((set, get) => ({
     }
   },
 
-  changeColumn: column => set({ geoStatisticalDataColumn: column }),
+  changeColumn: (column) => set({ geoStatisticalDataColumn: column }),
 
   openSpreadSheet: () => set({ showSpreadSheet: true }),
 
-  closeSpreadSheet: data => {
+  closeSpreadSheet: (data) => {
     if (data === null) {
       set({ showSpreadSheet: false })
       return
@@ -359,10 +347,9 @@ export const useSesekiStore = create<SesekiState>((set, get) => ({
       detailViewTargetName: communeName,
     }),
 
-  closeDetailView: () =>
-    set({ detailViewTarget: null, detailViewTargetName: null }),
+  closeDetailView: () => set({ detailViewTarget: null, detailViewTargetName: null }),
 
-  openTooltip: communeId => set({ tooltipTarget: communeId }),
+  openTooltip: (communeId) => set({ tooltipTarget: communeId }),
   closeTooltip: () => set({ tooltipTarget: null }),
 
   clearError: () => set({ error: null }),

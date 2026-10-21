@@ -24,7 +24,7 @@ export function Legend({ colorScale }: LegendProps) {
   return (
     <div className="map-legend" aria-label="Color legend">
       <div className="legend-cells">
-        {cells.map(cell => (
+        {cells.map((cell) => (
           <span key={cell.key} style={{ background: cell.color }} />
         ))}
       </div>

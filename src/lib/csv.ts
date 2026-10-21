@@ -17,7 +17,7 @@ export function decodeJapaneseCsv(buffer: ArrayBuffer): string {
 export function parseCsv(text: string): CsvDataset {
   const parsed = csvParse(text)
   const columns = parsed.columns ?? []
-  const rows: CsvRow[] = parsed.map(row => ({ ...row }))
+  const rows: CsvRow[] = parsed.map((row) => ({ ...row }))
 
   return { columns, rows }
 }

@@ -39,8 +39,10 @@ export interface CommuneFeature extends Feature<Geometry, CommuneProperties> {
   name: string
 }
 
-export interface CommuneFeatureCollection
-  extends FeatureCollection<Geometry, CommuneProperties> {
+export interface CommuneFeatureCollection extends FeatureCollection<
+  Geometry,
+  CommuneProperties
+> {
   features: CommuneFeature[]
 }
 

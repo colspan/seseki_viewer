@@ -1,8 +1,5 @@
 import { Table, Text } from '@mantine/core'
-import {
-  IconChevronDown,
-  IconChevronUp,
-} from '@tabler/icons-react'
+import { IconChevronDown, IconChevronUp } from '@tabler/icons-react'
 import { useMemo, useState } from 'react'
 
 import type GeoStatisticalData from '../lib/geoStatisticalData'
@@ -16,13 +13,13 @@ type SortDirection = 'ascending' | 'descending'
 
 export function Ranking({ geoStatData }: RankingProps) {
   const [direction, setDirection] = useState<SortDirection>('descending')
-  const idMap = useSesekiStore(state => state.idMap)
+  const idMap = useSesekiStore((state) => state.idMap)
   const geoStatisticalDataColumn = useSesekiStore(
-    state => state.geoStatisticalDataColumn,
+    (state) => state.geoStatisticalDataColumn,
   )
-  const openDetailView = useSesekiStore(state => state.openDetailView)
-  const openTooltip = useSesekiStore(state => state.openTooltip)
-  const closeTooltip = useSesekiStore(state => state.closeTooltip)
+  const openDetailView = useSesekiStore((state) => state.openDetailView)
+  const openTooltip = useSesekiStore((state) => state.openTooltip)
+  const closeTooltip = useSesekiStore((state) => state.closeTooltip)
 
   const items = useMemo(() => {
     if (!geoStatData) return []
@@ -44,24 +41,16 @@ export function Ranking({ geoStatData }: RankingProps) {
           communeName,
           communeId: communeIds[0],
           value: targetColumn.format(value),
-          color:
-            value == null ? '#ffffff' : targetColumn.colorScale(value),
+          color: value == null ? '#ffffff' : targetColumn.colorScale(value),
         },
       ]
     })
 
     return direction === 'ascending' ? [...result].reverse() : result
-  }, [
-    geoStatData,
-    geoStatisticalDataColumn,
-    idMap,
-    direction,
-  ])
+  }, [geoStatData, geoStatisticalDataColumn, idMap, direction])
 
   const toggleDirection = () => {
-    setDirection(current =>
-      current === 'ascending' ? 'descending' : 'ascending',
-    )
+    setDirection((current) => (current === 'ascending' ? 'descending' : 'ascending'))
   }
 
   return (
@@ -85,13 +74,11 @@ export function Ranking({ geoStatData }: RankingProps) {
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {items.map(item => (
+          {items.map((item) => (
             <Table.Tr
               key={`${item.rank}-${item.communeName}`}
               style={{ background: item.color, cursor: 'pointer' }}
-              onClick={() =>
-                openDetailView(item.communeId, item.communeName)
-              }
+              onClick={() => openDetailView(item.communeId, item.communeName)}
               onMouseOver={() => openTooltip(item.communeId)}
               onMouseOut={closeTooltip}
             >

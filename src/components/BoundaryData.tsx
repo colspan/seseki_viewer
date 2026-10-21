@@ -20,10 +20,7 @@ interface BoundaryDataProps {
   openDetailView: (communeId: number) => void
 }
 
-function createTooltipContent(
-  feature: CommuneFeature,
-  value: string,
-): HTMLSpanElement {
+function createTooltipContent(feature: CommuneFeature, value: string): HTMLSpanElement {
   const container = document.createElement('span')
   const name = document.createElement('span')
   const valueElement = document.createElement('div')
@@ -53,7 +50,7 @@ export function BoundaryData({
 
     const layers: CommuneLayer[] = []
 
-    geoLayer.eachLayer(layer => {
+    geoLayer.eachLayer((layer) => {
       const path = layer as CommuneLayer
       const feature = path.feature
       if (!feature) return
@@ -74,7 +71,7 @@ export function BoundaryData({
 
       const handlers: L.LeafletEventHandlerFnMap = {
         mouseover: () => {
-          geoLayer.eachLayer(otherLayer => {
+          geoLayer.eachLayer((otherLayer) => {
             const otherPath = otherLayer as CommuneLayer
             if (otherPath.feature?.communeId === feature.communeId) {
               otherPath.setStyle(activeStyle)
@@ -83,7 +80,7 @@ export function BoundaryData({
           })
         },
         mouseout: () => {
-          geoLayer.eachLayer(otherLayer => {
+          geoLayer.eachLayer((otherLayer) => {
             const otherPath = otherLayer as CommuneLayer
             if (otherPath.feature?.communeId === feature.communeId) {
               otherPath.setStyle(featureStyle(otherPath.feature))
@@ -101,7 +98,7 @@ export function BoundaryData({
     })
 
     return () => {
-      layers.forEach(path => {
+      layers.forEach((path) => {
         if (path.__sesekiEvents) {
           path.off(path.__sesekiEvents)
         }
@@ -114,7 +111,7 @@ export function BoundaryData({
     const geoLayer = layerRef.current
     if (!geoLayer) return
 
-    geoLayer.eachLayer(layer => {
+    geoLayer.eachLayer((layer) => {
       const path = layer as CommuneLayer
       const feature = path.feature
       if (!feature) return

@@ -1,9 +1,5 @@
 import { Button, Group, Modal } from '@mantine/core'
-import {
-  IconCheck,
-  IconColumns,
-  IconX,
-} from '@tabler/icons-react'
+import { IconCheck, IconColumns, IconX } from '@tabler/icons-react'
 import { useMemo, useState } from 'react'
 import { DataGrid } from 'react-data-grid'
 import type { Column } from 'react-data-grid'
@@ -65,19 +61,15 @@ function createExample(
       'Title of data file': commune,
       'Column 1': withDummyValues ? String(index + 1) : '',
       'Column 2': withDummyValues ? String(communes.length - index - 1) : '',
-      'Column 3': withDummyValues
-        ? (Math.random() * 200 - 100).toFixed(2)
-        : '',
+      'Column 3': withDummyValues ? (Math.random() * 200 - 100).toFixed(2) : '',
     })),
   }
 }
 
 export function SpreadSheet() {
-  const geoStatisticalData = useSesekiStore(
-    state => state.geoStatisticalData,
-  )
-  const communes = useSesekiStore(state => state.communes)
-  const closeSpreadSheet = useSesekiStore(state => state.closeSpreadSheet)
+  const geoStatisticalData = useSesekiStore((state) => state.geoStatisticalData)
+  const communes = useSesekiStore((state) => state.communes)
+  const closeSpreadSheet = useSesekiStore((state) => state.closeSpreadSheet)
 
   const [gridData, setGridData] = useState(() =>
     geoStatisticalData
@@ -102,9 +94,9 @@ export function SpreadSheet() {
   const updateData = () => {
     const dataset: CsvDataset = {
       columns,
-      rows: rows.map(row => {
+      rows: rows.map((row) => {
         const result: CsvRow = {}
-        columns.forEach(column => {
+        columns.forEach((column) => {
           result[column] = row[column] ?? ''
         })
         return result
@@ -119,19 +111,14 @@ export function SpreadSheet() {
   }
 
   return (
-    <Modal
-      opened
-      onClose={updateData}
-      title="Spread Sheet Editor"
-      fullScreen
-    >
+    <Modal opened onClose={updateData} title="Spread Sheet Editor" fullScreen>
       <DataGrid
         className="spreadsheet-grid"
         columns={gridColumns}
         rows={rows}
-        rowKeyGetter={row => row.id}
-        onRowsChange={newRows =>
-          setGridData(current => ({ ...current, rows: newRows }))
+        rowKeyGetter={(row) => row.id}
+        onRowsChange={(newRows) =>
+          setGridData((current) => ({ ...current, rows: newRows }))
         }
         style={{ height: 'calc(100vh - 160px)' }}
       />
@@ -152,11 +139,7 @@ export function SpreadSheet() {
         >
           Cancel
         </Button>
-        <Button
-          color="green"
-          leftSection={<IconCheck size={18} />}
-          onClick={updateData}
-        >
+        <Button color="green" leftSection={<IconCheck size={18} />} onClick={updateData}>
           Update
         </Button>
       </Group>

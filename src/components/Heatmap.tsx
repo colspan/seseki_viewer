@@ -2,18 +2,10 @@ import { geoCentroid } from 'd3-geo'
 import type { Feature } from 'geojson'
 import * as L from 'leaflet'
 import { useCallback, useEffect, useMemo } from 'react'
-import {
-  MapContainer,
-  TileLayer,
-  ZoomControl,
-  useMap,
-} from 'react-leaflet'
+import { MapContainer, TileLayer, ZoomControl, useMap } from 'react-leaflet'
 
 import type GeoStatisticalData from '../lib/geoStatisticalData'
-import type {
-  CommuneFeature,
-  CommuneFeatureCollection,
-} from '../lib/types'
+import type { CommuneFeature, CommuneFeatureCollection } from '../lib/types'
 import { useSesekiStore } from '../store'
 import { BoundaryData } from './BoundaryData'
 import { Legend } from './Legend'
@@ -22,11 +14,7 @@ interface HeatmapProps {
   geoStatData: GeoStatisticalData | null
 }
 
-function MapViewController({
-  geoJson,
-}: {
-  geoJson: CommuneFeatureCollection | null
-}) {
+function MapViewController({ geoJson }: { geoJson: CommuneFeatureCollection | null }) {
   const map = useMap()
 
   useEffect(() => {
@@ -56,12 +44,12 @@ const ACTIVE_STYLE: L.PathOptions = {
 }
 
 export function Heatmap({ geoStatData }: HeatmapProps) {
-  const geoJson = useSesekiStore(state => state.geoJson)
+  const geoJson = useSesekiStore((state) => state.geoJson)
   const geoStatisticalDataColumn = useSesekiStore(
-    state => state.geoStatisticalDataColumn,
+    (state) => state.geoStatisticalDataColumn,
   )
-  const tooltipTarget = useSesekiStore(state => state.tooltipTarget)
-  const openDetailView = useSesekiStore(state => state.openDetailView)
+  const tooltipTarget = useSesekiStore((state) => state.tooltipTarget)
+  const openDetailView = useSesekiStore((state) => state.openDetailView)
 
   const targetColumnName = geoStatData
     ? (geoStatData.csvKeys[geoStatisticalDataColumn + 1] ?? null)
@@ -81,8 +69,7 @@ export function Heatmap({ geoStatData }: HeatmapProps) {
 
       return {
         ...BASE_STYLE,
-        fillColor:
-          value == null ? BASE_STYLE.fillColor : targetColumn.colorScale(value),
+        fillColor: value == null ? BASE_STYLE.fillColor : targetColumn.colorScale(value),
       }
     },
     [targetColumn],
@@ -136,12 +123,9 @@ export function Heatmap({ geoStatData }: HeatmapProps) {
         <a href="https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03.html">
           国土数値情報 行政区域データ
         </a>
-        , CC BY NC SA 4.0{' '}
-        <a href="https://github.com/colspan">Miyoshi(@colspan)</a>{' '}
+        , CC BY NC SA 4.0 <a href="https://github.com/colspan">Miyoshi(@colspan)</a>{' '}
         <a href="https://github.com/colspan/seseki_viewer">Seseki</a> |{' '}
-        <a href="https://www.openstreetmap.org/copyright">
-          OpenStreetMap contributors
-        </a>
+        <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
       </div>
     </div>
   )

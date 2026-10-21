@@ -51,9 +51,9 @@ export const prefectureDef: Prefecture[] = [
 ]
 
 export function prefecturesFromIds(ids: string[]): Prefecture[] {
-  return prefectureDef.filter(prefecture => ids.includes(prefecture.id))
+  return prefectureDef.filter((prefecture) => ids.includes(prefecture.id))
 }
 
 export function prefecturesFromNumbers(numbers: number[]): Prefecture[] {
-  return prefectureDef.filter(prefecture => numbers.includes(Number(prefecture.id)))
+  return prefectureDef.filter((prefecture) => numbers.includes(Number(prefecture.id)))
 }

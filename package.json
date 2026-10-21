@@ -13,7 +13,8 @@
     "typecheck": "tsc -b",
     "test": "vitest run",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "generate:prefecture-geojson": "node misc/generate_prefecture_geojson.mjs"
   },
   "repository": {
     "type": "git",

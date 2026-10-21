@@ -1,22 +1,27 @@
 import { Alert, Loader } from '@mantine/core'
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 
 import { AppHeader } from './components/AppHeader'
 import { DetailView } from './components/DetailView'
 import { ExampleSelector } from './components/ExampleSelector'
 import { Heatmap } from './components/Heatmap'
 import { Ranking } from './components/Ranking'
-import { SpreadSheet } from './components/SpreadSheet'
 import { useGeoStatData } from './hooks/useGeoStatData'
 import { useSesekiStore } from './store'
 
+const SpreadSheet = lazy(() =>
+  import('./components/SpreadSheet').then((module) => ({
+    default: module.SpreadSheet,
+  })),
+)
+
 export default function App() {
-  const initialize = useSesekiStore(state => state.initialize)
-  const syncFromHash = useSesekiStore(state => state.syncFromHash)
-  const error = useSesekiStore(state => state.error)
-  const clearError = useSesekiStore(state => state.clearError)
-  const loading = useSesekiStore(state => state.loading)
-  const showSpreadSheet = useSesekiStore(state => state.showSpreadSheet)
+  const initialize = useSesekiStore((state) => state.initialize)
+  const syncFromHash = useSesekiStore((state) => state.syncFromHash)
+  const error = useSesekiStore((state) => state.error)
+  const clearError = useSesekiStore((state) => state.clearError)
+  const loading = useSesekiStore((state) => state.loading)
+  const showSpreadSheet = useSesekiStore((state) => state.showSpreadSheet)
   const geoStatData = useGeoStatData()
 
   useEffect(() => {
@@ -54,7 +59,17 @@ export default function App() {
       </main>
 
       <DetailView geoStatData={geoStatData} />
-      {showSpreadSheet && <SpreadSheet />}
+      {showSpreadSheet && (
+        <Suspense
+          fallback={
+            <div className="app-loading">
+              <Loader color="blue" />
+            </div>
+          }
+        >
+          <SpreadSheet />
+        </Suspense>
+      )}
       <ExampleSelector />
 
       {loading && (

@@ -24,8 +24,7 @@ const FEATURES = [
   {
     image: './img/japan.png',
     title: '47都道府県対応',
-    body:
-      '北海道から沖縄まで、日本全国の都道府県に対応しています。都道府県単位または複数の組み合わせで表示できます。',
+    body: '北海道から沖縄まで、日本全国の都道府県に対応しています。都道府県単位または複数の組み合わせで表示できます。',
   },
   {
     image: './img/heatmap.png',
@@ -35,14 +34,12 @@ const FEATURES = [
   {
     image: './img/caption.png',
     title: '市町村名表示',
-    body:
-      '地図上の区画やランキングの市町村名をマウスでポイントすると、対応する市町村名が表示されます。',
+    body: '地図上の区画やランキングの市町村名をマウスでポイントすると、対応する市町村名が表示されます。',
   },
   {
     image: './img/column_selector.png',
     title: '項目選択',
-    body:
-      '入力されたCSVファイルの表示対象列を、画面上部のセレクタから簡単に切り替えられます。',
+    body: '入力されたCSVファイルの表示対象列を、画面上部のセレクタから簡単に切り替えられます。',
   },
   {
     image: './img/ranking.png',
@@ -52,32 +49,26 @@ const FEATURES = [
   {
     image: './img/record_viewer.png',
     title: '個別詳細表示',
-    body:
-      '地図上の区画やランキングをクリックすると、その市町村の統計値を一覧できます。',
+    body: '地図上の区画やランキングをクリックすると、その市町村の統計値を一覧できます。',
   },
 ]
 
 const SAMPLES = [
   {
-    href:
-      './seseki.html#areas=11,12,13,14&example=examples/11-14_around_tokyo_population_analysis.csv',
+    href: './seseki.html#areas=11,12,13,14&example=examples/11-14_around_tokyo_population_analysis.csv',
     image: './img/sample_around_tokyo.png',
     title:
       '住民基本台帳に基づく人口、人口動態及び世帯数（平成27年1月1日現在、東京都、神奈川県、埼玉県、千葉県）',
-    credit:
-      '総務省 / 住民基本台帳に基づく人口、人口動態及び世帯数',
-    creditUrl:
-      'https://www.soumu.go.jp/menu_news/s-news/01gyosei02_03000062.html',
+    credit: '総務省 / 住民基本台帳に基づく人口、人口動態及び世帯数',
+    creditUrl: 'https://www.soumu.go.jp/menu_news/s-news/01gyosei02_03000062.html',
     csv: 'examples/11-14_around_tokyo_population_analysis.csv',
   },
   {
-    href:
-      './seseki.html#areas=01&example=examples/01_01_population_analysis.csv',
+    href: './seseki.html#areas=01&example=examples/01_01_population_analysis.csv',
     image: './img/sample_hokkaido.png',
     title: '住民基本台帳人口・世帯数及び人口動態',
     credit: 'CC BY 2.1 JP 北海道',
-    creditUrl:
-      'https://www.pref.hokkaido.lg.jp/ss/scs/gyousei/shityousondata.htm',
+    creditUrl: 'https://www.pref.hokkaido.lg.jp/ss/scs/gyousei/shityousondata.htm',
     csv: 'examples/01_01_population_analysis.csv',
   },
 ]
@@ -113,7 +104,7 @@ function JapanSelectorMap({ japan }: { japan: JapanFeatureCollection }) {
     const projection = geoMercator().fitSize([760, 560], japan)
     const path = geoPath(projection)
 
-    return japan.features.map(prefecture => ({
+    return japan.features.map((prefecture) => ({
       id: String(prefecture.properties.id).padStart(2, '0'),
       name: prefecture.properties.prefecture_jp,
       path: path(prefecture) ?? '',
@@ -121,9 +112,9 @@ function JapanSelectorMap({ japan }: { japan: JapanFeatureCollection }) {
   }, [japan])
 
   const toggle = (id: string) => {
-    setSelectedIds(current =>
+    setSelectedIds((current) =>
       current.includes(id)
-        ? current.filter(selectedId => selectedId !== id)
+        ? current.filter((selectedId) => selectedId !== id)
         : [...current, id],
     )
   }
@@ -136,17 +127,15 @@ function JapanSelectorMap({ japan }: { japan: JapanFeatureCollection }) {
   return (
     <div className="japan-selector">
       <svg viewBox="0 0 760 560" role="img" aria-label="都道府県選択マップ">
-        {paths.map(prefecture => (
+        {paths.map((prefecture) => (
           <path
             key={prefecture.id}
             d={prefecture.path}
-            className={
-              selectedIds.includes(prefecture.id) ? 'selected' : undefined
-            }
+            className={selectedIds.includes(prefecture.id) ? 'selected' : undefined}
             onClick={() => toggle(prefecture.id)}
             role="button"
             tabIndex={0}
-            onKeyDown={event => {
+            onKeyDown={(event) => {
               if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault()
                 toggle(prefecture.id)
@@ -188,7 +177,7 @@ export default function Landing() {
 
   useEffect(() => {
     const timer = window.setInterval(() => {
-      setHeroIndex(current => (current + 1) % HERO_IMAGES.length)
+      setHeroIndex((current) => (current + 1) % HERO_IMAGES.length)
     }, 5000)
 
     return () => window.clearInterval(timer)
@@ -208,9 +197,7 @@ export default function Landing() {
 
         const topology = (await response.json()) as Topology
         const objectName = Object.keys(topology.objects)[0]
-        const topologyObject = topology.objects[
-          objectName
-        ] as GeometryCollection
+        const topologyObject = topology.objects[objectName] as GeometryCollection
         const collection = feature(
           topology,
           topologyObject,
@@ -218,16 +205,11 @@ export default function Landing() {
 
         setJapan(collection)
       } catch (loadError) {
-        if (
-          loadError instanceof Error &&
-          loadError.name === 'AbortError'
-        ) {
+        if (loadError instanceof Error && loadError.name === 'AbortError') {
           return
         }
 
-        setError(
-          loadError instanceof Error ? loadError.message : String(loadError),
-        )
+        setError(loadError instanceof Error ? loadError.message : String(loadError))
       }
     }
 
@@ -238,11 +220,8 @@ export default function Landing() {
   const featureById = useMemo(() => {
     const map = new Map<string, JapanFeature>()
 
-    japan?.features.forEach(prefecture => {
-      map.set(
-        String(prefecture.properties.id).padStart(2, '0'),
-        prefecture,
-      )
+    japan?.features.forEach((prefecture) => {
+      map.set(String(prefecture.properties.id).padStart(2, '0'), prefecture)
     })
 
     return map
@@ -311,7 +290,7 @@ export default function Landing() {
           </div>
 
           <div className="feature-grid">
-            {FEATURES.map(item => (
+            {FEATURES.map((item) => (
               <article key={item.title} className="feature-card">
                 <img src={item.image} alt="" loading="lazy" />
                 <h3>{item.title}</h3>
@@ -328,7 +307,7 @@ export default function Landing() {
           </div>
 
           <div className="sample-grid">
-            {SAMPLES.map(sample => (
+            {SAMPLES.map((sample) => (
               <article key={sample.href} className="sample-card">
                 <a href={sample.href}>
                   <img src={sample.image} alt={sample.title} loading="lazy" />
@@ -361,9 +340,7 @@ export default function Landing() {
                 alt="CSVファイルの形式"
                 loading="lazy"
               />
-              <figcaption>
-                1行目に系列名、1列目に市町村名を配置します。
-              </figcaption>
+              <figcaption>1行目に系列名、1列目に市町村名を配置します。</figcaption>
             </figure>
 
             <div className="input-methods">
@@ -396,7 +373,7 @@ export default function Landing() {
           {error && <p className="error">{error}</p>}
 
           <div className="prefecture-grid">
-            {prefectureDef.map(prefecture => {
+            {prefectureDef.map((prefecture) => {
               const mapFeature = featureById.get(prefecture.id)
 
               return (
@@ -432,18 +409,12 @@ export default function Landing() {
       </main>
 
       <footer className="landing-footer">
-        <p>
-          アプリケーション : &copy; Kunihiko Miyoshi 2016, 2017. MIT
-          License.
-        </p>
+        <p>アプリケーション : &copy; Kunihiko Miyoshi 2016, 2017. MIT License.</p>
         <p>
           可視化結果 :{' '}
-          <a
-            rel="license"
-            href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
-          >
-            Creative Commons Attribution-NonCommercial-ShareAlike 4.0
-            International License
+          <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+            Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+            License
           </a>
         </p>
       </footer>

@@ -8,31 +8,22 @@ interface DetailViewProps {
 }
 
 export function DetailView({ geoStatData }: DetailViewProps) {
-  const detailViewTarget = useSesekiStore(state => state.detailViewTarget)
-  const detailViewTargetName = useSesekiStore(
-    state => state.detailViewTargetName,
-  )
+  const detailViewTarget = useSesekiStore((state) => state.detailViewTarget)
+  const detailViewTargetName = useSesekiStore((state) => state.detailViewTargetName)
   const geoStatisticalDataColumn = useSesekiStore(
-    state => state.geoStatisticalDataColumn,
+    (state) => state.geoStatisticalDataColumn,
   )
-  const idToCommune = useSesekiStore(state => state.idToCommune)
-  const closeDetailView = useSesekiStore(state => state.closeDetailView)
+  const idToCommune = useSesekiStore((state) => state.idToCommune)
+  const closeDetailView = useSesekiStore((state) => state.closeDetailView)
 
   if (detailViewTarget === null) return null
 
-  const communeName =
-    detailViewTargetName ?? idToCommune[detailViewTarget] ?? 'Unknown'
+  const communeName = detailViewTargetName ?? idToCommune[detailViewTarget] ?? 'Unknown'
   const data = geoStatData?.data[detailViewTarget]
   const columnNames = geoStatData?.csvKeys.slice(1, -1) ?? []
 
   return (
-    <Modal
-      opened
-      onClose={closeDetailView}
-      title={communeName}
-      centered
-      size="lg"
-    >
+    <Modal opened onClose={closeDetailView} title={communeName} centered size="lg">
       {data ? (
         <Table highlightOnHover withTableBorder>
           <Table.Thead>
