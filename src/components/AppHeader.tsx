@@ -9,8 +9,9 @@ import {
 } from '@mantine/core'
 import { IconEdit, IconFileText, IconFolderOpen } from '@tabler/icons-react'
 
-import { prefectureDef } from '../lib/params'
+import { useUrlState } from '../hooks/useUrlState'
 import type GeoStatisticalData from '../lib/geoStatisticalData'
+import { prefectureDef } from '../lib/params'
 import { useSesekiStore } from '../store'
 
 interface AppHeaderProps {
@@ -22,11 +23,10 @@ export function AppHeader({ geoStatData }: AppHeaderProps) {
   const geoStatisticalDataColumn = useSesekiStore(
     (state) => state.geoStatisticalDataColumn,
   )
-  const setAreas = useSesekiStore((state) => state.setAreas)
-  const changeColumn = useSesekiStore((state) => state.changeColumn)
   const loadLocalCsv = useSesekiStore((state) => state.loadLocalCsv)
   const openExampleSelector = useSesekiStore((state) => state.openExampleSelector)
   const openSpreadSheet = useSesekiStore((state) => state.openSpreadSheet)
+  const { setUrlState } = useUrlState()
 
   const prefectureOptions = prefectureDef.map((prefecture) => ({
     value: prefecture.id,
@@ -34,17 +34,26 @@ export function AppHeader({ geoStatData }: AppHeaderProps) {
   }))
 
   const columnOptions = geoStatData
-    ? geoStatData.csvKeys.slice(1, -1).map((key, index) => ({
-        value: String(index),
+    ? geoStatData.csvKeys.slice(1, -1).map((key) => ({
+        value: key,
         label: key,
       }))
     : []
+
+  const selectedColumn = geoStatData
+    ? (geoStatData.csvKeys[geoStatisticalDataColumn + 1] ?? null)
+    : null
+
+  const setAreas = (ids: string[]) => {
+    void setUrlState({ areas: ids, example: null }, { history: 'push' })
+  }
 
   const handleFile = async (file: File | null) => {
     if (!file) return
 
     const buffer = await file.arrayBuffer()
     await loadLocalCsv(file.name, buffer)
+    void setUrlState({ example: null }, { history: 'replace' })
   }
 
   return (
@@ -108,9 +117,9 @@ export function AppHeader({ geoStatData }: AppHeaderProps) {
         className="column-select"
         placeholder="Select column"
         data={columnOptions}
-        value={columnOptions.length > 0 ? String(geoStatisticalDataColumn) : null}
+        value={selectedColumn}
         onChange={(value) => {
-          if (value !== null) changeColumn(Number(value))
+          void setUrlState({ column: value }, { history: 'push' })
         }}
         searchable
         disabled={columnOptions.length === 0}

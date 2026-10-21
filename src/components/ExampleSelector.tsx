@@ -1,13 +1,29 @@
 import { Modal, ScrollArea, Table } from '@mantine/core'
 
-import { prefectureDef } from '../lib/params'
+import { useUrlState } from '../hooks/useUrlState'
+import { prefecturesFromNumbers, prefectureDef } from '../lib/params'
 import { useSesekiStore } from '../store'
 
 export function ExampleSelector() {
   const exampleDatasetDef = useSesekiStore((state) => state.exampleDatasetDef)
   const showExampleDataSelector = useSesekiStore((state) => state.showExampleDataSelector)
   const closeExampleSelector = useSesekiStore((state) => state.closeExampleSelector)
-  const selectExample = useSesekiStore((state) => state.selectExample)
+  const { areas, setUrlState } = useUrlState()
+
+  const selectExample = (entry: (typeof exampleDatasetDef)[number]) => {
+    const targetAreaIds =
+      areas.length > 0
+        ? areas
+        : prefecturesFromNumbers(entry.target_prefectures).map(
+            (prefecture) => prefecture.id,
+          )
+
+    void setUrlState(
+      { areas: targetAreaIds, example: entry.file, column: null },
+      { history: 'push' },
+    )
+    closeExampleSelector()
+  }
 
   if (!showExampleDataSelector) return null
 
@@ -34,7 +50,7 @@ export function ExampleSelector() {
               <Table.Tr
                 key={entry.file}
                 style={{ cursor: 'pointer' }}
-                onClick={() => void selectExample(entry)}
+                onClick={() => selectExample(entry)}
               >
                 <Table.Td>{entry.title}</Table.Td>
                 <Table.Td>{entry.right_holder}</Table.Td>

@@ -12,6 +12,17 @@ describe('parseCsv', () => {
     expect(dataset.rows[1]['人口']).toBe('1,234')
   })
 
+  it('keeps duplicate header names unique', () => {
+    const dataset = parseCsv('市町村,人口,人口\n東京,100,200\n')
+
+    expect(dataset.columns).toEqual(['市町村', '人口', '人口 (2)'])
+    expect(dataset.rows[0]).toEqual({
+      市町村: '東京',
+      人口: '100',
+      '人口 (2)': '200',
+    })
+  })
+
   it('decodes a UTF-8 buffer', () => {
     const buffer = new TextEncoder().encode('市町村,人口\n東京,100\n')
       .buffer as ArrayBuffer

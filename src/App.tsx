@@ -1,5 +1,5 @@
 import { Alert, Loader } from '@mantine/core'
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense, useEffect, useMemo } from 'react'
 
 import { AppHeader } from './components/AppHeader'
 import { DetailView } from './components/DetailView'
@@ -7,6 +7,7 @@ import { ExampleSelector } from './components/ExampleSelector'
 import { Heatmap } from './components/Heatmap'
 import { Ranking } from './components/Ranking'
 import { useGeoStatData } from './hooks/useGeoStatData'
+import { useUrlState } from './hooks/useUrlState'
 import { useSesekiStore } from './store'
 
 const SpreadSheet = lazy(() =>
@@ -17,25 +18,57 @@ const SpreadSheet = lazy(() =>
 
 export default function App() {
   const initialize = useSesekiStore((state) => state.initialize)
-  const syncFromHash = useSesekiStore((state) => state.syncFromHash)
+  const syncFromUrl = useSesekiStore((state) => state.syncFromUrl)
+  const changeColumn = useSesekiStore((state) => state.changeColumn)
+  const initialized = useSesekiStore((state) => state.initialized)
+  const geoStatisticalDataColumn = useSesekiStore(
+    (state) => state.geoStatisticalDataColumn,
+  )
+  const dataKey = useSesekiStore((state) => state.dataKey)
   const error = useSesekiStore((state) => state.error)
   const clearError = useSesekiStore((state) => state.clearError)
   const loading = useSesekiStore((state) => state.loading)
   const showSpreadSheet = useSesekiStore((state) => state.showSpreadSheet)
   const geoStatData = useGeoStatData()
+  const { areas: areaIds, example, column, setUrlState } = useUrlState()
 
+  const areaKey = areaIds.join(',')
+
+  const columnIndex = useMemo(() => {
+    if (!geoStatData || !column) return 0
+
+    const index = geoStatData.csvKeys.slice(1, -1).indexOf(column)
+    return index >= 0 ? index : 0
+  }, [geoStatData, column])
+  const dataMatchesUrl = example ? dataKey === example : dataKey === 'local'
+
+  const columnIsInvalid = Boolean(
+    dataMatchesUrl &&
+    geoStatData &&
+    column &&
+    !geoStatData.csvKeys.slice(1, -1).includes(column),
+  )
   useEffect(() => {
     void initialize()
   }, [initialize])
 
   useEffect(() => {
-    const handleHashChange = () => {
-      void syncFromHash()
-    }
+    if (!initialized) return
 
-    window.addEventListener('hashchange', handleHashChange)
-    return () => window.removeEventListener('hashchange', handleHashChange)
-  }, [syncFromHash])
+    void syncFromUrl(areaKey ? areaKey.split(',') : [], example)
+  }, [initialized, areaKey, example, syncFromUrl])
+
+  useEffect(() => {
+    if (geoStatisticalDataColumn !== columnIndex) {
+      changeColumn(columnIndex)
+    }
+  }, [columnIndex, geoStatisticalDataColumn, changeColumn])
+
+  useEffect(() => {
+    if (!columnIsInvalid) return
+
+    void setUrlState({ column: null }, { history: 'replace' })
+  }, [columnIsInvalid, setUrlState])
 
   return (
     <div className="app-shell">

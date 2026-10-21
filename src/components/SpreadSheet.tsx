@@ -5,6 +5,7 @@ import { DataGrid } from 'react-data-grid'
 import type { Column } from 'react-data-grid'
 import 'react-data-grid/lib/styles.css'
 
+import { useUrlState } from '../hooks/useUrlState'
 import type { CsvDataset, CsvRow } from '../lib/types'
 import { useSesekiStore } from '../store'
 
@@ -70,6 +71,7 @@ export function SpreadSheet() {
   const geoStatisticalData = useSesekiStore((state) => state.geoStatisticalData)
   const communes = useSesekiStore((state) => state.communes)
   const closeSpreadSheet = useSesekiStore((state) => state.closeSpreadSheet)
+  const { setUrlState } = useUrlState()
 
   const [gridData, setGridData] = useState(() =>
     geoStatisticalData
@@ -104,6 +106,7 @@ export function SpreadSheet() {
     }
 
     closeSpreadSheet(dataset)
+    void setUrlState({ example: null }, { history: 'replace' })
   }
 
   const updateByExample = () => {

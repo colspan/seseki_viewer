@@ -40,6 +40,7 @@ Original Statistics dataset are available at under URLs.
 
 - Vite + React 19 + TypeScript
 - Mantine (UI) / Zustand (state management)
+- nuqs (URL state)
 - react-leaflet 5 + Leaflet 1.9
 - react-data-grid (spreadsheet editor)
 - d3 modules + topojson-client
@@ -65,6 +66,22 @@ npm run format    # Prettier
 The production build writes `dist/js/main.js`, `dist/js/landing.js`, and
 `dist/css/main.css`. `seseki.html` is the application entry point, and
 `index.html` is the landing page.
+
+### URL state
+
+Shareable state is stored in search params rather than the hash:
+
+- `areas`: comma-separated prefecture IDs (`01,13`)
+- `example`: example dataset path
+- `column`: selected column name
+
+Example:
+
+```text
+seseki.html?areas=01,13&example=examples/11-14_around_tokyo_population_analysis.csv&column=人口
+```
+
+Transient UI state (modals, tooltips, local CSV data) stays in Zustand.
 
 To regenerate the prefecture-level GeoJSON from the municipality TopoJSON
 files:

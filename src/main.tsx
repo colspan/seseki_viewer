@@ -3,6 +3,7 @@ import 'leaflet/dist/leaflet.css'
 import './styles/app.css'
 
 import { MantineProvider } from '@mantine/core'
+import { NuqsAdapter } from 'nuqs/adapters/react'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
@@ -16,8 +17,10 @@ if (!container) {
 
 createRoot(container).render(
   <StrictMode>
-    <MantineProvider defaultColorScheme="light">
-      <App />
-    </MantineProvider>
+    <NuqsAdapter>
+      <MantineProvider defaultColorScheme="light">
+        <App />
+      </MantineProvider>
+    </NuqsAdapter>
   </StrictMode>,
 )

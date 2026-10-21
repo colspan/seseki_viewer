@@ -55,7 +55,7 @@ const FEATURES = [
 
 const SAMPLES = [
   {
-    href: './seseki.html#areas=11,12,13,14&example=examples/11-14_around_tokyo_population_analysis.csv',
+    href: './seseki.html?areas=11,12,13,14&example=examples/11-14_around_tokyo_population_analysis.csv',
     image: './img/sample_around_tokyo.png',
     title:
       '住民基本台帳に基づく人口、人口動態及び世帯数（平成27年1月1日現在、東京都、神奈川県、埼玉県、千葉県）',
@@ -64,7 +64,7 @@ const SAMPLES = [
     csv: 'examples/11-14_around_tokyo_population_analysis.csv',
   },
   {
-    href: './seseki.html#areas=01&example=examples/01_01_population_analysis.csv',
+    href: './seseki.html?areas=01&example=examples/01_01_population_analysis.csv',
     image: './img/sample_hokkaido.png',
     title: '住民基本台帳人口・世帯数及び人口動態',
     credit: 'CC BY 2.1 JP 北海道',
@@ -121,7 +121,7 @@ function JapanSelectorMap({ japan }: { japan: JapanFeatureCollection }) {
 
   const href =
     selectedIds.length > 0
-      ? `./seseki.html#areas=${selectedIds.join(',')}`
+      ? `./seseki.html?areas=${selectedIds.join(',')}`
       : './seseki.html'
 
   return (
@@ -380,7 +380,7 @@ export default function Landing() {
                 <a
                   key={prefecture.id}
                   className="prefecture-card"
-                  href={`./seseki.html#areas=${prefecture.id}`}
+                  href={`./seseki.html?areas=${prefecture.id}`}
                 >
                   {mapFeature ? (
                     <PrefectureMap prefecture={mapFeature} />
