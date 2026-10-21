@@ -116,6 +116,7 @@ export function SpreadSheet() {
       onClose={updateData}
       title="Spread Sheet Editor"
       fullScreen
+      zIndex={2000}
       classNames={{
         content: 'spreadsheet-modal-content',
         body: 'spreadsheet-modal-body',

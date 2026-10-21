@@ -23,7 +23,14 @@ export function DetailView({ geoStatData }: DetailViewProps) {
   const columnNames = geoStatData?.csvKeys.slice(1, -1) ?? []
 
   return (
-    <Modal opened onClose={closeDetailView} title={communeName} centered size="lg">
+    <Modal
+      opened
+      onClose={closeDetailView}
+      title={communeName}
+      centered
+      size="lg"
+      zIndex={2000}
+    >
       {data ? (
         <Table highlightOnHover withTableBorder>
           <Table.Thead>

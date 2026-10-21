@@ -18,6 +18,7 @@ export function ExampleSelector() {
       title="Example Datasets"
       size="xl"
       centered
+      zIndex={2000}
     >
       <ScrollArea.Autosize mah={560}>
         <Table highlightOnHover withTableBorder>
