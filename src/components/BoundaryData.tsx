@@ -49,6 +49,7 @@ export function BoundaryData({
     if (!geoLayer) return
 
     const layers: CommuneLayer[] = []
+    const elementToCommune = new Map<Element, number>()
 
     geoLayer.eachLayer((layer) => {
       const path = layer as CommuneLayer
@@ -56,6 +57,8 @@ export function BoundaryData({
       if (!feature) return
 
       layers.push(path)
+      const element = path.getElement()
+      if (element) elementToCommune.set(element, feature.communeId)
 
       if (path.__sesekiEvents) {
         path.off(path.__sesekiEvents)
@@ -75,15 +78,27 @@ export function BoundaryData({
             const otherPath = otherLayer as CommuneLayer
             if (otherPath.feature?.communeId === feature.communeId) {
               otherPath.setStyle(activeStyle)
-              otherPath.bringToFront()
+            } else {
+              otherPath.closeTooltip()
             }
           })
         },
-        mouseout: () => {
+        mouseout: (event) => {
+          const relatedTarget = (event as L.LeafletMouseEvent).originalEvent
+            ?.relatedTarget
+
+          if (
+            relatedTarget instanceof Element &&
+            elementToCommune.get(relatedTarget) === feature.communeId
+          ) {
+            return
+          }
+
           geoLayer.eachLayer((otherLayer) => {
             const otherPath = otherLayer as CommuneLayer
             if (otherPath.feature?.communeId === feature.communeId) {
               otherPath.setStyle(featureStyle(otherPath.feature))
+              otherPath.closeTooltip()
             }
           })
         },
@@ -111,6 +126,8 @@ export function BoundaryData({
     const geoLayer = layerRef.current
     if (!geoLayer) return
 
+    let tooltipOpened = false
+
     geoLayer.eachLayer((layer) => {
       const path = layer as CommuneLayer
       const feature = path.feature
@@ -118,8 +135,10 @@ export function BoundaryData({
 
       if (tooltipTarget === feature.communeId) {
         path.setStyle(activeStyle)
-        path.bringToFront()
-        path.openTooltip()
+        if (!tooltipOpened) {
+          path.openTooltip()
+          tooltipOpened = true
+        }
       } else {
         path.setStyle(featureStyle(feature))
         path.closeTooltip()
