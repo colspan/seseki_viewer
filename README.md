@@ -44,6 +44,11 @@ Original Statistics dataset are available at under URLs.
 - react-data-grid (spreadsheet editor)
 - d3 modules + topojson-client
 
+### Requirements
+
+- Node.js 22.12 or later
+- npm 10 or later
+
 ### Commands
 
 ```bash

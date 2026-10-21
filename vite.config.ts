@@ -1,13 +1,27 @@
 import { fileURLToPath } from 'node:url'
 
 import react from '@vitejs/plugin-react'
+import type { Plugin } from 'vite'
 import { defineConfig } from 'vitest/config'
 
 const fromRoot = (path: string) => fileURLToPath(new URL(path, import.meta.url))
 
+function devHtmlEntry(): Plugin {
+  return {
+    name: 'seseki-dev-html-entry',
+    apply: 'serve',
+    transformIndexHtml(html) {
+      return html
+        .replace('./dist/js/main.js', '/src/main.tsx')
+        .replace('./dist/js/landing.js', '/src/landing.tsx')
+        .replace('<link rel="stylesheet" href="./dist/css/main.css">', '')
+    },
+  }
+}
+
 export default defineConfig({
   base: './',
-  plugins: [react()],
+  plugins: [react(), devHtmlEntry()],
   build: {
     outDir: 'dist',
     emptyOutDir: true,
