@@ -111,7 +111,16 @@ export function SpreadSheet() {
   }
 
   return (
-    <Modal opened onClose={updateData} title="Spread Sheet Editor" fullScreen>
+    <Modal
+      opened
+      onClose={updateData}
+      title="Spread Sheet Editor"
+      fullScreen
+      classNames={{
+        content: 'spreadsheet-modal-content',
+        body: 'spreadsheet-modal-body',
+      }}
+    >
       <DataGrid
         className="spreadsheet-grid"
         columns={gridColumns}
@@ -120,10 +129,9 @@ export function SpreadSheet() {
         onRowsChange={(newRows) =>
           setGridData((current) => ({ ...current, rows: newRows }))
         }
-        style={{ height: 'calc(100vh - 160px)' }}
       />
 
-      <Group justify="flex-end" mt="md">
+      <Group justify="flex-end" className="spreadsheet-actions">
         <Button
           variant="light"
           leftSection={<IconColumns size={18} />}

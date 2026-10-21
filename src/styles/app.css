@@ -206,9 +206,56 @@ body {
   pointer-events: none;
 }
 
+.mantine-Modal-content,
+.mantine-Modal-header,
+.mantine-Modal-body {
+  background-color: #fff;
+}
+
+.mantine-Modal-content .mantine-Table-table,
+.mantine-Modal-content .mantine-Table-tbody tr {
+  background-color: #fff;
+}
+
+.spreadsheet-modal-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.spreadsheet-modal-content .mantine-Modal-header {
+  flex: 0 0 auto;
+}
+
+.spreadsheet-modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .spreadsheet-grid {
+  flex: 1 1 0;
+  min-height: 0;
+  height: auto;
   border: 1px solid #d7dee7;
   border-radius: 6px;
+  --rdg-background-color: #fff;
+  --rdg-header-background-color: #f9f9f9;
+  --rdg-header-draggable-background-color: #e7e7e7;
+  --rdg-row-hover-background-color: #f5f5f5;
+  --rdg-row-selected-background-color: #dbecfa;
+  --rdg-row-selected-hover-background-color: #c9e3f8;
+  --rdg-color: #000;
+  --rdg-border-color: #ddd;
+  background-color: #fff;
+}
+
+.spreadsheet-actions {
+  flex: 0 0 auto;
+  padding-top: 12px;
+  background-color: #fff;
 }
 
 @media (max-width: 900px) {
