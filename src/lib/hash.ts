@@ -19,20 +19,14 @@ export function parseHash(hash: string): HashState {
 }
 
 export function buildHash(areas: Prefecture[], exampleFile?: string | null): string {
-  const params = new URLSearchParams()
+  if (areas.length === 0) return '#'
 
-  if (areas.length > 0) {
-    params.set(
-      'areas',
-      areas.map(area => area.id).join(','),
-    )
-    if (exampleFile) {
-      params.set('example', exampleFile)
-    }
+  const parts = [`areas=${areas.map(area => area.id).join(',')}`]
+  if (exampleFile) {
+    parts.push(`example=${exampleFile}`)
   }
 
-  const query = params.toString()
-  return query ? `#${query}` : '#'
+  return `#${parts.join('&')}`
 }
 
 export function writeHash(hash: string): void {
